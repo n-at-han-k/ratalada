@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
-require_relative "lib/gem_kit/version"
+require_relative "lib/ratalada/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "gem_kit"
-  spec.version = GemKit::VERSION
+  spec.name = "ratalada"
+  spec.version = Ratalada::VERSION
   spec.authors = ["Nathan K"]
   spec.email = ["nathankidd@hey.com"]
 
-  spec.summary = "Dynamic gem template"
+  spec.summary = "DSL for running rack servers as easily as you can in javascript."
 
   spec.description = <<~DESC
-    Clone the repo and run bin/rename-gem and you have a gem.
+    DSL for running rack servers as easily as you can in javasript.
   DESC
 
-  spec.homepage = "https://github.com/n-at-han-k/gem-kit"
+  spec.homepage = "https://github.com/n-at-han-k/ratalada"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.2.0"
 

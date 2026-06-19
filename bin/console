@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
-require "gem_kit"
+require "ratalada"
 require "irb"
 
 IRB.start(__FILE__)

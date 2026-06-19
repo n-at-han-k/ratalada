@@ -2,8 +2,8 @@
 
 require "test_helper"
 
-class GemKitTest < Minitest::Test
+class RataladaTest < Minitest::Test
   def test_version
-    refute_nil GemKit::VERSION
+    refute_nil Ratalada::VERSION
   end
 end

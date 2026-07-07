@@ -9,6 +9,21 @@ bundle exec ruby examples/falcon.rb    # built-in router on falcon
 bundle exec ruby examples/sinatra.rb   # sinatra DSL on falcon
 ```
 
+One example brings its own dependencies (via an inline gemfile) instead of
+the repo bundle — run it with plain `ruby`:
+
+```bash
+ruby examples/brute.rb                 # a brute coding agent served over HTTP
+```
+
+It expects a [brute](https://github.com/general-intelligence-systems/brute) checkout at
+`~/brute/brute` (override with `BRUTE_PATH`) and an LLM — a local Ollama by
+default (`BRUTE_PROVIDER` / `BRUTE_MODEL` to change). Ask it things:
+
+```bash
+curl -d 'What files are in the current directory?' http://localhost:9292/ask
+```
+
 All of them listen on `http://127.0.0.1:9292` (override with `HOST`/`PORT`
 env vars, or `Server.run(host:, port:)`).
 

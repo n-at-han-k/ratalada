@@ -7,3 +7,5 @@
 /pkg/
 /tmp/
 /vendor/bundle
+/docs/_site/
+/docs/.jekyll-cache/

@@ -8,7 +8,8 @@ module Ratalada
     module Puma
       module_function
 
-      def run(app, host:, port:)
+      def run(app, host:, port:, count: 1)
+        warn "ratalada: puma backend ignores count: (not yet implemented)" if count > 1
         server = ::Puma::Server.new(app)
         server.add_tcp_listener(host, port)
         warn "ratalada: puma listening on http://#{host}:#{port}"

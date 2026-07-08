@@ -5,6 +5,7 @@ require_relative "ratalada/version"
 module Ratalada
   DEFAULT_HOST = ENV.fetch("HOST", "127.0.0.1")
   DEFAULT_PORT = Integer(ENV.fetch("PORT", "9292"))
+  DEFAULT_COUNT = Integer(ENV.fetch("COUNT", "1"))
 
   class Error < StandardError; end
 
@@ -103,11 +104,15 @@ module Ratalada
   module Server
     module_function
 
-    def run(host: DEFAULT_HOST, port: DEFAULT_PORT, &block)
+    # count runs that many worker processes accepting from a shared socket,
+    # like node's cluster module. Each worker has its own state — anything
+    # shared (sessions, caches) needs an external store or count: 1.
+    def run(host: DEFAULT_HOST, port: DEFAULT_PORT, count: DEFAULT_COUNT, &block)
       raise ArgumentError, "Server.run requires a block" unless block
+      raise ArgumentError, "count must be a positive Integer" unless count.is_a?(Integer) && count.positive?
 
       app = Ratalada.frontend.build(block)
-      Ratalada.backend.run(app, host: host, port: port)
+      Ratalada.backend.run(app, host: host, port: port, count: count)
     end
   end
 end

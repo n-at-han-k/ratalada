@@ -27,12 +27,13 @@ class RataladaTest < Minitest::Test
 
   def test_run_builds_app_and_hands_it_to_backend
     backend = Class.new do
-      attr_reader :app, :host, :port
+      attr_reader :app, :host, :port, :count
 
-      def run(app, host:, port:)
+      def run(app, host:, port:, count:)
         @app = app
         @host = host
         @port = port
+        @count = count
       end
     end.new
 
@@ -42,7 +43,19 @@ class RataladaTest < Minitest::Test
 
     assert_equal "example.test", backend.host
     assert_equal 1234, backend.port
+    assert_equal 1, backend.count
     assert_equal [200, { "content-type" => "text/plain" }, ["ok"]], backend.app.call(env_for("GET", "/"))
+  end
+
+  def test_run_rejects_invalid_count
+    backend = Class.new do
+      def run(app, host:, port:, count:); end
+    end.new
+
+    with_backend(backend) do
+      assert_raises(ArgumentError) { Server.run(count: 0) { |_request| "ok" } }
+      assert_raises(ArgumentError) { Server.run(count: "2") { |_request| "ok" } }
+    end
   end
 
   private

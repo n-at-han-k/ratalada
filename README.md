@@ -77,6 +77,22 @@ Server.run(host: "0.0.0.0", port: 3000) do |request|
 end
 ```
 
+Like node, one process is one event loop: plenty for IO-bound work, but only
+one core of Ruby. To use more cores, `count:` (or the `COUNT` environment
+variable) runs that many forked workers accepting from a shared socket — the
+equivalent of node's `cluster` module, and with the same contract: each worker
+has its own state, so anything shared between requests (sessions, caches)
+needs an external store or `count: 1` (the default).
+
+```ruby
+Server.run(count: 4) do |request|
+  # ...
+end
+```
+
+Currently only the falcon backend forks workers; the puma backend warns and
+ignores `count:`.
+
 See [examples/](examples/) for complete runnable servers.
 
 ## Development

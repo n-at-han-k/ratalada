@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 require "falcon"
-require "async"
+require "falcon/environment/server"
+require "async/service/configuration"
+require "async/service/controller"
 require "async/container"
-require "async/http/endpoint"
 require_relative "../ratalada"
 
 module Ratalada
@@ -11,45 +12,27 @@ module Ratalada
     module Falcon
       module_function
 
+      # Runs the app the way `falcon host` does: declare a server environment,
+      # hand it to Async::Service::Controller. The controller binds the socket
+      # once in the parent, runs `count` supervised workers accepting from it
+      # (restarts, health checks, INT/TERM/HUP handling all come with it).
       def run(app, host:, port:, count: 1)
-        endpoint = Async::HTTP::Endpoint.parse("http://#{host}:#{port}")
         middleware = ::Falcon::Server.middleware(app)
 
-        if count == 1
-          server = ::Falcon::Server.new(middleware, endpoint)
-          warn "ratalada: falcon listening on http://#{host}:#{port}"
-          Sync { server.run.wait }
-        else
-          run_container(middleware, endpoint, count: count)
-        end
+        environment = Async::Service::Environment.new(::Falcon::Environment::Server).with(
+          name: "ratalada",
+          url: "http://#{host}:#{port}",
+          middleware: -> { middleware },
+          container_options: { count: count, restart: true },
+        )
+
+        configuration = Async::Service::Configuration.new
+        configuration.add(environment)
+
+        warn "ratalada: falcon listening on http://#{host}:#{port}#{" (#{count} workers)" if count > 1}"
+        Async::Service::Controller.run(configuration, container_class: Async::Container.best_container_class)
       rescue Interrupt
         # clean shutdown
-      end
-
-      # One reactor handles any amount of concurrent IO, but only one core of
-      # Ruby. Workers are forked processes accepting from a socket bound once
-      # in the parent — node's cluster model. Worker state is per-process.
-      def run_container(middleware, endpoint, count:)
-        bound = Sync { endpoint.bound }
-        container = Async::Container::Forked.new
-
-        warn "ratalada: falcon listening on http://#{endpoint.authority} (#{count} workers)"
-
-        container.run(count: count, restart: true) do |instance|
-          Sync do
-            server = ::Falcon::Server.new(
-              middleware, bound,
-              protocol: endpoint.protocol, scheme: endpoint.scheme,
-            )
-            instance.ready!
-            server.run.wait
-          end
-        end
-
-        container.wait
-      ensure
-        container&.stop
-        bound&.close
       end
     end
   end

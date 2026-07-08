@@ -1,5 +1,7 @@
 # ratalada
 
+![ratalada](media/character.png)
+
 A DSL for running Rack servers as easily as you can in JavaScript.
 
 ```ruby

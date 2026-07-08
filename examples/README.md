@@ -9,11 +9,12 @@ bundle exec ruby examples/falcon.rb    # built-in router on falcon
 bundle exec ruby examples/sinatra.rb   # sinatra DSL on falcon
 ```
 
-One example brings its own dependencies (via an inline gemfile) instead of
-the repo bundle — run it with plain `ruby`:
+Some examples bring their own dependencies (via an inline gemfile) instead of
+the repo bundle — run them with plain `ruby`:
 
 ```bash
 ruby examples/brute.rb                 # a brute coding agent served over HTTP
+ruby examples/mcp.rb                   # an MCP server over Streamable HTTP on falcon
 ```
 
 It expects a [brute](https://github.com/general-intelligence-systems/brute) checkout at

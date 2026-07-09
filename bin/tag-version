@@ -12,8 +12,7 @@ unless existing.empty?
 end
 
 system("git tag #{tag}") || abort("ERROR: Failed to create tag #{tag}")
-
 puts "Tagged #{tag}"
-puts ""
-puts "To push the tag, run:"
-puts "  git push --tags"
+
+system("git", "push", "origin", tag) || abort("ERROR: Failed to push tag #{tag}")
+puts "Pushed #{tag}"

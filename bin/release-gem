@@ -73,6 +73,10 @@ end
 puts
 if DRY_RUN
   puts "Dry run complete — #{GEMS.size} gems build cleanly at #{version}"
+  puts "[dry run] would tag v#{version}"
 else
   puts "Released #{GEMS.join(", ")} at #{version}"
+  # Tag only once the gems are actually published, so a tag never points at an
+  # unreleased version. tag-version creates and pushes v#{version}.
+  system(File.join(__dir__, "tag-version")) || abort("ERROR: release succeeded but tagging failed")
 end

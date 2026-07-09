@@ -1,0 +1,9 @@
+# frozen_string_literal: true
+
+# Develops the core gem alongside the Sinatra adapter.
+#   BUNDLE_GEMFILE=gemfiles/sinatra.gemfile bundle install
+#   BUNDLE_GEMFILE=gemfiles/sinatra.gemfile bundle exec ruby examples/sinatra.rb
+source "https://rubygems.org"
+
+gemspec name: "ratalada", path: ".."
+gemspec name: "ratalada-sinatra", path: ".."

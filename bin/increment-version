@@ -42,3 +42,23 @@ File.write(output_path, result)
 
 puts "#{current} -> #{version}"
 
+# The gemspecs read Ratalada::VERSION directly, so they follow automatically.
+# The lockfiles don't — they pin the path gems (ratalada + adapters) at a
+# concrete version, so they must be regenerated in lockstep or they drift.
+root = File.expand_path("..", __dir__)
+
+gemfiles = [
+  File.join(root, "Gemfile"),
+  File.join(root, "gemfiles", "grape.gemfile"),
+  File.join(root, "gemfiles", "sinatra.gemfile"),
+]
+
+gemfiles.each do |gemfile|
+  rel = gemfile.sub("#{root}/", "")
+  puts "Relocking #{rel}..."
+  ok = system({ "BUNDLE_GEMFILE" => gemfile }, "bundle", "install", chdir: root)
+  abort "ERROR: bundle install failed for #{rel}" unless ok
+end
+
+puts "Bumped and relocked to #{version}"
+

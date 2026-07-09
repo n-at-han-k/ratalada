@@ -23,7 +23,18 @@ Gem::Specification.new do |spec|
   spec.metadata["documentation_uri"] = spec.homepage
   spec.metadata["rubygems_mfa_required"] = "true"
 
-  spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features|data|docs|\.github)/}) }
+  # The frontend adapters live in sibling gems (ratalada-sinatra,
+  # ratalada-grape) that share this lib/ tree, so this core gem ships only its
+  # own files: the DSL, the version, and the backends.
+  spec.files = %w[
+    lib/ratalada.rb
+    lib/ratalada/version.rb
+    lib/ratalada/falcon.rb
+    lib/ratalada/puma.rb
+    exe/ratalada
+    README.md
+    LICENSE
+  ]
   spec.bindir = "exe"
   spec.executables = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
@@ -31,8 +42,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "minitest", "~> 5.0"
   spec.add_development_dependency "rake", "~> 13.0"
 
-  # Servers and frameworks the adapters wrap; users install whichever they require.
+  # Servers the backends wrap; users install whichever they require.
   spec.add_development_dependency "falcon"
   spec.add_development_dependency "puma"
-  spec.add_development_dependency "sinatra"
 end

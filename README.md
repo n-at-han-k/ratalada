@@ -19,11 +19,26 @@ That's a whole app. Run the file, and it's listening on `http://127.0.0.1:9292`.
 ## Installation
 
 ```bash
-gem install ratalada
+gem install ratalada puma      # core + a server to run on
 ```
 
-Ratalada has no runtime dependencies of its own — install whichever server you
-want to run on (`puma`, `falcon`, or `sinatra` for that flavour of DSL).
+The core `ratalada` gem is the router, the backends, and the DSL. It has no
+runtime dependencies of its own — install whichever server you run on (`puma`
+or `falcon`).
+
+The Sinatra and Grape DSLs are optional add-ons, each its own gem:
+
+```bash
+gem install ratalada-sinatra   # enables require "ratalada/sinatra"
+gem install ratalada-grape     # enables require "ratalada/grape"
+```
+
+They ship separately because their dependencies conflict (Grape needs
+`mustermann` 4, Sinatra needs `mustermann` 3), so bundling both into `ratalada`
+would force you to pick one. **The require path is the same either way**:
+install `ratalada-grape`, then `require "ratalada/grape"`. The adapter file
+lives under the shared `ratalada/` namespace on the load path, so the `require`
+never names the gem — only the file you want.
 
 ## Usage
 
@@ -56,8 +71,8 @@ Server.run do |request|
 end
 ```
 
-Prefer Sinatra's routing? Swap the frontend and keep whichever backend you
-required:
+Prefer Sinatra's routing? Install `ratalada-sinatra`, then swap the frontend
+and keep whichever backend you required:
 
 ```ruby
 require "ratalada/falcon"
@@ -69,6 +84,26 @@ Server.run do
   end
 end
 ```
+
+Or Grape, from `ratalada-grape`:
+
+```ruby
+require "ratalada/falcon"
+require "ratalada/grape"
+
+Server.run do
+  format :txt
+
+  get "/" do
+    "hello\n"
+  end
+end
+```
+
+Requiring a frontend only changes how the block builds the app, not which
+server runs it. Each of these adapters is a separate gem (`ratalada-sinatra`,
+`ratalada-grape`), but the `require "ratalada/<name>"` line is all your code
+ever sees.
 
 The host and port default to `127.0.0.1:9292`, configurable via the `HOST` and
 `PORT` environment variables or explicitly:

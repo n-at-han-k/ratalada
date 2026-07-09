@@ -35,12 +35,12 @@ That's a whole app. Run the file, and it's listening on `http://127.0.0.1:9292`.
 Ratalada is two small, swappable pieces:
 
 - **Backends** run the Rack app. `require "ratalada/puma"` or `require "ratalada/falcon"` picks the server and defines the top-level `Server` constant.
-- **Frontends** turn your `Server.run` block into a Rack app. The default is a [pattern-matching router]({% link _guides/routing.md %}); `require "ratalada/sinatra"` swaps in [Sinatra's DSL]({% link _guides/sinatra.md %}) on whichever backend you chose.
+- **Frontends** turn your `Server.run` block into a Rack app. The default is a [pattern-matching router]({% link _guides/routing.md %}); `require "ratalada/sinatra"` or `require "ratalada/grape"` swaps in [Sinatra's]({% link _guides/sinatra.md %}) or [Grape's]({% link _guides/grape.md %}) DSL on whichever backend you chose.
 
-The gem has no runtime dependencies of its own — install whichever server you actually run on.
+The core gem has no runtime dependencies of its own — install whichever server you actually run on. The Sinatra and Grape adapters are separate gems (`ratalada-sinatra`, `ratalada-grape`), but you install the gem and still `require "ratalada/sinatra"` — see [require semantics]({% link _guides/frontends.md %}).
 
 ## What's here
 
 - **Start Here** — [install ratalada and run your first server]({% link _getting_started/getting-started.md %}).
-- **Guides** — the [router DSL]({% link _guides/routing.md %}) and its handler forms, [backends and configuration]({% link _guides/backends.md %}), and the [Sinatra frontend]({% link _guides/sinatra.md %}).
+- **Guides** — the [router DSL]({% link _guides/routing.md %}) and its handler forms, [backends and configuration]({% link _guides/backends.md %}), how [frontends are packaged]({% link _guides/frontends.md %}), and the [Sinatra]({% link _guides/sinatra.md %}) and [Grape]({% link _guides/grape.md %}) frontends.
 - **Examples** — [complete runnable servers]({% link _examples/examples.md %}) straight from the repo.

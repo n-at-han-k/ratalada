@@ -1,7 +1,10 @@
 PATH
-  remote: .
+  remote: ..
   specs:
     ratalada (1.0.0)
+    ratalada-sinatra (1.0.0)
+      ratalada (= 1.0.0)
+      sinatra
 
 GEM
   remote: https://rubygems.org/
@@ -38,6 +41,7 @@ GEM
     bake (0.25.0)
       bigdecimal
       samovar (~> 2.1)
+    base64 (0.3.0)
     bigdecimal (4.1.2)
     console (1.36.0)
       fiber-annotation
@@ -66,8 +70,10 @@ GEM
     json (2.20.0)
     localhost (1.8.0)
       bake
+    logger (1.7.0)
     metrics (0.15.0)
     minitest (5.27.0)
+    mustermann (3.1.1)
     nio4r (2.7.5)
     openssl (4.0.2)
     protocol-hpack (1.5.1)
@@ -85,10 +91,25 @@ GEM
     puma (8.0.2)
       nio4r (~> 2.0)
     rack (3.2.6)
+    rack-protection (4.2.1)
+      base64 (>= 0.1.0)
+      logger (>= 1.6.0)
+      rack (>= 3.0.0, < 4)
+    rack-session (2.1.2)
+      base64 (>= 0.1.0)
+      rack (>= 3.0.0)
     rake (13.4.2)
     samovar (2.5.1)
       console (~> 1.0)
+    sinatra (4.2.1)
+      logger (>= 1.6.0)
+      mustermann (~> 3.0)
+      rack (>= 3.0.0, < 4)
+      rack-protection (= 4.2.1)
+      rack-session (>= 2.0.0, < 3)
+      tilt (~> 2.0)
     string-format (0.2.0)
+    tilt (2.8.0)
     traces (0.18.2)
 
 PLATFORMS
@@ -101,6 +122,7 @@ DEPENDENCIES
   puma
   rake (~> 13.0)
   ratalada!
+  ratalada-sinatra!
 
 BUNDLED WITH
    2.6.9

@@ -27,6 +27,8 @@ Or without bundler:
 gem install ratalada puma
 ```
 
+Want the Sinatra or Grape DSL instead of the built-in router? Add its adapter gem — `gem "ratalada-sinatra"` or `gem "ratalada-grape"` — and `require "ratalada/sinatra"` / `require "ratalada/grape"`. The [Frontends guide]({% link _guides/frontends.md %}) explains why the gem name and the require path differ.
+
 ## Your first server
 
 ```ruby
@@ -56,4 +58,4 @@ Requiring `ratalada/puma` did two things: picked puma as the backend and defined
 
 - The [Routing guide]({% link _guides/routing.md %}) covers everything a handler can be and how requests pattern-match.
 - The [Backends guide]({% link _guides/backends.md %}) covers puma vs falcon and host/port configuration.
-- Prefer Sinatra's `get "/" do ... end`? See the [Sinatra frontend]({% link _guides/sinatra.md %}).
+- Prefer `get "/" do ... end`? See the [Sinatra]({% link _guides/sinatra.md %}) and [Grape]({% link _guides/grape.md %}) frontends, and [how they're packaged]({% link _guides/frontends.md %}).

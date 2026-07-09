@@ -3,30 +3,76 @@
 
 require_relative "../lib/ratalada/version"
 
-local_version = Ratalada::VERSION
-gem_name = "ratalada"
-gemspec = "ratalada.gemspec"
+# Releases all three gems in one shot at Ratalada::VERSION:
+#   ratalada           (core — pushed first, the adapters depend on it)
+#   ratalada-sinatra
+#   ratalada-grape
+#
+# They share one version and one lib/ tree, so a release must be all-or-nothing
+# and drift-free. Pass --dry-run to build and verify without pushing.
 
-puts "Local version: #{local_version}"
+DRY_RUN = ARGV.delete("--dry-run") ? true : false
 
-remote_output = `gem specification #{gem_name} version --remote 2>&1`
+# Push order matters: the adapters pin `ratalada = VERSION`, so core goes first.
+GEMS = %w[ratalada ratalada-sinatra ratalada-grape].freeze
 
-if $?.success?
-  remote_version = remote_output[/version: (.+)/, 1]&.strip
-  puts "Remote version: #{remote_version}"
+version = Ratalada::VERSION
+root = File.expand_path("..", __dir__)
+Dir.chdir(root)
 
-  if Gem::Version.new(local_version) <= Gem::Version.new(remote_version)
-    abort "ERROR: Local version (#{local_version}) has not been incremented past remote (#{remote_version})"
+puts "Releasing all gems at version #{version}#{" (dry run)" if DRY_RUN}"
+puts
+
+# 1. No drift: the test suite includes packaging_test, which asserts every
+#    gemspec and lockfile agrees on VERSION. Refuse to release if it fails.
+puts "Verifying no version drift (running test suite)..."
+system("bundle", "exec", "rake", "test") || abort("ERROR: tests failed; refusing to release")
+puts
+
+# 2. Every gem must be ahead of what's already published (or unpublished).
+GEMS.each do |name|
+  remote = `gem specification #{name} version --remote 2>&1`
+
+  if $?.success?
+    remote_version = remote[/version: (.+)/, 1]&.strip
+    puts "#{name}: local #{version}, remote #{remote_version}"
+    if Gem::Version.new(version) <= Gem::Version.new(remote_version)
+      abort "ERROR: #{name} #{version} is not ahead of published #{remote_version}"
+    end
+  else
+    puts "#{name}: not yet published, first release"
   end
-else
-  puts "Gem not yet published remotely, proceeding with first release"
+end
+puts
+
+# 3. Build them all before pushing anything, so a bad build aborts the whole
+#    release instead of leaving a half-published set.
+built = GEMS.map do |name|
+  puts "Building #{name}.gemspec..."
+  system("gem", "build", "#{name}.gemspec", "--output", "#{name}-#{version}.gem") ||
+    abort("ERROR: gem build failed for #{name}")
+  "#{name}-#{version}.gem"
+end
+puts
+
+# 4. Push in dependency order.
+begin
+  GEMS.each_with_index do |name, i|
+    gem_file = built[i]
+    if DRY_RUN
+      puts "[dry run] would push #{gem_file}"
+    else
+      puts "Pushing #{gem_file}..."
+      system("gem", "push", gem_file) || abort("ERROR: gem push failed for #{name}")
+    end
+  end
+ensure
+  built.each { |f| File.delete(f) if File.exist?(f) }
 end
 
-puts "Building #{gemspec}..."
-system("gem build #{gemspec}") || abort("ERROR: gem build failed")
-
-gem_file = "#{gem_name}-#{local_version}.gem"
-puts "Pushing #{gem_file}..."
-system("gem push #{gem_file}") || abort("ERROR: gem push failed")
-
-puts "Released #{gem_name} #{local_version}"
+puts
+if DRY_RUN
+  puts "Dry run complete — #{GEMS.size} gems build cleanly at #{version}"
+else
+  puts "Released #{GEMS.join(", ")} at #{version}"
+end

@@ -13,7 +13,13 @@ Complete servers live in [examples/](https://github.com/n-at-han-k/ratalada/tree
 bundle install
 bundle exec ruby examples/puma.rb
 bundle exec ruby examples/falcon.rb
-bundle exec ruby examples/sinatra.rb
+```
+
+The Sinatra and Grape examples need their adapter gems, which live in separate bundles (their dependencies conflict), so run them through those gemfiles:
+
+```bash
+BUNDLE_GEMFILE=gemfiles/sinatra.gemfile bundle exec ruby examples/sinatra.rb
+BUNDLE_GEMFILE=gemfiles/grape.gemfile   bundle exec ruby examples/grape.rb
 ```
 
 All of them listen on `http://127.0.0.1:9292`.
@@ -64,6 +70,29 @@ require "ratalada/sinatra"
 Server.run do
   get "/" do
     "hello from sinatra on falcon\n"
+  end
+
+  get "/greet/:name" do
+    "hello #{params[:name]}\n"
+  end
+end
+```
+
+```bash
+curl http://localhost:9292/greet/world
+```
+
+## Grape on falcon
+
+```ruby
+require "ratalada/falcon"
+require "ratalada/grape"
+
+Server.run do
+  format :txt
+
+  get "/" do
+    "hello from grape on falcon\n"
   end
 
   get "/greet/:name" do

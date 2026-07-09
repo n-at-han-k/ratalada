@@ -1,0 +1,9 @@
+# frozen_string_literal: true
+
+# Develops the core gem alongside the Grape adapter.
+#   BUNDLE_GEMFILE=gemfiles/grape.gemfile bundle install
+#   BUNDLE_GEMFILE=gemfiles/grape.gemfile bundle exec ruby examples/grape.rb
+source "https://rubygems.org"
+
+gemspec name: "ratalada", path: ".."
+gemspec name: "ratalada-grape", path: ".."

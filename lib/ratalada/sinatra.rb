@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "sinatra/base"
-require_relative "../ratalada"
+require "ratalada"
 
 module Ratalada
   module Frontends

@@ -64,6 +64,7 @@ GEM
     io-event (1.19.1)
     io-stream (0.13.1)
     json (2.20.0)
+    lefthook (2.1.10)
     localhost (1.8.0)
       bake
     metrics (0.15.0)
@@ -97,6 +98,7 @@ PLATFORMS
 
 DEPENDENCIES
   falcon
+  lefthook (~> 2.1)
   minitest (~> 5.0)
   puma
   rake (~> 13.0)

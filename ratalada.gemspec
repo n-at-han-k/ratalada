@@ -45,4 +45,5 @@ Gem::Specification.new do |spec|
   # Servers the backends wrap; users install whichever they require.
   spec.add_development_dependency "falcon"
   spec.add_development_dependency "puma"
+  spec.add_development_dependency "lefthook", "~> 2.1"
 end

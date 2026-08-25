@@ -4,6 +4,18 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-08-25
+
+### Fixed
+
+- **Falcon backend boots against async-service 0.25.** `Managed::Service#preload!`
+  now reads `@evaluator.root` on every start — the default `preload` is `[]`,
+  which is truthy — so the environment built by `Ratalada::Backends::Falcon.run`
+  raised `NoMethodError: undefined method 'root'` before the server came up.
+  The environment now sets `root: Dir.pwd`. `ratalada` 1.0.0 with
+  `falcon` 0.57.0 / `async-service` 0.25.0 was broken for every user; earlier
+  versions are unaffected and accept `root:` unchanged.
+
 ## [1.0.0] - 2026-07-09
 
 ### Added

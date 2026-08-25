@@ -1,10 +1,10 @@
 PATH
   remote: ..
   specs:
-    ratalada (1.0.0)
-    ratalada-grape (1.0.0)
+    ratalada (1.0.1)
+    ratalada-grape (1.0.1)
       grape (= 3.3.2)
-      ratalada (= 1.0.0)
+      ratalada (= 1.0.1)
 
 GEM
   remote: https://rubygems.org/
@@ -22,6 +22,7 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
+    ast (2.4.3)
     async (2.42.0)
       console (~> 1.29)
       fiber-annotation
@@ -113,6 +114,9 @@ GEM
     io-event (1.19.1)
     io-stream (0.13.1)
     json (2.20.0)
+    language_server-protocol (3.17.0.6)
+    lefthook (2.1.11)
+    lint_roller (1.1.0)
     localhost (1.8.0)
       bake
     logger (1.7.0)
@@ -121,6 +125,11 @@ GEM
     mustermann (4.0.0)
     nio4r (2.7.5)
     openssl (4.0.2)
+    parallel (2.1.0)
+    parser (3.3.12.0)
+      ast (~> 2.4.1)
+      racc
+    prism (1.9.0)
     protocol-hpack (1.5.1)
     protocol-http (0.62.2)
     protocol-http1 (0.39.0)
@@ -135,8 +144,26 @@ GEM
     protocol-url (0.4.0)
     puma (8.0.2)
       nio4r (~> 2.0)
+    racc (1.8.1)
     rack (3.2.6)
+    rainbow (3.1.1)
     rake (13.4.2)
+    regexp_parser (2.12.0)
+    rubocop (1.90.0)
+      json (>= 2.3)
+      language_server-protocol (~> 3.17.0.2)
+      lint_roller (~> 1.1.0)
+      parallel (>= 1.10)
+      parser (>= 3.3.0.2)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 2.9.3, < 3.0)
+      rubocop-ast (>= 1.49.0, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 2.4.0, < 4.0)
+    rubocop-ast (1.50.0)
+      parser (>= 3.3.7.2)
+      prism (~> 1.7)
+    ruby-progressbar (1.13.0)
     samovar (2.5.1)
       console (~> 1.0)
     securerandom (0.4.1)
@@ -144,6 +171,9 @@ GEM
     traces (0.18.2)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    unicode-display_width (3.2.0)
+      unicode-emoji (~> 4.1)
+    unicode-emoji (4.2.0)
     uri (1.1.1)
     zeitwerk (2.8.2)
 
@@ -153,11 +183,13 @@ PLATFORMS
 
 DEPENDENCIES
   falcon
+  lefthook (~> 2.1)
   minitest (~> 5.0)
   puma
   rake (~> 13.0)
   ratalada!
   ratalada-grape!
+  rubocop (~> 1.60)
 
 BUNDLED WITH
    2.6.9

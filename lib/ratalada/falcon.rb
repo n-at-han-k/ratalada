@@ -24,6 +24,10 @@ module Ratalada
           url: "http://#{host}:#{port}",
           middleware: -> { middleware },
           container_options: { count: count, restart: true },
+          # async-service >= 0.25 reads `root` in Managed::Service#preload!
+          # unconditionally (the default `preload` is `[]`, which is truthy),
+          # so an environment without one raises NoMethodError on boot.
+          root: Dir.pwd,
         )
 
         configuration = Async::Service::Configuration.new

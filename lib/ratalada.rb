@@ -82,21 +82,21 @@ module Ratalada
 
         private
 
-        def respond(handler, request)
-          case handler
-          when nil
-            [404, { "content-type" => "text/plain" }, ["not found"]]
-          when Proc, Method
-            respond(handler.call(request), request)
-          when String
-            [200, { "content-type" => "text/plain" }, [handler]]
-          when Array
-            status, headers, body = handler
-            [status, headers, body.is_a?(String) ? [body] : body]
-          else
-            handler
+          def respond(handler, request)
+            case handler
+            when nil
+              [404, { "content-type" => "text/plain" }, ["not found"]]
+            when Proc, Method
+              respond(handler.call(request), request)
+            when String
+              [200, { "content-type" => "text/plain" }, [handler]]
+            when Array
+              status, headers, body = handler
+              [status, headers, body.is_a?(String) ? [body] : body]
+            else
+              handler
+            end
           end
-        end
       end
     end
   end

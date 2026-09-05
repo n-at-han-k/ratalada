@@ -29,6 +29,7 @@ Gem::Specification.new do |spec|
   spec.files = %w[
     lib/ratalada.rb
     lib/ratalada/version.rb
+    lib/ratalada/builder.rb
     lib/ratalada/falcon.rb
     lib/ratalada/puma.rb
     exe/ratalada

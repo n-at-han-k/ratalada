@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/ratalada/version"
+require_relative "lib/ratalada/grape/version"
 
 Gem::Specification.new do |spec|
   spec.name = "ratalada-grape"
-  spec.version = Ratalada::VERSION
+  spec.version = Ratalada::Grape::VERSION
   spec.authors = ["Nathan K"]
   spec.email = ["nathankidd@hey.com"]
 
@@ -28,12 +28,13 @@ Gem::Specification.new do |spec|
   # Grape adapter file.
   spec.files = %w[
     lib/ratalada/grape.rb
+    lib/ratalada/grape/version.rb
     LICENSE
   ]
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "ratalada", Ratalada::VERSION
-  spec.add_dependency "grape", "3.3.2"
+  spec.add_dependency "ratalada", "~> 1.0"
+  spec.add_dependency "grape", "~> 3.2"
 
   spec.add_development_dependency "minitest", "~> 5.0"
   spec.add_development_dependency "rake", "~> 13.0"

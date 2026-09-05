@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
-require_relative "lib/ratalada/sinatra/version"
+require_relative "lib/ratalada/roda/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "ratalada-sinatra"
-  spec.version = Ratalada::Sinatra::VERSION
+  spec.name = "ratalada-roda"
+  spec.version = Ratalada::Roda::VERSION
   spec.authors = ["Nathan K"]
   spec.email = ["nathankidd@hey.com"]
 
-  spec.summary = "Sinatra frontend adapter for ratalada."
+  spec.summary = "Roda frontend adapter for ratalada."
 
   spec.description = <<~DESC
-    Swaps ratalada's built-in router for a Sinatra DSL: require this and the
-    Server.run block is class-evaluated into an anonymous Sinatra application.
+    Swaps ratalada's built-in router for Roda's routing tree: require this and
+    the Server.run block is class-evaluated into an anonymous Roda application.
   DESC
 
   spec.homepage = "https://github.com/n-at-han-k/ratalada"
@@ -24,17 +24,17 @@ Gem::Specification.new do |spec|
   spec.metadata["documentation_uri"] = spec.homepage
   spec.metadata["rubygems_mfa_required"] = "true"
 
-  # Shares the lib/ tree with ratalada and ratalada-grape; ships only the
-  # Sinatra adapter file.
+  # Shares the lib/ tree with ratalada and the other adapters; ships only the
+  # Roda adapter file.
   spec.files = %w[
-    lib/ratalada/sinatra.rb
-    lib/ratalada/sinatra/version.rb
+    lib/ratalada/roda.rb
+    lib/ratalada/roda/version.rb
     LICENSE
   ]
   spec.require_paths = ["lib"]
 
   spec.add_dependency "ratalada", "~> 1.0"
-  spec.add_dependency "sinatra"
+  spec.add_dependency "roda"
 
   spec.add_development_dependency "minitest", "~> 5.0"
   spec.add_development_dependency "rake", "~> 13.0"

@@ -38,8 +38,6 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   The adapter file lives under the shared `ratalada/` namespace on the load path,
   so the require does not name the gem.
 
-### Migration
-
 - If you relied on `require "ratalada/sinatra"` being available from the
   `ratalada` gem, add `gem "ratalada-sinatra"` (or `gem "ratalada-grape"`) to
   your Gemfile. No code changes — the `require` line stays the same.

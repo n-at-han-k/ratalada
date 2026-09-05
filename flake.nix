@@ -9,7 +9,15 @@
     utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        ruby = pkgs.ruby_3_4; # Specify version
+
+        gems = pkgs.bundlerEnv {
+          name = "ratalada-gems";
+          ruby = pkgs.ruby_3_4;
+          gemfile = ./Gemfile;
+          lockfile = ./Gemfile.lock;
+          gemset = ./gemset.nix;
+        };
+
       in
       {
         devShells.default = pkgs.mkShell {
@@ -17,20 +25,27 @@
             pkgs.pkg-config # native extension discovery
           ];
 
-          buildInputs = [
-            pkgs.trufflehog
-            ruby
-            pkgs.libyaml # psych gem
-            pkgs.openssl # openssl gem
+          buildInputs = with pkgs; [
+            bundix
+            gems
+            gems.wrappedRuby
+            libyaml
+            openssl
+            trufflehog
           ];
 
-          shellHook = ''
-            export GEM_HOME="$HOME/.gem-${ruby.version}"
-            export GEM_PATH="$GEM_HOME"
-            export PATH="$GEM_HOME/bin:$PATH"
-            export BUNDLE_GEMFILE="$PWD/Gemfile"
-            export BUNDLE_PATH="$GEM_HOME"
-            export BUNDLE_BIN="$GEM_HOME/bin"
+          shellHook = /* bash */ ''
+            export LANG="''${LANG:-C.UTF-8}"
+            export LC_ALL="''${LC_ALL:-$LANG}"
+
+            # None of this repo's gems are in the bundle — they are the
+            # repository — so put this lib/ on the load path and let
+            # `require "ratalada"` find the working tree.
+            export RUBYLIB="$PWD/lib''${RUBYLIB:+:$RUBYLIB}"
+
+            if [ ! -f .git/hooks/pre-commit ]; then
+              bundle exec lefthook install
+            fi
           '';
         };
       }

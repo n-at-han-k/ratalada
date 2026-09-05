@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "lib/ratalada/sinatra/version"
+require_relative "lib/ratalada/version"
 
 Gem::Specification.new do |spec|
   spec.name = "ratalada-sinatra"
@@ -33,7 +34,11 @@ Gem::Specification.new do |spec|
   ]
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "ratalada", "~> 1.0"
+  # Derived, not written out: this adapter is only ever developed and tested
+  # against the core sitting beside it in this repo, so the major it supports
+  # is that core's major. Writing the number here means every core major bump
+  # silently strands every adapter until someone edits four files.
+  spec.add_dependency "ratalada", "~> #{Ratalada::VERSION.split(".").first}.0"
   spec.add_dependency "sinatra"
 
   spec.add_development_dependency "minitest", "~> 5.0"

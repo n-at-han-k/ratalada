@@ -28,7 +28,10 @@ gem "hanami-api"
 gem "roda"
 gem "sinatra"
 
-# Tooling
+# Tooling. gem_kit-release registers the `gem kit` command RubyGems runs the
+# release through; it is a tool this repo is released with, not something the
+# library needs at runtime, so it belongs here and not in a gemspec.
+gem "gem_kit-release", "~> 0.3"
 gem "lefthook", "~> 2.1"
 gem "minitest", "~> 5.0"
 gem "rake", "~> 13.0"

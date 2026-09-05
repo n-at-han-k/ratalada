@@ -6,6 +6,19 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-09-06
+
+### Changed
+
+- **This gem now carries its own version,** `Ratalada::Sinatra::VERSION` in
+  `lib/ratalada/sinatra/version.rb`, instead of reusing `Ratalada::VERSION`. It
+  is released on its own schedule and tagged `ratalada-sinatra-v2.0.0`, so an
+  adapter fix no longer waits for a core release.
+
+- **Depends on `ratalada` as `~> 2.0`,** where 1.x pinned the core's exact
+  version. Install this gem with any 2.x core; if you pinned the two to the
+  same version in your Gemfile, drop the pin.
+
 ## [1.0.1] - 2026-08-25
 
 ### Changed

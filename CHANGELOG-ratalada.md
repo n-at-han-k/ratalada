@@ -6,6 +6,31 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-09-06
+
+### Security
+
+- **The falcon backend no longer caches responses.**
+  `Ratalada::Backends::Falcon.run` built its middleware with
+  `Falcon::Server.middleware(app)`, whose `cache:` defaults to true, so every
+  app started through `require "ratalada/falcon"` ran behind
+  `Async::HTTP::Cache::General`. That store keys entries on
+  `[authority, method, path]` alone: a lookup skips the `Cookie` check that
+  insertion applies, and an entry without `max-age` never expires, so one
+  anonymous response could be replayed to logged-in requests. It is now off,
+  matching `falcon host`, which builds its middleware through
+  `Environment::Rackup` and only enables the cache for `falcon serve --cache`.
+  Every 2.0.0 and 1.x app on the falcon backend was affected; the puma backend
+  never had a cache.
+
+### Added
+
+- **`cache:` on the falcon backend.** `Ratalada::Backends::Falcon.run` takes
+  `cache: true` to put `Async::HTTP::Cache::General` back in front of the app —
+  the old behaviour, now opt-in and worth reading the note above first. It is a
+  backend-level option: `Server.run` does not accept it, so call
+  `Ratalada::Backends::Falcon.run` yourself if you want it.
+
 ## [2.0.0] - 2026-09-06
 
 ### Added
@@ -86,5 +111,6 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `ratalada` gem, add `gem "ratalada-sinatra"` (or `gem "ratalada-grape"`) to
   your Gemfile. No code changes — the `require` line stays the same.
 
+[2.0.1]: https://github.com/n-at-han-k/ratalada/releases/tag/ratalada-v2.0.1
 [2.0.0]: https://github.com/n-at-han-k/ratalada/releases/tag/ratalada-v2.0.0
 [1.0.0]: https://github.com/n-at-han-k/ratalada/releases/tag/v1.0.0

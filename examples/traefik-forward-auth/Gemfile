@@ -1,0 +1,10 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+gem "ratalada", "~> 2.0.1"
+gem "falcon"
+gem "rack-session"
+gem "sequel"
+gem "extralite-bundle"
+gem "omniauth-identity"

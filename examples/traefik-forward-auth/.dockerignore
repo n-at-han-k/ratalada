@@ -1,0 +1,5 @@
+identities.db
+reference
+flake.*
+gemset.nix
+public

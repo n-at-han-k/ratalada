@@ -1,0 +1,24 @@
+http:
+  routers:
+    auth:
+      rule: PathPrefix(`/auth`)
+      service: app
+    protected:
+      rule: PathPrefix(`/`)
+      service: noop@internal
+      middlewares: [forwardauth, statiq]
+
+  middlewares:
+    forwardauth:
+      forwardAuth:
+        address: http://app:4181/auth
+    statiq:
+      plugin:
+        statiq:
+          root: /public
+
+  services:
+    app:
+      loadBalancer:
+        servers:
+          - url: http://app:4181

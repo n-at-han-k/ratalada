@@ -1,0 +1,21 @@
+services:
+  traefik:
+    image: traefik:v3.3
+    command:
+      - --api.insecure=true
+      - --log.level=DEBUG
+      - --providers.file.filename=/etc/traefik/traefik.config.yml
+      - --entrypoints.web.address=:80
+      - --experimental.plugins.statiq.modulename=github.com/hhftechnology/statiq
+      - --experimental.plugins.statiq.version=v1.0.1
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - ./traefik.config.yml:/etc/traefik/traefik.config.yml:ro
+      - ./public:/public:ro
+
+  app:
+    build: .
+    environment:
+      SESSION_SECRET: 4NrULTyvB1QfnPVxUCCTlUimJsH5jk66W7PkZFbI9zF2IB7bZrvMWZqyu92q63tC

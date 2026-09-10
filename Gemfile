@@ -4,7 +4,7 @@ source "https://rubygems.org"
 
 gem "falcon"
 gem "puma"
-gem "rack"
+gem "rack", "~> 3.0"
 
 
 # Pinned grape to 3.2 for development so that the musterman version

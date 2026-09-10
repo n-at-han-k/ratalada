@@ -47,6 +47,25 @@ class RataladaTest < Minitest::Test
     assert_equal [200, { "content-type" => "text/plain" }, ["ok"]], backend.app.call(env_for("GET", "/"))
   end
 
+  # Rack::Utils is mixed into the app the router block runs in, so its helpers
+  # need no Rack::Utils. prefix inside a Server.run block.
+  def test_run_block_can_call_rack_utils_helpers_unqualified
+    backend = Class.new do
+      attr_reader :app
+
+      def run(app, host:, port:, count:) = @app = app
+    end.new
+
+    with_backend(backend) do
+      Server.run { |request| escape_html(parse_query(request.query)["name"]) }
+    end
+
+    assert_equal(
+      [200, { "content-type" => "text/plain" }, ["Bobby &lt;b&gt;"]],
+      backend.app.call(env_for("GET", "/", query: "name=Bobby+%3Cb%3E"))
+    )
+  end
+
   def test_run_rejects_invalid_count
     backend = Class.new do
       def run(app, host:, port:, count:); end
@@ -68,7 +87,7 @@ class RataladaTest < Minitest::Test
     Ratalada.backend = original
   end
 
-  def env_for(verb, path, body: "")
-    { "REQUEST_METHOD" => verb, "PATH_INFO" => path, "QUERY_STRING" => "", "rack.input" => StringIO.new(body) }
+  def env_for(verb, path, body: "", query: "")
+    { "REQUEST_METHOD" => verb, "PATH_INFO" => path, "QUERY_STRING" => query, "rack.input" => StringIO.new(body) }
   end
 end

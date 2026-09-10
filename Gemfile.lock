@@ -213,7 +213,7 @@ DEPENDENCIES
   lefthook (~> 2.1)
   minitest (~> 5.0)
   puma
-  rack
+  rack (~> 3.0)
   rake (~> 13.0)
   roda
   rubocop (~> 1.60)

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "rack"
 require_relative "ratalada/version"
 
 module Ratalada
@@ -35,18 +36,22 @@ module Ratalada
     end
   end
 
-  # Wraps the Rack env with just enough sugar to pattern match on.
-  class Request
-    attr_reader :env
-
-    def initialize(env)
-      @env = env
-    end
-
+  # Rack::Request plus just enough sugar to pattern match on, so everything
+  # rack already parses — params, cookies, headers, host, ip, session — comes
+  # along for free.
+  class Request < ::Rack::Request
+    # #path is PATH_INFO, not rack's own #path (SCRIPT_NAME + PATH_INFO):
+    # mounted under a `map`, routing here should match the path within this
+    # app, not the one the outer app was reached by.
     def verb  = env["REQUEST_METHOD"]
     def path  = env["PATH_INFO"]
     def query = env["QUERY_STRING"]
-    def body  = @body ||= env["rack.input"]&.read
+
+    # Rack's own #body is the rack.input stream; this is the whole of it as a
+    # String, memoized because rack 3 input reads once and does not rewind.
+    # To stream instead, chunk through #read and never touch #body.
+    def body = @body ||= read
+    def read(...) = env["rack.input"].read(...)
 
     # Enables `in ["GET", "/"]`
     def deconstruct = [verb, path]
@@ -66,6 +71,11 @@ module Ratalada
       end
 
       class App
+        # The router block is instance_exec'd here, so Rack::Utils' helpers
+        # (escape_html, parse_query, set_cookie_header) are callable unqualified
+        # inside it. Locals still close over as usual; ivars belong to this app.
+        include ::Rack::Utils
+
         def initialize(router)
           @router = router
         end
@@ -73,7 +83,7 @@ module Ratalada
         def call(env)
           request = Request.new(env)
           handler = begin
-            @router.call(request)
+            instance_exec(request, &@router)
           rescue NoMatchingPatternError
             nil
           end

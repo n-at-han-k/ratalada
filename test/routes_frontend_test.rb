@@ -25,6 +25,23 @@ class RoutesFrontendTest < Minitest::Test
                  app.call(env_for("POST", "/echo", body: "hello"))
   end
 
+  # #body takes the one-shot stream whole; #read chunks through it instead.
+  def test_read_takes_the_body_in_chunks
+    chunks = []
+
+    app = build do |request|
+      while (chunk = request.read(5))
+        chunks << chunk
+      end
+
+      "ok"
+    end
+
+    app.call(env_for("POST", "/", body: "hello world"))
+
+    assert_equal ["hello", " worl", "d"], chunks
+  end
+
   def test_response_triplet_passes_through_with_string_body_wrapped
     app = build do |_request|
       [201, { "content-type" => "application/json" }, "{}"]

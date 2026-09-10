@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+export KUBECONFIG=./kubeconfig.yaml
+
+docker compose up -d "$@"   # bin/dev registry: keep only the registry when k3s runs elsewhere
+until kubectl get nodes >/dev/null 2>&1; do sleep 2; done
+
+docker build -t localhost:5000/website-controller:latest .
+docker push localhost:5000/website-controller:latest
+
+kubectl apply -k https://github.com/metacontroller/metacontroller/manifests/production
+kubectl -n metacontroller rollout status statefulset/metacontroller
+
+bundle exec ruby manifest.rb | kubectl apply -f -
+kubectl -n metacontroller rollout status deployment/website-controller
+kubectl apply -f website.yaml

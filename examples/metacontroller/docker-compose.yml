@@ -1,0 +1,21 @@
+services:
+  registry:
+    image: registry:2
+    ports:
+      - "5000:5000"
+
+  cluster:
+    image: rancher/k3s:latest
+    command: server
+    privileged: true
+    environment:
+      - K3S_TOKEN=change-me
+      - K3S_KUBECONFIG_OUTPUT=/output/kubeconfig.yaml
+      - K3S_KUBECONFIG_MODE=666
+    volumes:
+      - .:/output
+      - ./registries.yaml:/etc/rancher/k3s/registries.yaml:ro
+    ports:
+      - "6443:6443"
+    depends_on:
+      - registry

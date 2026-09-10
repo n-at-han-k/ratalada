@@ -1,0 +1,4 @@
+flake.*
+gemset.nix
+kubeconfig.yaml
+k3s-var.img

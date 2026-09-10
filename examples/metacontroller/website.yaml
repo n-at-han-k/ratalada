@@ -1,0 +1,9 @@
+apiVersion: example.com/v1
+kind: Website
+metadata:
+  name: hello
+  namespace: default
+spec:
+  image: nginx:alpine
+  port: 80
+  replicas: 2

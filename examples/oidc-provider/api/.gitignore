@@ -1,0 +1,4 @@
+.gemhome
+*.db*
+signing_key.pem
+**/cookie-jar.json

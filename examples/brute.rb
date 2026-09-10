@@ -22,7 +22,7 @@ Server.run do
         end
       end
     end.then do |agent|
-      agent.start(request.body.read)[:messages].last.content
+      agent.start(request.body)[:messages].last.content
     end
   end
 end

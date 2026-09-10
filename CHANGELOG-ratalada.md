@@ -6,6 +6,32 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-09-10
+
+### Added
+
+- **`Request` is a `Rack::Request`.** `params`, `cookies`, `headers`, `host`,
+  `ip`, `session` and the rest come along for free; `verb`, `path`, `query`
+  and the pattern-matching sugar are unchanged. Two deliberate differences
+  from rack: `#path` stays `PATH_INFO` (so an app under a `map` routes within
+  itself) and `#body` stays the body as a `String`, not the input stream.
+
+- **`Request#read`, for streaming request bodies.** `request.read(5)` chunks
+  through `rack.input` and returns `nil` at EOF. Rack 3 input reads once and
+  does not rewind, so use `#read` or `#body` on a request, never both.
+
+- **`Rack::Utils` helpers unqualified in a `Server.run` block** — no prefix,
+  no `include`. They go on the singleton of the object the block was written
+  in, as private methods, so nothing else is touched and your own `escape` or
+  `status_code` still wins. Default router only: the other frontends run the
+  block in their library's scope, so prefix with `Rack::Utils.` there.
+
+### Changed
+
+- **`rack` is now a runtime dependency**, pinned to `~> 3.0`. It was already
+  there via whichever backend you ran; an app pinned to rack 2 will not
+  resolve.
+
 ## [2.0.1] - 2026-09-06
 
 ### Security
@@ -111,6 +137,7 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `ratalada` gem, add `gem "ratalada-sinatra"` (or `gem "ratalada-grape"`) to
   your Gemfile. No code changes — the `require` line stays the same.
 
+[2.1.0]: https://github.com/n-at-han-k/ratalada/releases/tag/ratalada-v2.1.0
 [2.0.1]: https://github.com/n-at-han-k/ratalada/releases/tag/ratalada-v2.0.1
 [2.0.0]: https://github.com/n-at-han-k/ratalada/releases/tag/ratalada-v2.0.0
 [1.0.0]: https://github.com/n-at-han-k/ratalada/releases/tag/v1.0.0

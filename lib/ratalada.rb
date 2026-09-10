@@ -67,15 +67,24 @@ module Ratalada
     # triplet. No match (nil, or a fall-through `case ... in`) means 404.
     module Routes
       def self.build(block)
+        # Rack::Utils' helpers (escape_html, parse_query, set_cookie_header,
+        # ...) are callable unqualified inside the block, with no include at the
+        # call site and without instance_exec'ing it — self and ivars in the
+        # block stay the caller's. The include goes on the singleton of the
+        # object the block was written in, so nothing else in the process sees
+        # it, and since Rack::Utils is module_function'd they arrive as private
+        # methods that a receiver's own escape/status_code still overrides.
+        # ArgumentError: a C-level proc, which has no binding (&:symbol, #curry).
+        # TypeError: a frozen receiver. Neither can take the include; skip it.
+        begin
+          block.binding.receiver.singleton_class.include(::Rack::Utils)
+        rescue ArgumentError, TypeError
+          nil
+        end
         App.new(block)
       end
 
       class App
-        # The router block is instance_exec'd here, so Rack::Utils' helpers
-        # (escape_html, parse_query, set_cookie_header) are callable unqualified
-        # inside it. Locals still close over as usual; ivars belong to this app.
-        include ::Rack::Utils
-
         def initialize(router)
           @router = router
         end
@@ -83,7 +92,7 @@ module Ratalada
         def call(env)
           request = Request.new(env)
           handler = begin
-            instance_exec(request, &@router)
+            @router.call(request)
           rescue NoMatchingPatternError
             nil
           end

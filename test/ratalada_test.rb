@@ -47,8 +47,26 @@ class RataladaTest < Minitest::Test
     assert_equal [200, { "content-type" => "text/plain" }, ["ok"]], backend.app.call(env_for("GET", "/"))
   end
 
-  # Rack::Utils is mixed into the app the router block runs in, so its helpers
-  # need no Rack::Utils. prefix inside a Server.run block.
+  # The router block is called as a plain block: self and ivars stay whatever
+  # they were at the call site, so `@state ||= ...` inside it keeps working.
+  def test_run_block_keeps_caller_self_and_ivars
+    backend = Class.new do
+      attr_reader :app
+
+      def run(app, host:, port:, count:) = @app = app
+    end.new
+
+    @counter = 0
+    with_backend(backend) do
+      Server.run { |_request| (@counter += 1).to_s }
+    end
+
+    assert_equal [200, { "content-type" => "text/plain" }, ["1"]], backend.app.call(env_for("GET", "/"))
+    assert_equal 1, @counter
+  end
+
+  # Rack::Utils' helpers are callable unqualified inside a Server.run block
+  # with no include at the call site, and without changing self or its ivars.
   def test_run_block_can_call_rack_utils_helpers_unqualified
     backend = Class.new do
       attr_reader :app
@@ -64,6 +82,61 @@ class RataladaTest < Minitest::Test
       [200, { "content-type" => "text/plain" }, ["Bobby &lt;b&gt;"]],
       backend.app.call(env_for("GET", "/", query: "name=Bobby+%3Cb%3E"))
     )
+    refute Object.new.respond_to?(:escape_html, true), "must not leak past the block's own scope"
+  end
+
+  # A block written inside an object gets the helpers there too, and the
+  # include is confined to that one object: siblings and Object never see it.
+  def test_rack_utils_include_is_confined_to_the_blocks_own_receiver
+    author = Class.new do
+      def router = proc { |request| escape_html(request.query) }
+    end
+    writer = author.new
+    block = writer.router
+
+    with_backend(recording_backend) do |backend|
+      Server.run(&block)
+      assert_equal(
+        [200, { "content-type" => "text/plain" }, ["&lt;b&gt;"]],
+        backend.app.call(env_for("GET", "/", query: "<b>"))
+      )
+    end
+
+    assert writer.respond_to?(:escape_html, true), "the block's own receiver must get the helpers"
+    refute author.new.respond_to?(:escape_html, true), "leaked to a sibling instance"
+    refute Object.new.respond_to?(:escape_html, true), "leaked to Object"
+    refute self.class.new(name).respond_to?(:escape_html, true), "leaked to unrelated objects"
+  end
+
+  # Proc#binding raises on a C-level proc (Symbol#to_proc, Proc#curry); the
+  # helpers are simply unavailable there rather than Server.run blowing up.
+  def test_run_accepts_a_block_with_no_binding
+    assert_raises(ArgumentError, "precondition: this proc must have no binding") do
+      :handler_for.to_proc.binding
+    end
+
+    with_backend(recording_backend) do |backend|
+      Server.run(&:query)
+      assert_equal(
+        [200, { "content-type" => "text/plain" }, ["ok"]],
+        backend.app.call(env_for("GET", "/", query: "ok"))
+      )
+    end
+  end
+
+  def test_run_accepts_a_block_from_a_frozen_receiver
+    block = "frozen".freeze.instance_eval { proc { |request| request.query } }
+    assert_raises(TypeError, "precondition: receiver must reject a singleton") do
+      block.binding.receiver.singleton_class.include(::Rack::Utils)
+    end
+
+    with_backend(recording_backend) do |backend|
+      Server.run(&block)
+      assert_equal(
+        [200, { "content-type" => "text/plain" }, ["ok"]],
+        backend.app.call(env_for("GET", "/", query: "ok"))
+      )
+    end
   end
 
   def test_run_rejects_invalid_count
@@ -79,10 +152,19 @@ class RataladaTest < Minitest::Test
 
   private
 
+  # Captures the app Server.run hands the backend, for tests that then call it.
+  def recording_backend
+    Class.new do
+      attr_reader :app
+
+      def run(app, host:, port:, count:) = @app = app
+    end.new
+  end
+
   def with_backend(backend)
     original = Ratalada.instance_variable_get(:@backend)
     Ratalada.backend = backend
-    yield
+    yield backend
   ensure
     Ratalada.backend = original
   end

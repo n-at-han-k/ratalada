@@ -38,6 +38,12 @@ GEM
       async
       async-container (~> 0.34)
       string-format (~> 0.2)
+    async-smtp (0.1.0)
+      async (>= 2.0)
+      gem_kit (~> 0.2)
+      io-endpoint (~> 0.18)
+      io-stream (~> 0.14)
+      protocol-smtp (~> 0.1)
     async-utilization (0.5.0)
       console (~> 1.0)
     bake (0.25.0)
@@ -148,6 +154,8 @@ GEM
       io-stream (>= 0.10)
       protocol-http (~> 0.58)
       rack (>= 1.0)
+    protocol-smtp (0.1.0)
+      gem_kit (~> 0.2)
     protocol-url (0.18.0)
     puma (8.0.2)
       nio4r (~> 2.0)
@@ -206,12 +214,14 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  async-smtp (~> 0.1)
   falcon
   gem_kit-release (~> 0.3)
   grape (~> 3.2.0)
   hanami-api
   lefthook (~> 2.1)
   minitest (~> 5.0)
+  protocol-smtp (~> 0.1)
   puma
   rack (~> 3.0)
   rake (~> 13.0)

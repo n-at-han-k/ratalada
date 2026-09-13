@@ -1,0 +1,12 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+gem "ratalada", "~> 2.1"
+
+# The two halves of the SMTP backend: the state machine, and the reactor it
+# runs on. Both released from this example's needs.
+gem "async-smtp", "~> 0.1"
+gem "protocol-smtp", "~> 0.1"
+
+gem "rubocop"

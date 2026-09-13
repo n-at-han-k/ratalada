@@ -9,3 +9,5 @@
 /vendor/bundle
 /docs/_site/
 /docs/.jekyll-cache/
+/examples/*/mail/
+/examples/*/reference/

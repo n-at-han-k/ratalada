@@ -2,7 +2,9 @@
 
 source "https://rubygems.org"
 
+gem "async-smtp", "~> 0.1"
 gem "falcon"
+gem "protocol-smtp", "~> 0.1"
 gem "puma"
 gem "rack", "~> 3.0"
 

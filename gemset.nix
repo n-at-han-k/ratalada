@@ -86,6 +86,17 @@
     };
     version = "0.25.0";
   };
+  async-smtp = {
+    dependencies = ["async" "gem_kit" "io-endpoint" "io-stream" "protocol-smtp"];
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "01byh9xaljf7yy45n3gimybjwaqq4552xrl59j5rjhbwidawp4v8";
+      type = "gem";
+    };
+    version = "0.1.0";
+  };
   async-utilization = {
     dependencies = ["console"];
     groups = ["default" "development"];
@@ -588,6 +599,17 @@
       type = "gem";
     };
     version = "0.22.1";
+  };
+  protocol-smtp = {
+    dependencies = ["gem_kit"];
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "1snln067w1q2895cls7xk74md3m7y918g009mxggjqna6x3yccng";
+      type = "gem";
+    };
+    version = "0.1.0";
   };
   protocol-url = {
     groups = ["default" "development"];

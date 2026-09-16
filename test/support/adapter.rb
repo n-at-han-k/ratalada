@@ -22,7 +22,7 @@ module Adapter
       # building via Frontends::Routes.
       def try_require(path)
         require path
-        Ratalada.frontend = Ratalada::Frontends::Routes
+        Ratalada.config.frontend = Ratalada::Frontends::Routes
         true
       rescue LoadError
         false

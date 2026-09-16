@@ -17,5 +17,5 @@ module Ratalada
     end
   end
 
-  self.frontend = Frontends::Hanami
+  config.frontend = Frontends::Hanami
 end

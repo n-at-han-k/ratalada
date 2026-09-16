@@ -6,6 +6,22 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-09-16
+
+### Changed
+
+- **Depends on `ratalada` as `~> 3.0`,** where 2.x depended on `~> 2.0`. This
+  adapter needs the core's `Ratalada.config`, so it will not install against a
+  2.x core; upgrade the two together.
+
+- **Registers itself through `Ratalada.config.frontend`** instead of the
+  removed `Ratalada.frontend=`. Requiring `ratalada/hanami` still selects
+  `Ratalada::Frontends::Hanami` for you and `.build` is unchanged, but the
+  frontend is now an ordinary setting: select it explicitly with
+  `Server.run(frontend: Ratalada::Frontends::Hanami) { ... }` or from a
+  `Ratalada.configure` block. If you were setting `Ratalada.frontend =
+  Ratalada::Frontends::Hanami` by hand, write through the config instead.
+
 ## [2.0.0] - 2026-09-06
 
 ### Added

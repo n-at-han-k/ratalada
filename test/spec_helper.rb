@@ -33,5 +33,16 @@ RSpec.configure do |config|
     end
   end
 
-  config.after { Ratalada.reset_config }
+  # backend and frontend are settings too, and requiring ratalada/falcon or
+  # ratalada/sinatra registers them once, at load — a plain reset would drop
+  # what the requires set up and leave later examples with no backend.
+  config.after do
+    backend = Ratalada.config.backend
+    frontend = Ratalada.config.frontend
+
+    Ratalada.reset_config
+
+    Ratalada.config.backend = backend
+    Ratalada.config.frontend = frontend
+  end
 end

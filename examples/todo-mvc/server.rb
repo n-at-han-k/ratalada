@@ -20,7 +20,7 @@ DB.execute(<<~SQL)
 SQL
 
 Server
-  .use(Ratalada::Contrib::Inertia::JSONParamsMiddleware)
+  .use(Ratalada::Contrib::Inertia::JsonParamsMiddleware)
   .use(Ratalada::Contrib::Vite::DevServerProxy)
   .use(Ratalada::Contrib::Inertia::Middleware)
   .use(Ratalada::Contrib::Inertia::CSRFMiddleware)

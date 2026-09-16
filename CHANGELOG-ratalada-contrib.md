@@ -6,6 +6,28 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-09-16
+
+### Added
+
+- **`Ratalada::Contrib::Inertia::JsonParamsMiddleware`,** rack middleware that
+  reads a JSON request body into `params`. The inertia client posts
+  `application/json`, which Sinatra does not parse, so `params` came back empty
+  for anything the client sent that way; this parses the body and hands the
+  hash to `Rack::Request` (`rack.request.form_hash`), leaving the input stream
+  rewound for anything downstream that reads it. A non-JSON content type, a
+  body that is not valid JSON, or one that parses to something other than a
+  hash all pass straight through. It is not wired in for you — put it in front
+  of the inertia middleware:
+
+      Server
+        .use(Ratalada::Contrib::Inertia::JsonParamsMiddleware)
+        .use(Ratalada::Contrib::Inertia::Middleware)
+        .use(Ratalada::Contrib::Inertia::CSRFMiddleware)
+        .run { ... }
+
+  `require "ratalada/contrib/inertia"` loads it.
+
 ## [3.0.1] - 2026-09-16
 
 ### Added

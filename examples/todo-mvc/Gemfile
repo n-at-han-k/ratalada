@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 
 gem "ratalada", "~> 3.0.0"
-gem "ratalada-contrib", "~> 3.0.1"
+gem "ratalada-contrib", "~> 3.1.0"
 gem "ratalada-sinatra"
 
 gem "falcon"

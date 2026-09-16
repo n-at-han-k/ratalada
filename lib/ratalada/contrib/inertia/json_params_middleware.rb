@@ -7,7 +7,7 @@ module Ratalada
     module Inertia
       # The Inertia client posts JSON, which Sinatra does not read into `params`.
       # This parses the body into the hash Rack::Request builds `params` from.
-      class JSONParamsMiddleware
+      class JsonParamsMiddleware
         def initialize(app) = @app = app
 
         def call(env)

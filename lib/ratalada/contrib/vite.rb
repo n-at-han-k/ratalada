@@ -26,7 +26,7 @@ module Ratalada
           src = vite_manifest.vite_client_src
 
           if src
-            %(<script type="module" src="#{src}"></script)
+            %(<script type="module" src="#{src}"></script>)
           end
         end
 

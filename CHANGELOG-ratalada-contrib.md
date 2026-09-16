@@ -6,6 +6,45 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-09-16
+
+### Added
+
+- **File-based routing,** via `Ratalada::Contrib::Router::FileBased`. Turns an
+  expo-router style directory of route files into an ordered map of
+  `prefix => files`: `FileBased.build_map("app")` walks the tree and each
+  file's path spells the prefix its own routes hang off, so a file stays
+  ordinary DSL for its frontend. The conventions are expo-router's —
+  `index.rb` is the directory itself, `[slug].rb` a dynamic segment,
+  `[...rest].rb` a catch-all, `(group)/` groups without adding a segment,
+  `+not-found.rb` the fallback, and `_layout.rb` is not a route of its own but
+  is evaluated into every route file below it, outermost first (any other `_`
+  file or directory is ignored). The map is ordered most specific first —
+  static before dynamic, dynamic before catch-all, `+not-found` last — so an
+  adapter can define routes in iteration order under a first-match-wins
+  router. `FileBased.join(prefix, route)` hangs one of a file's own routes off
+  its prefix; `build_map` takes `placeholder:` and `catch_all:` for frontends
+  that spell parameters differently.
+
+- **Three frontend adapters for it,** each requiring its own frontend, which
+  your app supplies. Require
+  `ratalada/contrib/router/file_based/sinatra_adapter` and call
+  `SinatraAdapter.build("app")`: every file is
+  class_eval'd into a `Sinatra::Base` subclass the way a `Server.run` block
+  is, its compiled Mustermann patterns get the prefix prepended, and the apps
+  are chained as rack middleware so the first file that spells the path
+  answers. `GrapeAdapter.build("app")` returns a `Grape::API` subclass with
+  each file built into its own API and `mount`ed under its prefix.
+  `HanamiAdapter.build("app")` returns a `Hanami::API` instance with each file
+  evaluated inside `router.scope(prefix)`. All three return a rack app, ready
+  for `Server.run`.
+
+### Fixed
+
+- **`vite_client_tag` emitted an unclosed `</script` tag,** which browsers
+  swallowed along with the rest of the document. It now closes properly.
+  (Also released as 2.0.1.)
+
 ## [2.0.0] - 2026-09-16
 
 ### Added

@@ -3,6 +3,24 @@ require "vite_ruby"
 module Ratalada
   module Contrib
     module Vite
+      # Rack middleware that fronts the app with vite's dev-server proxy while
+      # `bin/vite dev` is running, and is a pass-through otherwise (production,
+      # or a build served from the manifest). The decision is ViteRuby's
+      # `run_proxy?`, read once at boot like any other `Server.use` argument.
+      #
+      #   Server.use(Ratalada::Contrib::Vite::DevServerProxy).run { ... }
+      class DevServerProxy
+        def initialize(app, ssl_verify_none: true)
+          if ::ViteRuby.run_proxy?
+            @app = ::ViteRuby::DevServerProxy.new(app, ssl_verify_none: ssl_verify_none)
+          else
+            @app = app
+          end
+        end
+
+        def call(env) = @app.call(env)
+      end
+
       module TagHelpers
         def vite_client_tag
           src = vite_manifest.vite_client_src

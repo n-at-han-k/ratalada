@@ -242,6 +242,16 @@
     };
     version = "2.2.3";
   };
+  dry-cli = {
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "0x6qlxk6zp3jw748k6x3zkpywx9yjyagdyinb9qai2khdjvmn0dq";
+      type = "gem";
+    };
+    version = "1.4.1";
+  };
   dry-configurable = {
     dependencies = ["dry-core" "zeitwerk"];
     groups = ["default"];
@@ -621,6 +631,16 @@
     };
     version = "1.1.0";
   };
+  mutex_m = {
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "0l875dw0lk7b2ywa54l0wjcggs94vb7gs8khfw9li75n2sn09jyg";
+      type = "gem";
+    };
+    version = "0.3.0";
+  };
   nio4r = {
     groups = ["default" "development"];
     platforms = [];
@@ -819,6 +839,17 @@
       type = "gem";
     };
     version = "4.2.1";
+  };
+  rack-proxy = {
+    dependencies = ["rack"];
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "0x723aalhz38zpwsh766vdxv1mqq14hkbi5ps7g2533j91mabbz7";
+      type = "gem";
+    };
+    version = "2.0.1";
   };
   rack-session = {
     dependencies = ["base64" "rack"];
@@ -1169,6 +1200,17 @@
       type = "gem";
     };
     version = "0.16.11";
+  };
+  vite_ruby = {
+    dependencies = ["dry-cli" "logger" "mutex_m" "rack-proxy" "zeitwerk"];
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "17p4vmjawciz1s3vg397zjvw4flxw37q48dhc1ihn75k3jz95vp9";
+      type = "gem";
+    };
+    version = "3.10.5";
   };
   zeitwerk = {
     groups = ["default"];

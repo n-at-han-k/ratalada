@@ -78,6 +78,7 @@ GEM
     csv (3.3.6)
     diff-lcs (1.6.2)
     drb (2.2.3)
+    dry-cli (1.4.1)
     dry-configurable (1.4.0)
       dry-core (~> 1.0)
       zeitwerk (~> 2.6)
@@ -169,6 +170,7 @@ GEM
       mustermann (= 3.1.1)
     mustermann-grape (1.1.0)
       mustermann (>= 1.0.0)
+    mutex_m (0.3.0)
     nio4r (2.7.5)
     nokogiri (1.19.4)
       mini_portile2 (~> 2.8.2)
@@ -206,6 +208,8 @@ GEM
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
       rack (>= 3.0.0, < 4)
+    rack-proxy (2.0.1)
+      rack (>= 2.0, < 4)
     rack-session (2.1.2)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
@@ -294,6 +298,12 @@ GEM
     unicode-emoji (4.2.0)
     uri (1.1.1)
     useragent (0.16.11)
+    vite_ruby (3.10.5)
+      dry-cli (>= 0.7, < 2)
+      logger (~> 1.6)
+      mutex_m
+      rack-proxy (>= 0.6.1)
+      zeitwerk (~> 2.2)
     zeitwerk (2.8.3)
 
 PLATFORMS
@@ -318,6 +328,7 @@ DEPENDENCIES
   rspec (~> 3.13)
   rubocop (~> 1.60)
   sinatra
+  vite_ruby (~> 3.9)
 
 BUNDLED WITH
    2.7.2

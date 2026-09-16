@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
 require "rack"
+require "dry-configurable"
 require_relative "ratalada/version"
 
 module Ratalada
   DEFAULT_HOST = ENV.fetch("HOST", "127.0.0.1")
   DEFAULT_PORT = Integer(ENV.fetch("PORT", "9292"))
   DEFAULT_COUNT = Integer(ENV.fetch("COUNT", "1"))
+
+  extend Dry::Configurable
 
   class Error < StandardError; end
 
@@ -133,8 +136,11 @@ module Ratalada
     # count runs that many worker processes accepting from a shared socket,
     # like node's cluster module. Each worker has its own state — anything
     # shared (sessions, caches) needs an external store or count: 1.
-    def run(host: DEFAULT_HOST, port: DEFAULT_PORT, count: DEFAULT_COUNT, &block)
-      Stack.new.run(host: host, port: port, count: count, &block)
+    #
+    # host:, port: and count: are written through to Ratalada.config before
+    # boot, so Server.run(port: 3000) is shorthand for configuring first.
+    def run(**options, &block)
+      Stack.new.run(**options, &block)
     end
 
     # The chain Server.use returns. Collects middleware until run ends it.
@@ -148,11 +154,27 @@ module Ratalada
         self
       end
 
-      def run(host: DEFAULT_HOST, port: DEFAULT_PORT, count: DEFAULT_COUNT, &block)
+      # Every option is a Ratalada.config setting name (host, port, count);
+      # each is applied to the config verbatim — coercion and rejection of
+      # unknown names are the settings' own. Skipped entirely when no
+      # options are given so a finalized config can still boot.
+      def run(**options, &block)
         raise ArgumentError, "Server.run requires a block" unless block
-        raise ArgumentError, "count must be a positive Integer" unless count.is_a?(Integer) && count.positive?
 
-        Ratalada.backend.run(to_app(block), host: host, port: port, count: count)
+        if options.any?
+          Ratalada.configure do |config|
+            options.each do |key, value|
+              config[key] = value
+            end
+          end
+        end
+
+        config = Ratalada.config
+        unless config.count.is_a?(Integer) && config.count.positive?
+          raise ArgumentError, "count must be a positive Integer"
+        end
+
+        Ratalada.backend.run(to_app(block), host: config.host, port: config.port, count: config.count)
       end
 
       # First `use` in the chain is the outermost, as in Rack::Builder.
@@ -167,3 +189,9 @@ end
 
 # The whole point is a zero-ceremony top-level DSL.
 Server = Ratalada::Server unless defined?(Server)
+
+# Core settings. Contrib gems (ratalada-contrib et al.) register theirs the
+# same way — Ratalada.setting at the bottom of their own file.
+Ratalada.setting :host, default: Ratalada::DEFAULT_HOST
+Ratalada.setting :port, default: Ratalada::DEFAULT_PORT, constructor: ->(value) { Integer(value) }
+Ratalada.setting :count, default: Ratalada::DEFAULT_COUNT, constructor: ->(value) { Integer(value) }

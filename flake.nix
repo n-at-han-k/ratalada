@@ -16,6 +16,11 @@
           gemfile = ./Gemfile;
           lockfile = ./Gemfile.lock;
           gemset = ./gemset.nix;
+          gemConfig = pkgs.defaultGemConfig // {
+            nokogiri = attrs: (pkgs.defaultGemConfig.nokogiri attrs) // {
+              buildInputs = [ pkgs.rubyPackages_3_4.mini_portile2 ];
+            };
+          };
         };
 
       in
@@ -35,6 +40,10 @@
           ];
 
           shellHook = /* bash */ ''
+            export BUNDLE_FORCE_RUBY_PLATFORM=true
+            export BUNDLE_GEMFILE="$PWD/Gemfile"
+            export BUNDLE_FROZEN=false
+
             export LANG="''${LANG:-C.UTF-8}"
             export LC_ALL="''${LC_ALL:-$LANG}"
 

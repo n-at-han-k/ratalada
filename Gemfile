@@ -9,7 +9,6 @@ gem "puma"
 gem "rack", "~> 3.0"
 gem "dry-configurable", "~> 1.4"
 
-
 # Pinned grape to 3.2 for development so that the musterman version
 # matches hanami and sinatra...
 #
@@ -27,3 +26,4 @@ gem "lefthook", "~> 2.1"
 gem "minitest", "~> 5.0"
 gem "rake", "~> 13.0"
 gem "rubocop", "~> 1.60"
+gem "mini_portile2"

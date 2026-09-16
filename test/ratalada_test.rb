@@ -139,6 +139,8 @@ class RataladaTest < Minitest::Test
     end
   end
 
+  # Numeric strings are valid: the count setting's constructor coerces before
+  # validation (covered in configuration_test.rb).
   def test_run_rejects_invalid_count
     backend = Class.new do
       def run(app, host:, port:, count:); end
@@ -146,7 +148,6 @@ class RataladaTest < Minitest::Test
 
     with_backend(backend) do
       assert_raises(ArgumentError) { Server.run(count: 0) { |_request| "ok" } }
-      assert_raises(ArgumentError) { Server.run(count: "2") { |_request| "ok" } }
     end
   end
 

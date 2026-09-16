@@ -210,13 +210,14 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.4.2)
-    ratalada (2.2.0)
+    ratalada (3.0.0)
       dry-configurable (~> 1.4)
       rack (~> 3.0)
-    ratalada-contrib (2.1.0)
-      ratalada (~> 2.0)
-    ratalada-sinatra (2.0.0)
-      ratalada (~> 2.0)
+    ratalada-contrib (3.0.0)
+      mustermann (> 2)
+      ratalada (~> 3.0)
+    ratalada-sinatra (3.0.0)
+      ratalada (~> 3.0)
       sinatra
     rbs (4.2.0)
       logger
@@ -306,8 +307,8 @@ DEPENDENCIES
   falcon
   inertia_rails (~> 3.22)
   rack-test
-  ratalada (~> 2.2.0)
-  ratalada-contrib (~> 2.1.0)
+  ratalada (~> 3.0.0)
+  ratalada-contrib (~> 3.0.0)
   ratalada-sinatra
   rspec
   rubocop

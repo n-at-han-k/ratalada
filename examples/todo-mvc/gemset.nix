@@ -857,21 +857,21 @@
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-      sha256 = "0gfp08nqlw3m2jrr0wrqcjizzjs7jn5c1rznyn1vqck7piq824mg";
+      sha256 = "1mwvz6s65xmdh8kw52pzbsp1x3zxm3rii4l8rahf860h5w2kkm2l";
       type = "gem";
     };
-    version = "2.2.0";
+    version = "3.0.0";
   };
   ratalada-contrib = {
-    dependencies = ["ratalada"];
+    dependencies = ["mustermann" "ratalada"];
     groups = ["default"];
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-      sha256 = "012c4alfw3j6m7scp7pgc0nf2q5ds8jd3f23kh47bpx0lb6l20vf";
+      sha256 = "0wc35p8picldgxigwj5b6s77my09awds44ffkrsx838jmky63y1i";
       type = "gem";
     };
-    version = "2.1.0";
+    version = "3.0.0";
   };
   ratalada-sinatra = {
     dependencies = ["ratalada" "sinatra"];
@@ -879,10 +879,10 @@
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-      sha256 = "01h7874r7jbwhwa9c47xbfszk7qn39xb8z9ydvy469hbgpfbx4lb";
+      sha256 = "0vdjdib4w2lbbm9nkwiikcrirc8ldxnz71m856n00b5rnp9aag0g";
       type = "gem";
     };
-    version = "2.0.0";
+    version = "3.0.0";
   };
   rbs = {
     dependencies = ["logger" "prism" "tsort"];

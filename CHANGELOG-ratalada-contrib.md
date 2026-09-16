@@ -6,6 +6,16 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-09-16
+
+### Fixed
+
+- **`vite_client_tag` emits well-formed HTML.**
+  `Ratalada::Contrib::Vite::TagHelpers#vite_client_tag` was closing its
+  `<script>` with `</script` (no `>`), leaving the rest of the page inside the
+  script element and preventing the vite dev client from loading. The closing
+  tag is now `</script>`.
+
 ## [2.0.0] - 2026-09-16
 
 ### Added

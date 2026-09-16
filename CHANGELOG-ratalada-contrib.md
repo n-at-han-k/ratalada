@@ -107,11 +107,15 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   evaluated inside `router.scope(prefix)`. All three return a rack app, ready
   for `Server.run`.
 
+## [2.0.1] - 2026-09-16
+
 ### Fixed
 
-- **`vite_client_tag` emitted an unclosed `</script` tag,** which browsers
-  swallowed along with the rest of the document. It now closes properly.
-  (Also released as 2.0.1.)
+- **`vite_client_tag` emits well-formed HTML.**
+  `Ratalada::Contrib::Vite::TagHelpers#vite_client_tag` was closing its
+  `<script>` with `</script` (no `>`), leaving the rest of the page inside the
+  script element and preventing the vite dev client from loading. The closing
+  tag is now `</script>`.
 
 ## [2.0.0] - 2026-09-16
 

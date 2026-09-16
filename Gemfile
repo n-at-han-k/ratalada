@@ -7,6 +7,7 @@ gem "falcon"
 gem "protocol-smtp", "~> 0.1"
 gem "puma"
 gem "rack", "~> 3.0"
+gem "dry-configurable", "~> 1.4"
 
 
 # Pinned grape to 3.2 for development so that the musterman version

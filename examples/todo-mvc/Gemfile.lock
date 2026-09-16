@@ -213,7 +213,7 @@ GEM
     ratalada (3.0.0)
       dry-configurable (~> 1.4)
       rack (~> 3.0)
-    ratalada-contrib (3.0.1)
+    ratalada-contrib (3.1.0)
       mustermann (> 2)
       ratalada (~> 3.0)
     ratalada-sinatra (3.0.0)
@@ -308,7 +308,7 @@ DEPENDENCIES
   inertia_rails (~> 3.22)
   rack-test
   ratalada (~> 3.0.0)
-  ratalada-contrib (~> 3.0.1)
+  ratalada-contrib (~> 3.1.0)
   ratalada-sinatra
   rspec
   rubocop

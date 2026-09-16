@@ -20,6 +20,7 @@ gem "hanami-api"
 gem "inertia_rails", "~> 3.22"
 gem "roda"
 gem "sinatra"
+gem "vite_ruby", "~> 3.9"
 
 gem "gem_kit-release", "~> 0.3"
 gem "lefthook", "~> 2.1"

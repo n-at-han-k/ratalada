@@ -868,10 +868,10 @@
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-      sha256 = "0c75xvyj2divw3vwxiiza0dvpy5gik3c0q5vagwbravn7iqrz1nw";
+      sha256 = "1xzs38qmd2q3l98qj4wpxjg8gdfs8f8jlb30q2xjnd4risah4chj";
       type = "gem";
     };
-    version = "2.0.0";
+    version = "2.0.1";
   };
   ratalada-sinatra = {
     dependencies = ["ratalada" "sinatra"];

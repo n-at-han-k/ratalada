@@ -25,9 +25,8 @@ createInertiaApp({
     )
 
     if (layouts.length && module.default.layout === undefined) {
-      module.default.layout = (child: React.ReactNode) => {
+      module.default.layout = (child: React.ReactNode) =>
         layouts.reduceRight((inner, Layout) => <Layout>{inner}</Layout>, child)
-      }
     }
 
     return module

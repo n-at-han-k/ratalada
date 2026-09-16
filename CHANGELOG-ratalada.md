@@ -6,6 +6,26 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-09-16
+
+### Added
+
+- **`Ratalada.config`, for server-wide settings.** `Ratalada.setting`
+  declares a setting and `Ratalada.configure { |c| c.host = ... }` writes it;
+  the core gem ships `host`, `port` and `count`, and contrib gems register
+  their own the same way. `port` and `count` are coerced with `Integer(...)`,
+  so a `PORT="3000"` in the environment still resolves. `Server.run` now
+  takes `**options` and writes each through to `Ratalada.config` before boot,
+  so `Server.run(port: 3000) { ... }` is shorthand for a `configure` block,
+  and a bare `Server.run { ... }` on an already-finalized config is fine.
+  `DEFAULT_HOST`, `DEFAULT_PORT` and `DEFAULT_COUNT` remain as the defaults
+  behind the settings.
+
+### Changed
+
+- **`dry-configurable` is a runtime dependency**, pinned to `~> 1.4`. It
+  backs `Ratalada.config`; it was not previously in the bundle.
+
 ## [2.1.0] - 2026-09-10
 
 ### Added
@@ -137,6 +157,7 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `ratalada` gem, add `gem "ratalada-sinatra"` (or `gem "ratalada-grape"`) to
   your Gemfile. No code changes — the `require` line stays the same.
 
+[2.2.0]: https://github.com/n-at-han-k/ratalada/releases/tag/ratalada-v2.2.0
 [2.1.0]: https://github.com/n-at-han-k/ratalada/releases/tag/ratalada-v2.1.0
 [2.0.1]: https://github.com/n-at-han-k/ratalada/releases/tag/ratalada-v2.0.1
 [2.0.0]: https://github.com/n-at-han-k/ratalada/releases/tag/ratalada-v2.0.0

@@ -11,3 +11,4 @@
 /docs/.jekyll-cache/
 /examples/*/mail/
 /examples/*/reference/
+.rspec_status

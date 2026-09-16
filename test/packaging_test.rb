@@ -13,7 +13,8 @@ require "test_helper"
 #   - every adapter's requirement on the core gem is one the core satisfies
 class PackagingTest < Minitest::Test
   ROOT     = File.expand_path("..", __dir__)
-  GEMS     = %w[ratalada ratalada-sinatra ratalada-grape ratalada-hanami ratalada-roda].freeze
+  GEMS     = %w[ratalada ratalada-sinatra ratalada-grape ratalada-hanami ratalada-roda
+                ratalada-contrib].freeze
   ADAPTERS = GEMS - %w[ratalada]
 
   def test_every_gemspec_ships_files_that_exist

@@ -87,6 +87,13 @@ GEM
     dotenv (3.2.0)
     drb (2.2.3)
     dry-cli (1.4.1)
+    dry-configurable (1.4.0)
+      dry-core (~> 1.0)
+      zeitwerk (~> 2.6)
+    dry-core (1.2.0)
+      concurrent-ruby (~> 1.0)
+      logger
+      zeitwerk (~> 2.6)
     erb (6.0.7)
     erubi (1.13.1)
     extralite-bundle (3.0.1)
@@ -203,8 +210,11 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.4.2)
-    ratalada (2.1.0)
+    ratalada (2.2.0)
+      dry-configurable (~> 1.4)
       rack (~> 3.0)
+    ratalada-contrib (2.0.0)
+      ratalada (~> 2.0)
     ratalada-sinatra (2.0.0)
       ratalada (~> 2.0)
       sinatra
@@ -296,7 +306,8 @@ DEPENDENCIES
   falcon
   inertia_rails (~> 3.22)
   rack-test
-  ratalada (~> 2.1.0)
+  ratalada (~> 2.2.0)
+  ratalada-contrib
   ratalada-sinatra
   rspec
   rubocop

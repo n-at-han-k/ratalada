@@ -274,6 +274,28 @@
     };
     version = "1.4.1";
   };
+  dry-configurable = {
+    dependencies = ["dry-core" "zeitwerk"];
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "1kkk3fs22ndslgihxwm6rwr0y03rvccljmhz6vpm65q87iginpg3";
+      type = "gem";
+    };
+    version = "1.4.0";
+  };
+  dry-core = {
+    dependencies = ["concurrent-ruby" "logger" "zeitwerk"];
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "18cn9s2p7cbgacy0z41h3sf9jvl75vjfmvj774apyffzi3dagi8c";
+      type = "gem";
+    };
+    version = "1.2.0";
+  };
   erb = {
     groups = ["default"];
     platforms = [];
@@ -830,15 +852,26 @@
     version = "13.4.2";
   };
   ratalada = {
-    dependencies = ["rack"];
+    dependencies = ["dry-configurable" "rack"];
     groups = ["default"];
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-      sha256 = "1p8al24h9jvm5fg904f2qac0mnkv82yw5qnkdjxcvg27vrrr3p8j";
+      sha256 = "0gfp08nqlw3m2jrr0wrqcjizzjs7jn5c1rznyn1vqck7piq824mg";
       type = "gem";
     };
-    version = "2.1.0";
+    version = "2.2.0";
+  };
+  ratalada-contrib = {
+    dependencies = ["ratalada"];
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "0c75xvyj2divw3vwxiiza0dvpy5gik3c0q5vagwbravn7iqrz1nw";
+      type = "gem";
+    };
+    version = "2.0.0";
   };
   ratalada-sinatra = {
     dependencies = ["ratalada" "sinatra"];

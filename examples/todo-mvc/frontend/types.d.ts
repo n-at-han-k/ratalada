@@ -1,4 +1,5 @@
 declare module "virtual:pages" {
-  const pages: Record<string, () => Promise<{ default: React.ComponentType }>>
+  type Page = React.ComponentType<any> & { layout?: unknown }
+  const pages: Record<string, () => Promise<{ default: Page }>>
   export default pages
 }

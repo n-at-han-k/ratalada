@@ -6,6 +6,27 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-09-16
+
+### Changed
+
+- **Requires `ratalada` `~> 3.0`.** The adapters track the core's major, and
+  nothing here works against a 2.x core: `require "ratalada/roda"` now selects
+  the frontend with `Ratalada.config.frontend = Ratalada::Frontends::Roda`,
+  and `Ratalada.frontend=` — which 2.0.0 used — is gone from the core.
+
+- **Selecting the frontend goes through the config**, so it follows the
+  config's rules: the require still picks Roda for you, but because the config
+  is finalized on first read, requiring `ratalada/roda` after the server has
+  booted now raises instead of silently swapping the frontend. To choose it
+  explicitly, pass it to `Server.run` — `Server.run(frontend:
+  Ratalada::Frontends::Roda) { ... }` — or set it in a `Ratalada.configure`
+  block.
+
+- `Ratalada::Frontends::Roda.build` is unchanged: the `Server.run` block is
+  still class-evaled into an anonymous `Roda` subclass and built with
+  `.freeze.app`.
+
 ## [2.0.0] - 2026-09-06
 
 ### Added

@@ -12,21 +12,25 @@ module Ratalada
 
         module_function
 
-        # The app, built by whichever Ratalada frontend is in use: every route
-        # file is evaluated into the frontend's own class, under the prefix its
-        # path spells. Requiring the frontend's adapter is what teaches that
-        # class `route_prefix`.
-        def build(directory)
-          map = build_map(directory)
-
-          routes = proc do
-            map.each do |prefix, paths|
-              self.route_prefix = prefix
-              paths.each { |path| class_eval(File.read(path), path, 1) }
-            end
+        # Evaluates every route file in the directory into an app class, under
+        # the prefix its path spells. That class is the frontend's own, so this
+        # is what a Server.run block calls: the block is already being evaluated
+        # into it, and `self` is it. Requiring the frontend's adapter is what
+        # teaches the class `route_prefix`.
+        #
+        #   Server.run { Ratalada::Contrib::Router::FileBased.mount(self, "app") }
+        def mount(app, directory)
+          build_map(directory).each do |prefix, paths|
+            app.route_prefix = prefix
+            paths.each { |path| app.class_eval(File.read(path), path, 1) }
           end
+        end
 
-          Ratalada.frontend.build(routes)
+        # The same, as a whole app built by whichever Ratalada frontend is in
+        # use — for mounting a directory somewhere other than the server's own
+        # run block.
+        def build(directory)
+          Ratalada.frontend.build(proc { FileBased.mount(self, directory) })
         end
 
         # A hash of route => the files that serve it, ordered most specific

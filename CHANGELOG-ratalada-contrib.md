@@ -6,6 +6,25 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.0.1] - 2026-09-16
+
+### Added
+
+- **`Ratalada::Contrib::Router::FileBased.mount(app, directory)`,** which
+  evaluates a directory of route files into an app class you already have,
+  rather than building one for you. Inside a `Server.run` block `self` is that
+  class, so mounting a file-based router no longer needs `build` and a `run`:
+
+      require "ratalada/falcon"
+      require "ratalada/contrib/router/file_based/sinatra_adapter"
+
+      Server.run { Ratalada::Contrib::Router::FileBased.mount(self, "app") }
+
+  `FileBased.build(directory)` is unchanged and still the way to build a
+  standalone app to mount somewhere else; it is now `mount` run inside
+  `Ratalada.frontend.build`. The conventions, the ordering and `build_map` are
+  the same for both.
+
 ## [3.0.0] - 2026-09-16
 
 ### Added

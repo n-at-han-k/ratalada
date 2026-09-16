@@ -7,8 +7,6 @@ require "ratalada/contrib/vite"
 require "ratalada/contrib/inertia"
 require "ratalada/contrib/router/file_based/sinatra_adapter"
 
-require_relative "lib/json_params_middleware"
-
 DB = Extralite::Database.new(
   File.expand_path("config/database.sqlite", __dir__)
 )
@@ -22,7 +20,7 @@ DB.execute(<<~SQL)
 SQL
 
 Server
-  .use(JSONParamsMiddleware)
+  .use(Ratalada::Contrib::Inertia::JSONParamsMiddleware)
   .use(Ratalada::Contrib::Vite::DevServerProxy)
   .use(Ratalada::Contrib::Inertia::Middleware)
   .use(Ratalada::Contrib::Inertia::CSRFMiddleware)

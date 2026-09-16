@@ -26,6 +26,7 @@ require_relative "inertia/core_ext"
 require_relative "inertia/response"
 require_relative "inertia/middleware"
 require_relative "inertia/csrf_middleware"
+require_relative "inertia/json_params_middleware"
 require_relative "inertia/helpers"
 
 # LazyProp reports deprecation through code that's tied to rails.

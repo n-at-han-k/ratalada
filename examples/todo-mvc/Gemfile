@@ -1,0 +1,21 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+gem "ratalada", "~> 2.1.0"
+gem "ratalada-sinatra"
+gem "falcon"
+gem "inertia_rails", "~> 3.22"
+
+gem "sequel"
+gem "extralite-bundle"
+gem "vite_ruby"
+gem "dotenv"
+
+group :test, :development do
+  gem "rubocop"
+  gem "rspec"
+  gem "capybara"
+  gem "cuprite"
+  gem "rack-test"
+end

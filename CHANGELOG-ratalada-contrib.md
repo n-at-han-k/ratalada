@@ -4,6 +4,76 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [3.0.0] - 2026-09-16
+
+### Added
+
+- **`Mustermann::Expo`,** an expo-router pattern type for mustermann, registered
+  as `:expo`: `Mustermann.new("/[foo]", type: :expo) === "/bar"`. `[name]` is a
+  capture and `[...rest]` a named splat that converts to an array of segments.
+  `Mustermann::Expo.route(path)` is the file-path-to-route half on its own — it
+  drops the `.rb` and `+api` suffixes, reads `_layout.rb` as its directory, a
+  trailing `index` as its directory, `(group)` segments as invisible, and
+  `+not-found` as `[...unmatched]` — mirroring expo-router's own
+  `getContextKey`/`stripInvisibleSegmentsFromPath`. `mustermann` (`> 2`) is now
+  a dependency of the gem.
+
+- **`route_prefix` on each frontend's app class.** Requiring an adapter
+  (`ratalada/contrib/router/file_based/sinatra_adapter` and friends) adds
+  `route_prefix` to `Sinatra::Base`, `Grape::API::Instance` and `Hanami::API`:
+  every route defined while it is set hangs off it. That is what puts a route
+  file's own `get "/members"` under the prefix its path spells, and it works
+  outside file-based routing too.
+
+### Changed
+
+- **Building a file-based router is `Ratalada::Contrib::Router::FileBased.build(directory)`,**
+  one entry point for all three frontends, in place of the per-adapter
+  `SinatraAdapter.build` / `GrapeAdapter.build` / `HanamiAdapter.build`. It
+  builds through `Ratalada.frontend`, so the adapter you require and the
+  frontend you select have to agree:
+
+      require "ratalada/sinatra"
+      require "ratalada/contrib/router/file_based/sinatra_adapter"
+
+      Server.run { run Ratalada::Contrib::Router::FileBased.build("app") }
+
+  The conventions, the ordering and `build_map` are unchanged.
+
+- **The Sinatra adapter builds one app, not one app per file.** Where 2.1.0
+  built each route file into its own `Sinatra::Base` subclass and chained them
+  as rack middleware, every file is now evaluated into the one class under its
+  `route_prefix`. Routes still answer most-specific-first, but a file no longer
+  gets its own middleware stack or its own settings — `use`, `set` and
+  `helpers` in any file now apply to the whole app, so put them in `_layout.rb`
+  where that is what you meant. The Grape adapter likewise no longer `mount`s a
+  separate `Grape::API` per file.
+
+- **The adapters require their ratalada frontend,** `ratalada/sinatra`,
+  `ratalada/grape` or `ratalada/hanami`, rather than the bare framework. Add
+  the matching gem to your Gemfile if you were relying on the adapter to pull
+  in `sinatra`, `grape` or `hanami-api` by itself.
+
+- **Depends on `ratalada` as `~> 3.0`,** where 2.x depended on `~> 2.0`.
+  `FileBased.build` reads the frontend from `Ratalada.config`, so this will not
+  install against a 2.x core; upgrade the two together.
+
+### Removed
+
+- **`SinatraAdapter.build`, `GrapeAdapter.build` and `HanamiAdapter.build`.**
+  Use `FileBased.build(directory)` with the matching frontend selected. The
+  adapter modules remain, but only as the mixins that teach a frontend
+  `route_prefix`.
+
+- **`FileBased.pattern`, `FileBased.route_segments` and `FileBased::NOT_FOUND`.**
+  `Mustermann::Expo.route` does the file-path-to-route translation now, and the
+  fallback file's name is `Mustermann::Expo::NOT_FOUND`. `FileBased.spell`
+  replaces `pattern` as the step that puts a route in an adapter's own spelling;
+  `build_map` still takes `placeholder:` and `catch_all:` and still returns
+  prefixes spelled that way.
+
 ## [2.1.0] - 2026-09-16
 
 ### Added

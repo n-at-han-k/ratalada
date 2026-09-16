@@ -19,5 +19,5 @@ module Ratalada
     end
   end
 
-  self.frontend = Frontends::Roda
+  config.frontend = Frontends::Roda
 end

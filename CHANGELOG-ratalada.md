@@ -6,6 +6,28 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-09-16
+
+### Changed
+
+- **The backend and the frontend are `Ratalada.config` settings.**
+  `Ratalada.config.backend` and `Ratalada.config.frontend` hold what
+  `self.backend =` and `self.frontend =` used to, so they can be set in a
+  `Ratalada.configure` block or passed to `Server.run` like any other setting:
+  `Server.run(frontend: Ratalada::Frontends::Builder) { ... }`. Requiring
+  `ratalada/puma`, `ratalada/falcon`, `ratalada/sinatra` and friends still
+  selects them for you, and the readers `Ratalada.backend` (still raising
+  `NoBackendError` when none is set) and `Ratalada.frontend` (still defaulting
+  to `Ratalada::Frontends::Routes`) are unchanged.
+
+### Removed
+
+- **`Ratalada.backend=` and `Ratalada.frontend=`.** Write through the config
+  instead — `Ratalada.config.backend = ...` / `Ratalada.config.frontend = ...`,
+  a `Ratalada.configure` block, or the matching `Server.run` option. Note that
+  the config is finalized on first read, so an assignment after the server has
+  booted now raises rather than silently swapping the frontend.
+
 ## [2.2.0] - 2026-09-16
 
 ### Added
@@ -157,6 +179,7 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `ratalada` gem, add `gem "ratalada-sinatra"` (or `gem "ratalada-grape"`) to
   your Gemfile. No code changes — the `require` line stays the same.
 
+[3.0.0]: https://github.com/n-at-han-k/ratalada/releases/tag/ratalada-v3.0.0
 [2.2.0]: https://github.com/n-at-han-k/ratalada/releases/tag/ratalada-v2.2.0
 [2.1.0]: https://github.com/n-at-han-k/ratalada/releases/tag/ratalada-v2.1.0
 [2.0.1]: https://github.com/n-at-han-k/ratalada/releases/tag/ratalada-v2.0.1

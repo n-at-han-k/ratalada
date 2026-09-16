@@ -22,5 +22,5 @@ module Ratalada
     end
   end
 
-  self.backend = Backends::Puma
+  config.backend = Backends::Puma
 end

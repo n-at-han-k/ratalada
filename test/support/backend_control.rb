@@ -24,10 +24,10 @@ RSpec.shared_context "with a backend" do
   let(:backend) { recording_backend }
 
   around do |example|
-    original = Ratalada.instance_variable_get(:@backend)
-    Ratalada.backend = backend
+    original = Ratalada.config.backend
+    Ratalada.config.backend = backend
     example.run
   ensure
-    Ratalada.backend = original
+    Ratalada.config.backend = original
   end
 end

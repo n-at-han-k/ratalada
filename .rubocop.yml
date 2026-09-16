@@ -61,6 +61,9 @@ Local/ConstantMatchesPath:
     - models/plugins/**/*
     - ratalada/contrib/inertia.rb
     - ratalada/contrib/inertia/core_ext.rb
+    - ratalada/contrib/router/file_based/expo.rb
+    - ratalada/contrib/router/file_based/grape_adapter.rb
+    - ratalada/contrib/router/file_based/sinatra_adapter.rb
     # Public require paths (`require "ratalada/roda"`) that register a
     # Frontends::/Backends:: constant. The path is the gem's API, so it cannot
     # move to ratalada/frontends/roda.rb to spell the namespace out.

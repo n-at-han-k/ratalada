@@ -14,5 +14,5 @@ module Ratalada
     end
   end
 
-  self.frontend = Frontends::Sinatra
+  config.frontend = Frontends::Sinatra
 end

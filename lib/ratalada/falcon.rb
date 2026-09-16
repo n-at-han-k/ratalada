@@ -54,5 +54,5 @@ module Ratalada
     end
   end
 
-  self.backend = Backends::Falcon
+  config.backend = Backends::Falcon
 end

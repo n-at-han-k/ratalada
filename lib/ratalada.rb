@@ -28,15 +28,12 @@ module Ratalada
     # The backend runs a rack app (set by requiring ratalada/puma or
     # ratalada/falcon); the frontend turns the Server.run block into a rack
     # app (the built-in router by default, ratalada/sinatra to swap it).
-    attr_writer :backend, :frontend
-
+    # Both are settings, so `Server.run(frontend: ...)` writes them too.
     def backend
-      @backend or raise NoBackendError
+      config.backend or raise NoBackendError
     end
 
-    def frontend
-      @frontend ||= Frontends::Routes
-    end
+    def frontend = config.frontend
   end
 
   # Rack::Request plus just enough sugar to pattern match on, so everything
@@ -196,6 +193,8 @@ end
 
 # Core settings. Contrib gems (ratalada-contrib et al.) register theirs the
 # same way — Ratalada.setting at the bottom of their own file.
+Ratalada.setting :backend
+Ratalada.setting :frontend, default: Ratalada::Frontends::Routes
 Ratalada.setting :host, default: Ratalada::DEFAULT_HOST
 Ratalada.setting :port, default: Ratalada::DEFAULT_PORT, constructor: ->(value) { Integer(value) }
 Ratalada.setting :count, default: Ratalada::DEFAULT_COUNT, constructor: ->(value) { Integer(value) }

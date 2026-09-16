@@ -14,5 +14,5 @@ module Ratalada
     end
   end
 
-  self.frontend = Frontends::Grape
+  config.frontend = Frontends::Grape
 end

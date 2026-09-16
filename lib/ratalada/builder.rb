@@ -15,5 +15,5 @@ module Ratalada
     end
   end
 
-  self.frontend = Frontends::Builder
+  config.frontend = Frontends::Builder
 end

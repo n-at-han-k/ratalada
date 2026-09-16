@@ -30,4 +30,5 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "ratalada", "~> #{Ratalada::VERSION.split(".").first}.0"
+  spec.add_dependency "mustermann", "> 2"
 end

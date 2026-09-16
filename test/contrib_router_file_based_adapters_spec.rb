@@ -10,7 +10,7 @@ Adapter.load("ratalada/contrib/router/file_based/hanami_adapter")
 # One tree, three frontends. Every file is ordinary DSL for its frontend — the
 # only thing the adapters add is where in the URL space the file's own routes
 # land, which is what the path spells.
-RSpec.shared_examples "a file-based router" do |builder|
+RSpec.shared_examples "a file-based router" do |frontend|
   tree = {
     "index.rb"                       => %(get("/") { "home" }),
     # A layout is not a route file; its contents are evaluated into each route
@@ -25,15 +25,20 @@ RSpec.shared_examples "a file-based router" do |builder|
   }
 
   around do |example|
+    previous = Ratalada.frontend
+    Ratalada.config.frontend = frontend
+
     Dir.mktmpdir do |root|
       tree.each do |file, source|
         FileUtils.mkdir_p(File.join(root, File.dirname(file)))
         File.write(File.join(root, file), source)
       end
 
-      @app = builder.call(root)
+      @app = Ratalada::Contrib::Router::FileBased.build(root)
       example.run
     end
+  ensure
+    Ratalada.config.frontend = previous
   end
 
   def get(path)
@@ -72,13 +77,13 @@ RSpec.shared_examples "a file-based router" do |builder|
 end
 
 RSpec.describe "Ratalada::Contrib::Router::FileBased::SinatraAdapter", adapter: "ratalada/contrib/router/file_based/sinatra_adapter" do
-  it_behaves_like "a file-based router", ->(root) { Ratalada::Contrib::Router::FileBased::SinatraAdapter.build(root) }
+  it_behaves_like "a file-based router", Ratalada::Frontends::Sinatra
 end
 
 RSpec.describe "Ratalada::Contrib::Router::FileBased::GrapeAdapter", adapter: "ratalada/contrib/router/file_based/grape_adapter" do
-  it_behaves_like "a file-based router", ->(root) { Ratalada::Contrib::Router::FileBased::GrapeAdapter.build(root) }
+  it_behaves_like "a file-based router", Ratalada::Frontends::Grape
 end
 
 RSpec.describe "Ratalada::Contrib::Router::FileBased::HanamiAdapter", adapter: "ratalada/contrib/router/file_based/hanami_adapter" do
-  it_behaves_like "a file-based router", ->(root) { Ratalada::Contrib::Router::FileBased::HanamiAdapter.build(root) }
+  it_behaves_like "a file-based router", Ratalada::Frontends::Hanami
 end

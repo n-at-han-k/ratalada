@@ -76,6 +76,7 @@ GEM
       json
     crass (1.0.7)
     csv (3.3.6)
+    diff-lcs (1.6.2)
     drb (2.2.3)
     dry-configurable (1.4.0)
       dry-core (~> 1.0)
@@ -244,6 +245,19 @@ GEM
       io-console (~> 0.5)
     roda (3.107.0)
       rack
+    rspec (3.13.2)
+      rspec-core (~> 3.13.0)
+      rspec-expectations (~> 3.13.0)
+      rspec-mocks (~> 3.13.0)
+    rspec-core (3.13.6)
+      rspec-support (~> 3.13.0)
+    rspec-expectations (3.13.5)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-mocks (3.13.8)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-support (3.13.7)
     rubocop (1.88.2)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
@@ -296,12 +310,12 @@ DEPENDENCIES
   inertia_rails (~> 3.22)
   lefthook (~> 2.1)
   mini_portile2
-  minitest (~> 5.0)
   protocol-smtp (~> 0.1)
   puma
   rack (~> 3.0)
   rake (~> 13.0)
   roda
+  rspec (~> 3.13)
   rubocop (~> 1.60)
   sinatra
 

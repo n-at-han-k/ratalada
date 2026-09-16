@@ -23,7 +23,7 @@ gem "sinatra"
 
 gem "gem_kit-release", "~> 0.3"
 gem "lefthook", "~> 2.1"
-gem "minitest", "~> 5.0"
+gem "rspec", "~> 3.13"
 gem "rake", "~> 13.0"
 gem "rubocop", "~> 1.60"
 gem "mini_portile2"

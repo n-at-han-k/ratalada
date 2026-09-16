@@ -94,10 +94,10 @@ module Ratalada
 
         def call(env)
           request = Request.new(env)
-          handler = begin
-            @router.call(request)
+          begin
+            handler = @router.call(request)
           rescue NoMatchingPatternError
-            nil
+            handler = nil
           end
           respond(handler, request)
         end
@@ -159,7 +159,9 @@ module Ratalada
       # unknown names are the settings' own. Skipped entirely when no
       # options are given so a finalized config can still boot.
       def run(**options, &block)
-        raise ArgumentError, "Server.run requires a block" unless block
+        unless block
+          raise ArgumentError, "Server.run requires a block"
+        end
 
         if options.any?
           Ratalada.configure do |config|
@@ -188,7 +190,9 @@ module Ratalada
 end
 
 # The whole point is a zero-ceremony top-level DSL.
-Server = Ratalada::Server unless defined?(Server)
+unless defined?(Server)
+  Server = Ratalada::Server
+end
 
 # Core settings. Contrib gems (ratalada-contrib et al.) register theirs the
 # same way — Ratalada.setting at the bottom of their own file.

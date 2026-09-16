@@ -7,9 +7,9 @@ module Ratalada
   module Frontends
     module Grape
       def self.build(block)
-        app = Class.new(::Grape::API)
-        app.class_eval(&block)
-        app
+        Class.new(::Grape::API).tap do |app|
+          app.class_eval(&block)
+        end
       end
     end
   end

@@ -27,20 +27,26 @@ module Ratalada
         middleware = ::Falcon::Server.rack_middleware(app, cache: cache)
 
         environment = Async::Service::Environment.new(::Falcon::Environment::Server).with(
-          name: "ratalada",
-          url: "http://#{host}:#{port}",
-          middleware: -> { middleware },
+          name:              "ratalada",
+          url:               "http://#{host}:#{port}",
+          middleware:        -> { middleware },
           container_options: { count: count, restart: true },
           # async-service >= 0.25 reads `root` in Managed::Service#preload!
           # unconditionally (the default `preload` is `[]`, which is truthy),
           # so an environment without one raises NoMethodError on boot.
-          root: Dir.pwd,
+          root:              Dir.pwd,
         )
 
         configuration = Async::Service::Configuration.new
         configuration.add(environment)
 
-        warn "ratalada: falcon listening on http://#{host}:#{port}#{" (#{count} workers)" if count > 1}"
+        if count > 1
+          workers = " (#{count} workers)"
+        else
+          workers = ""
+        end
+
+        warn "ratalada: falcon listening on http://#{host}:#{port}#{workers}"
         Async::Service::Controller.run(configuration, container_class: Async::Container.best_container_class)
       rescue Interrupt
         # clean shutdown

@@ -59,6 +59,18 @@ Local/ConstantMatchesPath:
     - sinatra/**/*
     - sequel_ext.rb
     - models/plugins/**/*
+    - ratalada/contrib/inertia.rb
+    - ratalada/contrib/inertia/core_ext.rb
+    # Public require paths (`require "ratalada/roda"`) that register a
+    # Frontends::/Backends:: constant. The path is the gem's API, so it cannot
+    # move to ratalada/frontends/roda.rb to spell the namespace out.
+    - ratalada/builder.rb
+    - ratalada/grape.rb
+    - ratalada/hanami.rb
+    - ratalada/roda.rb
+    - ratalada/sinatra.rb
+    - ratalada/falcon.rb
+    - ratalada/puma.rb
 
 # Bans `lvar = if ...` / `lvar = case ...`, ternaries included. Assign inside
 # each branch instead, so the branches sit under the assignment rather than off

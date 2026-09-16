@@ -51,7 +51,9 @@ module Ratalada
       # Registers a shared-prop block, run in the request context on every
       # inertia render and deep-merged under the page props.
       def share(&block)
-        raise ArgumentError, "share requires a block" unless block
+        unless block
+          raise ArgumentError, "share requires a block"
+        end
 
         Ratalada.config.inertia_share_blocks = Ratalada.config.inertia_share_blocks + [block]
       end
@@ -63,11 +65,11 @@ module Ratalada
       # callable, and whatever comes out is stringified.
       def current_version
         config = Ratalada.config
-        version = if config.respond_to?(:page_version)
-                    config.page_version
-                  else
-                    config.inertia_version
-                  end
+        if config.respond_to?(:page_version)
+          version = config.page_version
+        else
+          version = config.inertia_version
+        end
 
         version.respond_to?(:call) ? version.call.to_s : version.to_s
       end

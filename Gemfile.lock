@@ -215,6 +215,7 @@ PLATFORMS
 
 DEPENDENCIES
   async-smtp (~> 0.1)
+  dry-configurable (~> 1.4)
   falcon
   gem_kit-release (~> 0.3)
   grape (~> 3.2.0)

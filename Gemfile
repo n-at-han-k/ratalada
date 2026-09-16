@@ -18,6 +18,7 @@ gem "dry-configurable", "~> 1.4"
 #
 gem "grape", "~> 3.2.0" 
 gem "hanami-api"
+gem "inertia_rails", "~> 3.22"
 gem "roda"
 gem "sinatra"
 

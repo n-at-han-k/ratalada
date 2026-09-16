@@ -2,8 +2,10 @@
 
 source "https://rubygems.org"
 
-gem "ratalada", "~> 2.1.0"
+gem "ratalada", "~> 2.2.0"
 gem "ratalada-sinatra"
+gem "ratalada-contrib"
+
 gem "falcon"
 gem "inertia_rails", "~> 3.22"
 

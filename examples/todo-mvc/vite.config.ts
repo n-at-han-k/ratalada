@@ -71,4 +71,5 @@ export default defineConfig({
   resolve: {
     alias: { "@": resolve(import.meta.dirname, "frontend") },
   },
+  optimizeDeps: { entries: ["frontend/**/*.tsx"] },
 })

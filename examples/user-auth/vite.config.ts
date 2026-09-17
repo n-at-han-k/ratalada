@@ -71,11 +71,5 @@ export default defineConfig({
   resolve: {
     alias: { "@": resolve(import.meta.dirname, "frontend") },
   },
-  // The pages are virtual modules built from app/*.rb, which Vite's dependency
-  // scanner cannot read: left to itself it prebundles only what the entrypoint
-  // reaches, then discovers @base-ui/react and friends when a page first
-  // imports them. That re-optimize mid-session leaves the loaded page holding
-  // modules from two generations ("does not provide an export named 't'"), so
-  // the scanner is pointed at the frontend tree the pages import from instead.
   optimizeDeps: { entries: ["frontend/**/*.tsx"] },
 })

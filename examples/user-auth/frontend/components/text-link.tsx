@@ -1,0 +1,16 @@
+import { Link } from "@inertiajs/react"
+import type { ComponentProps } from "react"
+
+import { cn } from "@/lib/utils"
+
+export default function TextLink({ className, ...props }: ComponentProps<typeof Link>) {
+  return (
+    <Link
+      {...props}
+      className={cn(
+        "text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors hover:decoration-current dark:decoration-neutral-500",
+        className,
+      )}
+    />
+  )
+}

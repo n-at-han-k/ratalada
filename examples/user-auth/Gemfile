@@ -1,0 +1,31 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+gem "ratalada", "~> 3.0.0"
+gem "ratalada-contrib", "~> 3.1.0"
+gem "ratalada-sinatra"
+
+gem "falcon"
+gem "inertia_rails", "~> 3.22"
+
+gem "sequel"
+gem "sqlite3"
+
+# The login flow: omniauth-identity is the email/password form, the Google
+# strategy the button beside it.
+gem "omniauth"
+gem "omniauth-identity"
+gem "omniauth-google-oauth2"
+gem "bcrypt"
+gem "rack-session"
+gem "vite_ruby"
+gem "dotenv"
+
+group :test, :development do
+  gem "rubocop"
+  gem "rspec"
+  gem "capybara"
+  gem "cuprite"
+  gem "rack-test"
+end

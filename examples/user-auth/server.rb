@@ -17,6 +17,10 @@ require "ratalada/contrib/vite"
 require "ratalada/contrib/inertia"
 require "ratalada/contrib/router/file_based/sinatra_adapter"
 
+# Verification for the ID token One Tap mints in the browser — see the route at
+# app/auth/google/one-tap.rb.
+require_relative "lib/google_id_token"
+
 SECRET = ENV.fetch("SESSION_SECRET", "dev" * 22)
 
 # Falcon serves every request in a fiber, and many fibers share one thread.

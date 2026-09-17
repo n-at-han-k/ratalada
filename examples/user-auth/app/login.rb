@@ -4,16 +4,22 @@ get "/" do
   redirect(safe_return_to(params["return_to"]), 303) if current_user
 
   inertia("login", props: {
-    return_to:      params["return_to"],
-    # Whether the Google button is worth drawing at all: no credentials, no
-    # provider mounted in server.rb, and the form stands alone.
-    google_enabled: !ENV["GOOGLE_CLIENT_ID"].nil?,
+    return_to:        params["return_to"],
+    # One Tap is client-side, so the client id has to reach the browser. It is
+    # public by design (it is in every OAuth redirect URL already); the secret
+    # stays here. nil without credentials, and the page renders the form alone.
+    google_client_id: ENV["GOOGLE_CLIENT_ID"],
+    # Set by the sign-out route. Suppresses One Tap's auto-select on the page a
+    # user lands on right after signing out, which would otherwise sign them
+    # straight back in before they saw it.
+    signed_out:       params.key?("signed_out"),
   })
 end
 
 __END__
 
-import { Form, Head } from "@inertiajs/react"
+import { Form, Head, router } from "@inertiajs/react"
+import { GoogleOAuthProvider, useGoogleOneTapLogin } from "@react-oauth/google"
 
 import TextLink from "@/components/text-link"
 import { Button } from "@/components/ui/button"
@@ -21,12 +27,44 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field
 import { Input } from "@/components/ui/input"
 import AuthLayout from "@/layouts/auth-layout"
 
-export default function Login({
+/* Google One Tap. Behaviour only, deliberately rendering nothing: the prompt
+   is drawn by Google inside a cross-origin iframe it owns, so there is no
+   markup here to style and no shadcn component to reach for. The one thing
+   this side owns is when it fires and where the token goes.
+
+   Mounted only when a client id is present, so a checkout with no Google
+   credentials (and so no provider in server.rb) renders the page without it. */
+function GoogleOneTap({
   return_to,
-  google_enabled,
+  auto_select,
 }: {
   return_to: string | null
-  google_enabled: boolean
+  auto_select: boolean
+}) {
+  useGoogleOneTapLogin({
+    // Signs a returning user straight back in with no interaction. Off on the
+    // page reached by signing out.
+    auto_select,
+    use_fedcm_for_prompt: true,
+    onSuccess: ({ credential }) => {
+      router.post("/auth/google/one-tap", { credential, return_to: return_to ?? "" })
+    },
+    // No UI for a failure: a user who never asked for One Tap should not be
+    // shown an error about it — the form below is still right there.
+    onError: () => {},
+  })
+
+  return null
+}
+
+export default function Login({
+  return_to,
+  google_client_id,
+  signed_out,
+}: {
+  return_to: string | null
+  google_client_id: string | null
+  signed_out: boolean
 }) {
   return (
     <AuthLayout
@@ -34,6 +72,11 @@ export default function Login({
       description="Enter your email and password below to log in"
     >
       <Head title="Log in" />
+      {google_client_id && (
+        <GoogleOAuthProvider clientId={google_client_id}>
+          <GoogleOneTap return_to={return_to} auto_select={!signed_out} />
+        </GoogleOAuthProvider>
+      )}
 
       <Form
         action="/auth/identity/callback"
@@ -83,7 +126,7 @@ export default function Login({
         )}
       </Form>
 
-      {google_enabled && (
+      {google_client_id && (
         <>
           <div className="text-muted-foreground flex items-center gap-3 text-xs">
             <span className="bg-border h-px flex-1" />

@@ -18,13 +18,10 @@ get "/" do
     redirect("/login", 303)
   else
     # A verified Google sign-in is proof of the address in its own right, so a
-    # first-time Google user gets an account here. It never learns its random
-    # password: Google is how this account signs in, and a password reset is
-    # how its owner would take up the credentials path later.
-    account = Account.locate(email: email) ||
-              Account.new(email: email).tap { it.password = SecureRandom.hex(32) }.tap(&:save)
+    # first-time Google user gets an account here.
+    account = google_account(email)
 
-    if account[:id]
+    if account
       sign_in(account[:id])
       redirect(safe_return_to(params["return_to"]), 303)
     else

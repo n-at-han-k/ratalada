@@ -129,6 +129,29 @@ RSpec.describe "user-auth" do
     expect(last_response.headers["location"]).to end_with("/")
   end
 
+  # One Tap's token arrives from the browser, so the route must not believe a
+  # word of it until GoogleIDToken has checked the signature, audience, issuer
+  # and expiry. A forged token is the whole threat model.
+  it "refuses a One Tap token that is not a verified Google token" do
+    post_json("/auth/google/one-tap", credential: "not.a.token")
+    expect(last_response.status).to eq(303)
+    expect(last_response.headers["location"]).to end_with("/login")
+
+    get("/login")
+    expect(page.dig("props", "errors", "auth_key")).to eq("Google has not verified that address")
+    expect(page.dig("props", "auth", "user")).to be_nil
+    expect(Account.count).to eq(0)
+  end
+
+  it "signs out to a login page that will not auto-select the account again" do
+    sign_up
+    delete("/session")
+    expect(last_response.headers["location"]).to end_with("/login?signed_out=1")
+
+    get("/login?signed_out=1")
+    expect(page.dig("props", "signed_out")).to be(true)
+  end
+
   it "answers an unknown path with the not-found page" do
     get("/nope")
     expect(last_response.status).to eq(404)

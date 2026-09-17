@@ -360,6 +360,7 @@ DEPENDENCIES
   dotenv
   falcon
   inertia_rails (~> 3.22)
+  jwt
   omniauth
   omniauth-google-oauth2
   omniauth-identity

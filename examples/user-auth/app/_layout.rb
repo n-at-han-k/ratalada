@@ -27,6 +27,25 @@ helpers do
     redirect("/login?return_to=#{CGI.escape(request.fullpath)}", 303) unless current_user
   end
 
+  # Whoever owns a Google-verified email address, creating the account on
+  # first sight. Shared by both Google paths — the redirect callback and One
+  # Tap — which make the identical trust decision and differ only in how the
+  # claims arrive.
+  #
+  # The account is keyed on EMAIL, which is only safe because every caller has
+  # checked `email_verified` FIRST: without that, anyone who can set an
+  # unverified address on a Google account could claim someone else's login
+  # here. Do not call this with an unverified address.
+  #
+  # The new account never learns its random password: Google is how it signs
+  # in, and a password reset is how its owner would take up the credentials
+  # path later. Answers nil if the account could not be created.
+  def google_account(email)
+    account = Account.locate(email: email) ||
+              Account.new(email: email).tap { it.password = SecureRandom.hex(32) }.tap(&:save)
+    account if account[:id]
+  end
+
   # An open redirect is a phishing primitive: only a path on this host is ever
   # followed back after a login.
   def safe_return_to(path)

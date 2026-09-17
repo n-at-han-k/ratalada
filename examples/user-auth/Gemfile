@@ -18,6 +18,8 @@ gem "omniauth"
 gem "omniauth-identity"
 gem "omniauth-google-oauth2"
 gem "bcrypt"
+# Verifies the ID token Google One Tap mints in the browser.
+gem "jwt"
 gem "rack-session"
 gem "vite_ruby"
 gem "dotenv"

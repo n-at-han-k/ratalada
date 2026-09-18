@@ -253,6 +253,10 @@ gem kit changelog --write --gem ratalada-roda
 gem kit release --gem ratalada-roda      # gate, build, push, tag
 ```
 
+## Why
+
+Spurred on by things like [this post](https://blainsmith.com/articles/just-fucking-use-go/), and just how easy it is to create servers with [hono](https://hono.dev/) or agents with [volt](https://github.com/voltagent/voltagent), which makes me irrationally angry that ruby hasn't more libraries like this considering it's WELL beyond javascript in it's flexibility as a language.
+
 ## License
 
 [MIT](LICENSE)

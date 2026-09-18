@@ -256,6 +256,7 @@ gem kit release --gem ratalada-roda      # gate, build, push, tag
 ## Why
 
 Spurred on by things like [this post](https://blainsmith.com/articles/just-fucking-use-go/), and just how easy it is to create servers with [hono](https://hono.dev/) or agents with [volt](https://github.com/voltagent/voltagent), which makes me irrationally angry that ruby hasn't more libraries like this considering it's WELL beyond javascript in it's flexibility as a language.
+[This post is great](https://www.toptal.com/developers/ruby/api-with-sinatra-and-sequel-ruby-tutorial), but it shuold be even simpler.
 
 ## License
 

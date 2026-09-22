@@ -1,0 +1,11 @@
+node_modules
+.env
+/.direnv
+
+# Vite build output -- one dir per environment, from config/vite.json.
+/public/vite
+/public/vite-dev
+/public/vite-test
+
+# vite_ruby's build cache.
+/tmp

@@ -1,0 +1,15 @@
+allowBuilds:
+  # react-email ships the esbuild CLI; nothing here invokes it, so its native
+  # postinstall stays unrun.
+  '@carbon/grid': false
+  '@carbon/layout': false
+  '@parcel/watcher': set this to true or false
+  '@scarf/scarf': set this to true or false
+  '@tree-sitter-grammars/tree-sitter-yaml': set this to true or false
+  core-js-pure: set this to true or false
+  esbuild: false
+  inferno: false
+  tree-sitter: set this to true or false
+  tree-sitter-json: set this to true or false
+minimumReleaseAgeExclude:
+  - vite@8.3.0

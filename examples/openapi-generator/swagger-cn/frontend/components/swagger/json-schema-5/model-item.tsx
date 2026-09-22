@@ -83,9 +83,9 @@ const ModelItem = React.memo(
     )
 
     const title = (
-      <span className="model-box">
+      <div className="model-box block w-full">
         <strong className="model model-title [&_.property.primitive]:text-[#6b6b6b] [&_.property.primitive.extension]:block [&_tr.property-row_td]:align-top [&_tr.property-row_td:first-child]:pr-[0.2em] [&_tr.property-row_.star]:text-[red] [&_tr.extension]:text-[#777] [&_tr.extension_td:last-child]:align-top [&_tr_.renderedMarkdown_p:first-child]:mt-0">{displayName}</strong>
-      </span>
+      </div>
     )
 
     return (

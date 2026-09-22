@@ -8,13 +8,14 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* The fork's remaining stylesheet, in a layer BELOW utilities.
-   Unlayered css beats layered css whatever the specificity, so imported
-   plainly every rule left here would override every utility the conversion
-   produced -- `.opblock .opblock-summary-method { background: #000 }` would
-   win over the verb colour that is now a utility, and every method badge
-   would render black. In `components` it loses to `utilities`, which is the
-   order the conversion assumes. */
+/* swagger-ui's stylesheet, in a layer BELOW utilities so shadcn's classes
+   win where both set a property.
+
+   It is not "the button styles" -- it is the whole app's layout: opblock
+   rows, model trees, tables, the topbar, the info block, response panels.
+   It shrinks as components are replaced, one component's rules at a time,
+   and is deleted when the last of them is gone. Deleting it before that
+   leaves everything not yet converted with no styling at all. */
 @import "./swagger.css" layer(components);
 /* no webfont import: the fork brings its own typography. */
 
@@ -60,6 +61,15 @@
     --radius-2xl: calc(var(--radius) * 1.8);
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
+    --color-invert-foreground: var(--invert-foreground);
+    --color-invert: var(--invert);
+    --color-warning-foreground: var(--warning-foreground);
+    --color-warning: var(--warning);
+    --color-info-foreground: var(--info-foreground);
+    --color-info: var(--info);
+    --color-success-foreground: var(--success-foreground);
+    --color-success: var(--success);
+    --color-destructive-foreground: var(--destructive-foreground);
 }
 
 :root {
@@ -95,6 +105,15 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
+    --destructive-foreground: var(--color-red-800);
+    --success: var(--color-emerald-500);
+    --success-foreground: var(--color-emerald-900);
+    --info: var(--color-violet-500);
+    --info-foreground: var(--color-violet-900);
+    --warning: var(--color-yellow-500);
+    --warning-foreground: var(--color-yellow-900);
+    --invert: var(--color-zinc-900);
+    --invert-foreground: var(--color-zinc-50);
 }
 
 .dark {
@@ -129,6 +148,15 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
+    --destructive-foreground: var(--color-red-600);
+    --success: var(--color-emerald-500);
+    --success-foreground: var(--color-emerald-600);
+    --info: var(--color-violet-500);
+    --info-foreground: var(--color-violet-600);
+    --warning: var(--color-yellow-500);
+    --warning-foreground: var(--color-yellow-600);
+    --invert: var(--color-zinc-700);
+    --invert-foreground: var(--color-zinc-50);
 }
 
 @layer base {

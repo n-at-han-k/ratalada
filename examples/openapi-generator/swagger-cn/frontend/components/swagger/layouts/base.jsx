@@ -4,6 +4,8 @@
 import React from "react"
 import PropTypes from "prop-types"
 
+import { Card, CardContent } from "@/components/ui/card"
+
 export default class BaseLayout extends React.Component {
   static propTypes = {
     errSelectors: PropTypes.object.isRequired,
@@ -23,8 +25,6 @@ export default class BaseLayout extends React.Component {
     const Operations = getComponent("operations", true)
     const Models = getComponent("Models", true)
     const Webhooks = getComponent("Webhooks", true)
-    const Row = getComponent("Row")
-    const Col = getComponent("Col")
     const Errors = getComponent("errors", true)
 
     const ServersContainer = getComponent("ServersContainer", true)
@@ -96,7 +96,7 @@ export default class BaseLayout extends React.Component {
     const hasSecurityDefinitions = !!specSelectors.securityDefinitions()
 
     return (
-      <div className="swagger-ui">
+      <div className="swagger-ui bg-background text-foreground min-h-screen">
         <SvgAssets />
         <VersionPragmaFilter
           isSwagger2={isSwagger2}
@@ -105,50 +105,51 @@ export default class BaseLayout extends React.Component {
           isOAS32={isOAS32}
           alsoShow={<Errors />}
         >
-          <Errors />
-          <Row className="information-container">
-            <Col mobile={12}>
-              <InfoContainer />
-            </Col>
-          </Row>
+          {/* One column of cards in a centred container, rather than
+              swagger-ui's Row/Col grid. Each region is a Card so the page
+              reads as sections; spacing is the layout, not margins buried in
+              a stylesheet. */}
+          <div className="mx-auto w-full max-w-7xl space-y-6 px-4 py-6">
+            <Errors />
 
-          {hasServers || hasSchemes || hasSecurityDefinitions ? (
-            <div className="scheme-container [&_.schemes_>_.schemes-server-container]:flex [&_.schemes_>_.schemes-server-container]:flex-wrap [&_.schemes_>_.schemes-server-container]:gap-[10px] [&_.schemes_>_.schemes-server-container_>_label_select]:uppercase [&_.schemes_>_.schemes-server-container_>_label_select]:min-w-[130px] [&_.schemes:not(:has(.schemes-server-container))]:justify-end [&_.schemes_.auth-wrapper_.authorize]:flex [&_.schemes_.auth-wrapper_.authorize]:flex-nowrap [&_.schemes_.auth-wrapper_.authorize]:m-0 [&_.schemes_.auth-wrapper_.authorize]:pr-5">
-              <Col className="schemes wrapper items-end flex flex-wrap justify-between gap-[10px]" mobile={12}>
-                {hasServers || hasSchemes ? (
-                  <div className="schemes-server-container">
-                    {hasServers ? <ServersContainer /> : null}
-                    {hasSchemes ? <SchemesContainer /> : null}
-                  </div>
-                ) : null}
-                {hasSecurityDefinitions ? <AuthorizeBtnContainer /> : null}
-              </Col>
-            </div>
-          ) : null}
+            <Card className="information-container">
+              <CardContent>
+                <InfoContainer />
+              </CardContent>
+            </Card>
 
-          <FilterContainer />
+            {hasServers || hasSchemes || hasSecurityDefinitions ? (
+              <Card className="scheme-container">
+                <CardContent className="flex flex-wrap items-end justify-between gap-4">
+                  {hasServers || hasSchemes ? (
+                    <div className="schemes-server-container flex flex-wrap items-end gap-4">
+                      {hasServers ? <ServersContainer /> : null}
+                      {hasSchemes ? <SchemesContainer /> : null}
+                    </div>
+                  ) : null}
+                  {hasSecurityDefinitions ? <AuthorizeBtnContainer /> : null}
+                </CardContent>
+              </Card>
+            ) : null}
 
-          <main id="operations" tabIndex="-1" style={{ outline: "none" }}>
-            <Row>
-              <Col mobile={12} desktop={12}>
-                <Operations />
-              </Col>
-            </Row>
+            <FilterContainer />
 
-            {isOAS31 && (
-              <Row className="webhooks-container">
-                <Col mobile={12} desktop={12}>
+            <main id="operations" tabIndex="-1" className="space-y-6 outline-none">
+              <Operations />
+
+              {isOAS31 && (
+                <section className="webhooks-container">
                   <Webhooks />
-                </Col>
-              </Row>
-            )}
+                </section>
+              )}
 
-            <Row>
-              <Col mobile={12} desktop={12}>
-                <Models />
-              </Col>
-            </Row>
-          </main>
+              <Card>
+                <CardContent>
+                  <Models />
+                </CardContent>
+              </Card>
+            </main>
+          </div>
         </VersionPragmaFilter>
       </div>
     )

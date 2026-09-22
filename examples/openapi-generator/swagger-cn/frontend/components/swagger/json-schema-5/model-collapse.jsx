@@ -2,6 +2,12 @@ import React, { Component } from "react"
 import PropTypes from "prop-types"
 import ImPropTypes from "react-immutable-proptypes"
 import { List, is } from "immutable"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 export default class ModelCollapse extends Component {
   static propTypes = {
@@ -78,22 +84,41 @@ export default class ModelCollapse extends Component {
 
     if(this.state.expanded ) {
       if(this.props.hideSelfOnExpand) {
-        return <span className={classes || ""}>
+        return <div className={`${classes || ""} block w-full`}>
           {this.props.children}
-        </span>
+        </div>
       }
     }
 
-    return (
-      <span className={classes || ""} ref={this.onLoad}>
-        <button aria-expanded={this.state.expanded} className="model-box-control" onClick={this.toggleCollapsed}>
-          { title && <span className="pointer">{title}</span> }
-          <span className={ "model-toggle" + ( this.state.expanded ? "" : " collapsed" ) }></span>
-          { !this.state.expanded && <span>{this.state.collapsedContent}</span> }
-        </button>
+    // Each model row is its own accordion. `model-toggle` was an empty span
+    // that CSS drew a chevron on; the trigger brings its own, so it is gone.
+    const value = this.props.modelName || "model"
 
-        { this.state.expanded && this.props.children }
-      </span>
+    return (
+      <Accordion
+        multiple
+        value={this.state.expanded ? [value] : []}
+        onValueChange={() => this.toggleCollapsed()}
+        className="border-0"
+      >
+        <AccordionItem
+          value={value}
+          className={`${classes || ""} border-0`}
+          ref={this.onLoad}
+        >
+          <AccordionTrigger
+            render={<span />}
+            nativeButton={false}
+            className="model-box-control w-full cursor-pointer items-center py-1 hover:no-underline [&>*:first-child]:flex-1 [&>*:first-child]:w-full"
+          >
+            {title && <span className="pointer">{title}</span>}
+            {!this.state.expanded && <span>{this.state.collapsedContent}</span>}
+          </AccordionTrigger>
+          <AccordionContent className="px-0 pt-0 pb-0">
+            {this.props.children}
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     )
   }
 }

@@ -11,6 +11,12 @@ import {
   VIRTUALIZE_MODELS_OVERSCAN,
 } from "@/lib/swagger/utils/virtualization"
 import ModelItem from "@/components/swagger/json-schema-5/model-item"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 const Models = ({
   getComponent,
@@ -124,7 +130,6 @@ const Models = ({
     layoutActions.show(specPathBase, !showModels)
   }, [layoutActions, specPathBase, showModels])
 
-  const Collapse = getComponent("Collapse")
   const ArrowUpIcon = getComponent("ArrowUpIcon")
   const ArrowDownIcon = getComponent("ArrowDownIcon")
 
@@ -156,21 +161,25 @@ const Models = ({
   }
 
   return (
-    <section
+    <Accordion
+      multiple
+      value={showModels ? ["models"] : []}
+      onValueChange={() => handleModelsExpand()}
+      className="border-0"
+    >
+    <AccordionItem
+      value="models"
       className={`${`${showModels ? "models is-open" : "models"}${isVirtualized ? " models--virtualized" : ""}`} [&_.pointer]:cursor-pointer [&.is-open]:pb-5 [&.is-open]:px-0 [&.is-open]:pt-0 [&.is-open]:[&.models--virtualized]:pb-0 [&_.model-container:first-of-type]:m-5 [&_.model-container:last-of-type]:my-0 [&_.model-container:last-of-type]:mx-5 [&_.models-scroll_.models-virtual-item]:pb-[15px] [&_.json-schema-2020-12:not(.json-schema-2020-12--embedded)_>_.json-schema-2020-12-head_.json-schema-2020-12\_\_title:first-of-type]:text-[16px]`}
       ref={onLoadModels}
     >
-      <h4>
-        <button
-          aria-expanded={showModels}
-          className="models-control"
-          onClick={handleModelsExpand}
-        >
-          <span>{isOAS3 ? "Schemas" : "Models"}</span>
-          {showModels ? <ArrowUpIcon /> : <ArrowDownIcon />}
-        </button>
-      </h4>
-      <Collapse isOpened={showModels}>
+      {/* No `render` -- AccordionHeader is already the <h3>, and a native
+          <button> is what Base UI wants inside it. */}
+      <AccordionTrigger
+        className="models-control px-2 py-3 font-semibold hover:no-underline w-full [&>*:first-child]:flex-1 [&>*:first-child]:w-full"
+      >
+        <span>{isOAS3 ? "Schemas" : "Models"}</span>
+      </AccordionTrigger>
+      <AccordionContent className="px-0 pt-0 pb-0">
         {isVirtualized ? (
           <div ref={parentRef} className="models-scroll overflow-y-auto max-h-[min(60vh,800px)] pt-5 pb-[5px]">
             <div
@@ -205,8 +214,9 @@ const Models = ({
             />
           ))
         )}
-      </Collapse>
-    </section>
+      </AccordionContent>
+    </AccordionItem>
+    </Accordion>
   )
 }
 

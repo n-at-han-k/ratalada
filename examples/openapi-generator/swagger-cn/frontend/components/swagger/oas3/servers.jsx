@@ -5,6 +5,15 @@ import React, { useCallback, useEffect } from "react"
 import { OrderedMap } from "immutable"
 import PropTypes from "prop-types"
 import ImPropTypes from "react-immutable-proptypes"
+import { Select } from "@/components/select"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 const Servers = ({
   servers,
@@ -49,8 +58,8 @@ const Servers = ({
   }, [currentServer, servers])
 
   const handleServerChange = useCallback(
-    (e) => {
-      setSelectedServer(e.target.value)
+    (value) => {
+      setSelectedServer(value)
     },
     [setSelectedServer]
   )
@@ -72,21 +81,13 @@ const Servers = ({
   return (
     <div className="servers [&_h4.message]:pb-[2em] [&_table_td:first-of-type]:pr-[1em]">
       <label htmlFor="servers">
-        <select
+        <Select
+          id="servers"
           onChange={handleServerChange}
           value={currentServer}
-          id="servers"
-        >
-          {servers
-            .valueSeq()
-            .map((server) => (
-              <option value={server.get("url")} key={server.get("url")}>
-                {server.get("url")}
-                {server.get("description") && ` - ${server.get("description")}`}
-              </option>
-            ))
-            .toArray()}
-        </select>
+          allowEmptyValue={false}
+          allowedValues={servers.valueSeq().map((s) => s.get("url")).toArray()}
+        />
       </label>
       {shouldShowVariableUI && (
         <div>
@@ -95,33 +96,24 @@ const Servers = ({
             <code>{getEffectiveServerValue(currentServer)}</code>
           </div>
           <h4>Server variables</h4>
-          <table>
-            <tbody>
+          <Table>
+            <TableBody>
               {currentServerVariableDefs.entrySeq().map(([name, val]) => {
                 return (
-                  <tr key={name}>
-                    <td>{name}</td>
-                    <td>
+                  <TableRow key={name}>
+                    <TableCell>{name}</TableCell>
+                    <TableCell>
                       {val.get("enum") ? (
-                        <select
-                          data-variable={name}
-                          onChange={handleServerVariableChange}
-                        >
-                          {val.get("enum").map((enumValue) => {
-                            return (
-                              <option
-                                selected={
-                                  enumValue ===
-                                  getServerVariable(currentServer, name)
-                                }
-                                key={enumValue}
-                                value={enumValue}
-                              >
-                                {enumValue}
-                              </option>
-                            )
-                          })}
-                        </select>
+                        <Select
+                          allowEmptyValue={false}
+                          value={getServerVariable(currentServer, name) || ""}
+                          allowedValues={val.get("enum").toArray()}
+                          onChange={(value) =>
+                            handleServerVariableChange({
+                              target: { value, getAttribute: () => name },
+                            })
+                          }
+                        />
                       ) : (
                         <input
                           type={"text"}
@@ -130,12 +122,12 @@ const Servers = ({
                           data-variable={name}
                         ></input>
                       )}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 )
               })}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
     </div>

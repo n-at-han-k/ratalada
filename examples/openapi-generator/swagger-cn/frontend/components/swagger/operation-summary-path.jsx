@@ -4,51 +4,37 @@ import { Iterable } from "immutable"
 import { createDeepLinkPath } from "@/lib/swagger/utils/index"
 import ImPropTypes from "react-immutable-proptypes"
 
-export default class OperationSummaryPath extends PureComponent{
-
+// The path, as the link it always was. No wrapper span, no `data-path`
+// attribute nothing reads.
+export default class OperationSummaryPath extends PureComponent {
   static propTypes = {
     specPath: ImPropTypes.list.isRequired,
     operationProps: PropTypes.instanceOf(Iterable).isRequired,
     getComponent: PropTypes.func.isRequired,
   }
 
-  render(){
-    let {
-      getComponent,
-      operationProps,
-    } = this.props
+  render() {
+    const { getComponent, operationProps } = this.props
+    const { deprecated, path, tag, operationId, isDeepLinkingEnabled } =
+      operationProps.toObject()
 
-
-    let {
-      deprecated,
-      isShown,
-      path,
-      tag,
-      operationId,
-      isDeepLinkingEnabled,
-    } = operationProps.toObject()
-
-    /**
-     * Add <wbr> word-break elements between each segment, before the slash
-     * to allow browsers an opportunity to break long paths into sensible segments.
-     */
+    // <wbr> between segments, so a long path breaks at the slashes.
     const pathParts = path.split(/(?=\/)/g)
     for (let i = 1; i < pathParts.length; i += 2) {
       pathParts.splice(i, 0, <wbr key={i} />)
     }
 
-    const DeepLink = getComponent( "DeepLink" )
+    const DeepLink = getComponent("DeepLink")
 
-    return(
-      <span className={`${deprecated ? "opblock-summary-path__deprecated" : "opblock-summary-path"} shrink`}
-        data-path={path}>
-        <DeepLink
-            enabled={isDeepLinkingEnabled}
-            isShown={isShown}
-            path={createDeepLinkPath(`${tag}/${operationId}`)}
-            text={pathParts} />
-      </span>
-
+    return (
+      <DeepLink
+        enabled={isDeepLinkingEnabled}
+        path={createDeepLinkPath(`${tag}/${operationId}`)}
+        text={pathParts}
+        className={`font-mono text-sm font-semibold${
+          deprecated ? " text-muted-foreground line-through" : ""
+        }`}
+      />
     )
   }
 }

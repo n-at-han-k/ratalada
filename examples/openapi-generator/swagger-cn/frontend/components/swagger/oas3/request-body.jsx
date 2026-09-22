@@ -4,6 +4,14 @@ import ImPropTypes from "react-immutable-proptypes"
 import { Map, OrderedMap, List, fromJS } from "immutable"
 import { getCommonExtensions, stringify, isEmptyValue } from "@/lib/swagger/utils/index"
 import { getKnownSyntaxHighlighterLanguage } from "@/lib/swagger/utils/jsonParse"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 export const getDefaultRequestBodyValue = (requestBody, mediaType, activeExamplesKey, fn) => {
   const mediaTypeValue = requestBody.getIn(["content", mediaType]) ?? OrderedMap()
@@ -146,8 +154,8 @@ const RequestBody = ({
       { requestBodyDescription &&
         <Markdown source={requestBodyDescription} />
       }
-      <table>
-        <tbody>
+      <Table>
+        <TableBody>
           {
             Map.isMap(bodyProperties) && bodyProperties.entrySeq().map(([key, schema]) => {
               if (schema.get("readOnly")) return
@@ -203,8 +211,8 @@ const RequestBody = ({
                 }}
               />
 
-              return <tr key={key} className="parameters" data-property-name={key}>
-              <td className="parameters-col_name">
+              return <TableRow key={key} className="parameters" data-property-name={key}>
+              <TableCell className="parameters-col_name">
                 <div className={`${required ? "parameter__name required" : "parameter__name"} [&.required]:font-bold`}>
                   { key }
                   { !required ? null : <span>&nbsp;*</span> }
@@ -217,8 +225,8 @@ const RequestBody = ({
                 <div className="italic font-semibold text-[12px] font-[monospace] text-[#f00]">
                   { schema.get("deprecated") ? "deprecated": null }
                 </div>
-              </td>
-              <td className="parameters-col_description [&_select]:border [&_.markdown:first-child_p:first-child]:m-0 [&_.renderedMarkdown:first-child_p:first-child]:m-0">
+              </TableCell>
+              <TableCell className="parameters-col_description [&_select]:border [&_.markdown:first-child_p:first-child]:m-0 [&_.renderedMarkdown:first-child_p:first-child]:m-0">
                 <Markdown source={ description }></Markdown>
                 {isExecute ? <div>
                   {(objectType === "object" || schemaItemsType === "object") ? (
@@ -242,12 +250,12 @@ const RequestBody = ({
                     />
                   )}
                 </div> : null }
-              </td>
-              </tr>
+              </TableCell>
+              </TableRow>
             })
           }
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   }
 

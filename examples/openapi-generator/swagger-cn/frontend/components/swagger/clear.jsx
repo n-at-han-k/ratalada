@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import PropTypes from "prop-types"
+import { Button } from "@/components/ui/button"
 
 export default class Clear extends Component {
 
@@ -11,9 +12,9 @@ export default class Clear extends Component {
 
   render(){
     return (
-      <button className="btn btn-clear opblock-control__btn [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px]" onClick={ this.onClick }>
+      <Button variant="outline" className="opblock-control__btn" onClick={ this.onClick }>
         Clear
-      </button>
+      </Button>
     )
   }
 

@@ -1,5 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
+import { Button } from "@/components/ui/button"
 
 export default class AuthorizeBtn extends React.Component {
   static propTypes = {
@@ -19,10 +20,14 @@ export default class AuthorizeBtn extends React.Component {
 
     return (
       <div className="auth-wrapper [&_.authorize]:pr-5 [&_.authorize]:ml-2.5 [&_.authorize]:mr-2.5">
-        <button className={`${isAuthorized ? "btn authorize locked" : "btn authorize unlocked"} [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px]`} onClick={onClick}>
+        <Button
+          variant="success"
+          className={isAuthorized ? "authorize locked" : "authorize unlocked"}
+          onClick={onClick}
+        >
           <span>Authorize</span>
           {isAuthorized ? <LockAuthIcon /> : <UnlockAuthIcon />}
-        </button>
+        </Button>
       { showPopup && <AuthorizationPopup /> }
       </div>
     )

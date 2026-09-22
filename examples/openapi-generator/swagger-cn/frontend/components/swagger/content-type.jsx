@@ -2,6 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 import ImPropTypes from "react-immutable-proptypes"
 import { fromJS } from "immutable"
+import { Select } from "@/components/select"
 
 const noop = ()=>{}
 
@@ -42,7 +43,8 @@ export default class ContentType extends React.Component {
     }
   }
 
-  onChangeWrapper = e => this.props.onChange(e.target.value)
+  // the registry's Select hands over the value, not an event
+  onChangeWrapper = (value) => this.props.onChange(value)
 
   render() {
     let { ariaControls, ariaLabel, className, contentTypes, controlId, value } = this.props
@@ -52,11 +54,16 @@ export default class ContentType extends React.Component {
 
     return (
       <div className={ "content-type-wrapper " + ( className || "" ) }>
-        <select aria-controls={ariaControls} aria-label={ariaLabel} className="content-type" id={controlId} onChange={this.onChangeWrapper} value={value || ""} >
-          { contentTypes.map( (val) => {
-            return <option key={ val } value={ val }>{ val }</option>
-          }).toArray()}
-        </select>
+        <Select
+          aria-controls={ariaControls}
+          aria-label={ariaLabel}
+          className="content-type"
+          id={controlId}
+          onChange={this.onChangeWrapper}
+          value={value || ""}
+          allowEmptyValue={false}
+          allowedValues={contentTypes.toArray()}
+        />
       </div>
     )
   }

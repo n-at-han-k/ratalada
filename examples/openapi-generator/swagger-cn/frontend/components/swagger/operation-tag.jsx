@@ -48,12 +48,9 @@ export default class OperationTag extends React.Component {
       deepLinking,
     } = getConfigs()
 
-    const Collapse = getComponent("Collapse")
     const Markdown = getComponent("Markdown", true)
     const DeepLink = getComponent("DeepLink")
     const Link = getComponent("Link")
-    const ArrowUpIcon = getComponent("ArrowUpIcon")
-    const ArrowDownIcon = getComponent("ArrowDownIcon")
 
     let tagDescription = tagObj.getIn(["tagDetails", "description"], null)
     let tagExternalDocsDescription = tagObj.getIn(["tagDetails", "externalDocs", "description"])
@@ -68,47 +65,42 @@ export default class OperationTag extends React.Component {
     let isShownKey = ["operations-tag", tag]
     let showTag = layoutSelectors.isShown(isShownKey, docExpansion === "full" || docExpansion === "list")
 
+    // The tag header: name, description, external docs. The expand button
+    // and its arrow icons are gone -- the accordion trigger this sits inside
+    // is the control, and it draws its own chevron.
     const header = (
-      <h3
-        onClick={() => layoutActions.show(isShownKey, !showTag)}
-        className={!tagDescription ? "opblock-tag no-desc" : "opblock-tag"}
-        id={isShownKey.map(v => escapeDeepLinkPath(v)).join("-")}
+      <div
+        className="flex flex-1 flex-wrap items-baseline gap-x-3 gap-y-1 py-3"
+        id={isShownKey.map((v) => escapeDeepLinkPath(v)).join("-")}
         data-tag={tag}
         data-is-open={showTag}
       >
         <DeepLink
           enabled={deepLinking}
-          isShown={showTag}
           path={createDeepLinkPath(tag)}
-          text={tag} />
-        {!tagDescription ? <small></small> :
-          <small>
+          text={tag}
+          className="text-lg font-semibold"
+        />
+
+        {tagDescription && (
+          <span className="text-muted-foreground text-sm">
             <Markdown source={tagDescription} />
-          </small>
-        }
+          </span>
+        )}
 
-        {!tagExternalDocsUrl ? null :
-          <div className="info__externaldocs text-right">
-            <small>
-              <Link
-                  href={sanitizeUrl(tagExternalDocsUrl)}
-                  onClick={(e) => e.stopPropagation()}
-                  target="_blank"
-                >{tagExternalDocsDescription || tagExternalDocsUrl}</Link>
-            </small>
-          </div>
-        }
-
-
-        <button
-          aria-expanded={showTag}
-          className="expand-operation"
-          title={showTag ? "Collapse operation" : "Expand operation"}
-          onClick={() => layoutActions.show(isShownKey, !showTag)}>
-
-          {showTag ? <ArrowUpIcon className="arrow" /> : <ArrowDownIcon className="arrow" />}
-        </button>
-      </h3>
+        {tagExternalDocsUrl && (
+          <span className="ml-auto text-sm">
+            <Link
+              href={sanitizeUrl(tagExternalDocsUrl)}
+              onClick={(e) => e.stopPropagation()}
+              target="_blank"
+              className="text-primary underline underline-offset-4"
+            >
+              {tagExternalDocsDescription || tagExternalDocsUrl}
+            </Link>
+          </span>
+        )}
+      </div>
     )
 
     // Virtualized path — render only the header
@@ -116,13 +108,30 @@ export default class OperationTag extends React.Component {
       return header
     }
 
+    const value = isShownKey.map((v) => escapeDeepLinkPath(v)).join("-")
+
     return (
-      <div className={showTag ? "opblock-tag-section is-open" : "opblock-tag-section"} >
-        {header}
-        <Collapse isOpened={showTag}>
-          {children}
-        </Collapse>
-      </div>
+      <Accordion
+        multiple
+        value={showTag ? [value] : []}
+        onValueChange={(next) => layoutActions.show(isShownKey, next.includes(value))}
+        className="border-0"
+      >
+        <AccordionItem
+          value={value}
+          className={showTag ? "opblock-tag-section is-open border-0" : "opblock-tag-section border-0"}
+        >
+          {/* `render` makes the trigger a div: the header carries its own
+              links and buttons, and a button cannot contain one. */}
+          <AccordionTrigger render={<div />}
+            nativeButton={false} className="px-0 py-0 hover:no-underline w-full [&>*:first-child]:flex-1 [&>*:first-child]:w-full">
+            {header}
+          </AccordionTrigger>
+          <AccordionContent className="px-0 pt-0 pb-0">
+            {children}
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     )
   }
 }

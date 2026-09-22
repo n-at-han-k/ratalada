@@ -7,6 +7,7 @@ import ImPropTypes from "react-immutable-proptypes"
 import cx from "classnames"
 import randomBytes from "randombytes"
 import { immutableToJS } from "@/lib/swagger/utils/index"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const usePrevious = (value) => {
   const ref = useRef()
@@ -42,9 +43,10 @@ const useTabs = ({
   const prevIsExecute = usePrevious(isExecute)
   const isFirstRender = useRef(true)
 
+  // ReUI's Tabs hand over the value; swagger read it off `data-name`.
   const handleTabChange = useCallback(
-    (e) => {
-      layoutActions.show(tabKey, e.target.dataset.name === tabs.model)
+    (value) => {
+      layoutActions.show(tabKey, value === tabs.model)
     },
     [layoutActions, tabKey, tabs.model]
   )
@@ -99,69 +101,23 @@ const ModelExample = ({
 
   return (
     <div className="model-example mt-[1em] [&_.model-container_.model-hint:not(.model-hint--embedded)]:top-[-1.15em]">
-      <ul className="tab [&_li.active]:font-bold" role="tablist">
-        <li
-          className={cx("tabitem", { active: activeTab === tabs.example })}
-          role="presentation"
-        >
-          <button
-            aria-controls={examplePanelId}
-            aria-selected={activeTab === tabs.example}
-            className="tablinks"
-            data-name="example"
-            id={exampleTabId}
-            onClick={onTabChange}
-            role="tab"
-          >
+      <Tabs value={activeTab} onValueChange={onTabChange}>
+        <TabsList>
+          <TabsTrigger value={tabs.example} id={exampleTabId} aria-controls={examplePanelId}>
             {isExecute ? "Edit Value" : "Example Value"}
-          </button>
-        </li>
-        {schema && (
-          <li
-            className={cx("tabitem", { active: activeTab === tabs.model })}
-            role="presentation"
-          >
-            <button
-              aria-controls={modelPanelId}
-              aria-selected={activeTab === tabs.model}
-              className={cx("tablinks", { inactive: isExecute })}
-              data-name="model"
-              id={modelTabId}
-              onClick={onTabChange}
-              role="tab"
-            >
+          </TabsTrigger>
+          {schema && (
+            <TabsTrigger value={tabs.model} id={modelTabId} aria-controls={modelPanelId}>
               {isOAS3 ? "Schema" : "Model"}
-            </button>
-          </li>
-        )}
-      </ul>
-      {activeTab === tabs.example && (
-        <div
-          aria-hidden={activeTab !== tabs.example}
-          aria-labelledby={exampleTabId}
-          data-name="examplePanel"
-          id={examplePanelId}
-          role="tabpanel"
-          tabIndex="0"
-        >
-          {example ? (
-            example
-          ) : (
-            <HighlightCode>(no example available</HighlightCode>
+            </TabsTrigger>
           )}
-        </div>
-      )}
+        </TabsList>
 
-      {activeTab === tabs.model && (
-        <div
-          className="model-container"
-          aria-hidden={activeTab === tabs.example}
-          aria-labelledby={modelTabId}
-          data-name="modelPanel"
-          id={modelPanelId}
-          role="tabpanel"
-          tabIndex="0"
-        >
+        <TabsContent value={tabs.example} id={examplePanelId} aria-labelledby={exampleTabId}>
+          {example ? example : <HighlightCode>(no example available)</HighlightCode>}
+        </TabsContent>
+
+        <TabsContent value={tabs.model} className="model-container" id={modelPanelId} aria-labelledby={modelTabId}>
           <ModelWrapper
             schema={schema}
             getComponent={getComponent}
@@ -175,8 +131,8 @@ const ModelExample = ({
             includeReadOnly={includeReadOnly}
             includeWriteOnly={includeWriteOnly}
           />
-        </div>
-      )}
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

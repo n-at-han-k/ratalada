@@ -8,6 +8,14 @@ import ImPropTypes from "react-immutable-proptypes"
 import { sanitizeUrl } from "@/lib/swagger/utils/url"
 import classNames from "classnames"
 import { getExtensions } from "@/lib/swagger/utils/index"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 const braceOpen = "{"
 const braceClose = "}"
@@ -145,34 +153,34 @@ export default class ObjectModel extends Component {
           {!isRef ? null : <JumpToPathSection />}
           <span className="inner-object">
             {
-              <table className="model [&_.property.primitive]:text-[#6b6b6b] [&_.property.primitive.extension]:block [&_tr.property-row_td]:align-top [&_tr.property-row_td:first-child]:pr-[0.2em] [&_tr.property-row_.star]:text-[red] [&_tr.extension]:text-[#777] [&_tr.extension_td:last-child]:align-top [&_tr_.renderedMarkdown_p:first-child]:mt-0">
-                <tbody>
+              <Table className="model [&_.property.primitive]:text-[#6b6b6b] [&_.property.primitive.extension]:block [&_tr.property-row_td]:align-top [&_tr.property-row_td:first-child]:pr-[0.2em] [&_tr.property-row_.star]:text-[red] [&_tr.extension]:text-[#777] [&_tr.extension_td:last-child]:align-top [&_tr_.renderedMarkdown_p:first-child]:mt-0">
+                <TableBody>
                   {!description ? null : (
-                    <tr className="description text-[#666] font-normal">
-                      <td>description:</td>
-                      <td>
+                    <TableRow className="description text-[#666] font-normal">
+                      <TableCell>description:</TableCell>
+                      <TableCell>
                         <Markdown source={description} />
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   )}
                   {externalDocsUrl && (
-                    <tr className={"external-docs"}>
-                      <td>externalDocs:</td>
-                      <td>
+                    <TableRow className={"external-docs"}>
+                      <TableCell>externalDocs:</TableCell>
+                      <TableCell>
                         <Link
                           target="_blank"
                           href={sanitizeUrl(externalDocsUrl)}
                         >
                           {externalDocsDescription || externalDocsUrl}
                         </Link>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   )}
                   {!deprecated ? null : (
-                    <tr className={"property"}>
-                      <td>deprecated:</td>
-                      <td>true</td>
-                    </tr>
+                    <TableRow className={"property"}>
+                      <TableCell>deprecated:</TableCell>
+                      <TableCell>true</TableCell>
+                    </TableRow>
                   )}
                   {!(properties && properties.size)
                     ? null
@@ -201,12 +209,12 @@ export default class ObjectModel extends Component {
                           }
 
                           return (
-                            <tr key={key} className={classNames.join(" ")}>
-                              <td>
+                            <TableRow key={key} className={classNames.join(" ")}>
+                              <TableCell>
                                 {key}
                                 {isRequired && <span className="star">*</span>}
-                              </td>
-                              <td>
+                              </TableCell>
+                              <TableCell>
                                 <Model
                                   key={`object-${name}-${key}_${value}`}
                                   {...otherProps}
@@ -217,16 +225,16 @@ export default class ObjectModel extends Component {
                                   schema={value}
                                   depth={depth + 1}
                                 />
-                              </td>
-                            </tr>
+                              </TableCell>
+                            </TableRow>
                           )
                         })
                         .toArray()}
                   {extensions.size === 0 ? null : (
                     <>
-                      <tr>
-                        <td>&nbsp;</td>
-                      </tr>
+                      <TableRow>
+                        <TableCell>&nbsp;</TableCell>
+                      </TableRow>
                       <ModelExtensions
                         extensions={extensions}
                         propClass="extension"
@@ -235,9 +243,9 @@ export default class ObjectModel extends Component {
                   )}
                   {!additionalProperties ||
                   !additionalProperties.size ? null : (
-                    <tr>
-                      <td>{"< * >:"}</td>
-                      <td>
+                    <TableRow>
+                      <TableCell>{"< * >:"}</TableCell>
+                      <TableCell>
                         <Model
                           {...otherProps}
                           required={false}
@@ -247,13 +255,13 @@ export default class ObjectModel extends Component {
                           schema={additionalProperties}
                           depth={depth + 1}
                         />
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   )}
                   {!allOf ? null : (
-                    <tr>
-                      <td>{"allOf ->"}</td>
-                      <td>
+                    <TableRow>
+                      <TableCell>{"allOf ->"}</TableCell>
+                      <TableCell>
                         {allOf.map((schema, k) => {
                           return (
                             <div key={k}>
@@ -269,13 +277,13 @@ export default class ObjectModel extends Component {
                             </div>
                           )
                         })}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   )}
                   {!anyOf ? null : (
-                    <tr>
-                      <td>{"anyOf ->"}</td>
-                      <td>
+                    <TableRow>
+                      <TableCell>{"anyOf ->"}</TableCell>
+                      <TableCell>
                         {anyOf.map((schema, k) => {
                           return (
                             <div key={k}>
@@ -291,13 +299,13 @@ export default class ObjectModel extends Component {
                             </div>
                           )
                         })}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   )}
                   {!oneOf ? null : (
-                    <tr>
-                      <td>{"oneOf ->"}</td>
-                      <td>
+                    <TableRow>
+                      <TableCell>{"oneOf ->"}</TableCell>
+                      <TableCell>
                         {oneOf.map((schema, k) => {
                           return (
                             <div key={k}>
@@ -313,13 +321,13 @@ export default class ObjectModel extends Component {
                             </div>
                           )
                         })}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   )}
                   {!not ? null : (
-                    <tr>
-                      <td>{"not ->"}</td>
-                      <td>
+                    <TableRow>
+                      <TableCell>{"not ->"}</TableCell>
+                      <TableCell>
                         <div>
                           <Model
                             {...otherProps}
@@ -331,11 +339,11 @@ export default class ObjectModel extends Component {
                             depth={depth + 1}
                           />
                         </div>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   )}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             }
           </span>
           <span className="brace-close">{braceClose}</span>

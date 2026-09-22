@@ -6,6 +6,7 @@ import React from "react"
 import { Map } from "immutable"
 import PropTypes from "prop-types"
 import ImPropTypes from "react-immutable-proptypes"
+import { Select } from "@/components/select"
 
 export default class ExamplesSelect extends React.PureComponent {
   static propTypes = {
@@ -38,10 +39,8 @@ export default class ExamplesSelect extends React.PureComponent {
     }
   }
 
-  _onDomSelect = (e) => {
+  _onDomSelect = (key) => {
     if (typeof this.props.onSelect === "function") {
-      const element = e.target.selectedOptions[0]
-      const key = element.getAttribute("value")
 
       this._onSelect(key, {
         isSyntheticChange: false,
@@ -107,32 +106,28 @@ export default class ExamplesSelect extends React.PureComponent {
         {showLabels ? (
           <span className="mr-2 font-bold text-[0.9rem]">Examples: </span>
         ) : null}
-        <select
+        <Select
           className="examples-select-element"
           onChange={this._onDomSelect}
+          allowEmptyValue={false}
           value={
             isModifiedValueAvailable && isValueModified
               ? "__MODIFIED__VALUE__"
               : currentExampleKey || ""
           }
-        >
-          {isModifiedValueAvailable ? (
-            <option value="__MODIFIED__VALUE__">[Modified value]</option>
-          ) : null}
-          {examples
-            .map((example, exampleName) => {
-              return (
-                <option
-                  key={exampleName} // for React
-                  value={exampleName} // for matching to select's `value`
-                >
-                  {(Map.isMap(example) && example.get("summary")) ||
-                    exampleName}
-                </option>
-              )
-            })
-            .valueSeq()}
-        </select>
+          allowedValues={[
+            ...(isModifiedValueAvailable
+              ? [{ value: "__MODIFIED__VALUE__", label: "[Modified value]" }]
+              : []),
+            ...examples
+              .map((example, exampleName) => ({
+                value: exampleName,
+                label: (Map.isMap(example) && example.get("summary")) || exampleName,
+              }))
+              .valueSeq()
+              .toArray(),
+          ]}
+        />
       </div>
     )
   }

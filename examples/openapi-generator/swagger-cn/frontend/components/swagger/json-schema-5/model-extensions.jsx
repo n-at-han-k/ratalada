@@ -5,6 +5,14 @@ import React from "react"
 import PropTypes from "prop-types"
 import { immutableToJS } from "@/lib/swagger/utils/index"
 import ImPropTypes from "react-immutable-proptypes"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 export const ModelExtensions = ({ extensions, propClass = "" }) => {
   return extensions
@@ -13,10 +21,10 @@ export const ModelExtensions = ({ extensions, propClass = "" }) => {
       const normalizedValue = immutableToJS(value) ?? null
 
       return (
-        <tr key={key} className={propClass}>
-          <td>{key}</td>
-          <td>{JSON.stringify(normalizedValue)}</td>
-        </tr>
+        <TableRow key={key} className={propClass}>
+          <TableCell>{key}</TableCell>
+          <TableCell>{JSON.stringify(normalizedValue)}</TableCell>
+        </TableRow>
       )
     })
     .toArray()

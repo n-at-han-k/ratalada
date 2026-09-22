@@ -1,6 +1,14 @@
 import React from "react"
 import PropTypes from "prop-types"
 import ImPropTypes from "react-immutable-proptypes"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 const Headers = ( { headers } )=>{
   return (
@@ -85,16 +93,16 @@ export default class LiveResponse extends React.Component {
           </div>
         }
         <h4>Server response</h4>
-        <table className="responses-table live-responses-table">
-          <thead>
-          <tr className="responses-header">
-            <td className="col_header response-col_status">Code</td>
-            <td className="col_header response-col_description [&_.markdown_p:first-child]:m-0 [&_.renderedMarkdown_p:first-child]:m-0 [&_.markdown_p:last-child]:mb-0 [&_.renderedMarkdown_p:last-child]:mb-0">Details</td>
-          </tr>
-          </thead>
-          <tbody>
-            <tr className="response">
-              <td className="response-col_status">
+        <Table className="responses-table live-responses-table">
+          <TableHeader>
+          <TableRow className="responses-header">
+            <TableCell className="col_header response-col_status">Code</TableCell>
+            <TableCell className="col_header response-col_description [&_.markdown_p:first-child]:m-0 [&_.renderedMarkdown_p:first-child]:m-0 [&_.markdown_p:last-child]:mb-0 [&_.renderedMarkdown_p:last-child]:mb-0">Details</TableCell>
+          </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow className="response">
+              <TableCell className="response-col_status">
                 { status }
                 {
                   notDocumented ? <div className="response-undocumented">
@@ -102,8 +110,8 @@ export default class LiveResponse extends React.Component {
                                   </div>
                                 : null
                 }
-              </td>
-              <td className="response-col_description [&_.markdown_p:first-child]:m-0 [&_.renderedMarkdown_p:first-child]:m-0 [&_.markdown_p:last-child]:mb-0 [&_.renderedMarkdown_p:last-child]:mb-0">
+              </TableCell>
+              <TableCell className="response-col_description [&_.markdown_p:first-child]:m-0 [&_.renderedMarkdown_p:first-child]:m-0 [&_.markdown_p:last-child]:mb-0 [&_.renderedMarkdown_p:last-child]:mb-0">
                 {
                   isError ? <Markdown source={`${response.get("name") !== "" ? `${response.get("name")}: ` : ""}${response.get("message")}`}/>
                           : null
@@ -123,10 +131,10 @@ export default class LiveResponse extends React.Component {
                 {
                   displayRequestDuration && duration ? <Duration duration={ duration } /> : null
                 }
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </div>
     )
   }

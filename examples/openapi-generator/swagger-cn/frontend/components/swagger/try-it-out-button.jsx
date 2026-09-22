@@ -1,5 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
+import { Button } from "@/components/ui/button"
 
 export default class TryItOutButton extends React.Component {
 
@@ -28,12 +29,12 @@ export default class TryItOutButton extends React.Component {
     return (
       <div className={showReset ? "try-out btn-group" : "try-out"}>
         {
-          enabled ? <button className="btn try-out__btn cancel ml-5 [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px]" onClick={ onCancelClick }>Cancel</button>
-                  : <button className="btn try-out__btn ml-5 [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px]" onClick={ onTryoutClick }>Try it out </button>
+          enabled ? <Button variant="outline" className="try-out__btn ml-5" onClick={ onCancelClick }>Cancel</Button>
+                  : <Button variant="outline" className="try-out__btn ml-5" onClick={ onTryoutClick }>Try it out </Button>
 
         }
         {
-          showReset && <button className="btn try-out__btn reset ml-5 [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px]" onClick={ onResetClick }>Reset</button>
+          showReset && <Button variant="ghost" className="try-out__btn ml-5" onClick={ onResetClick }>Reset</Button>
         }
       </div>
     )

@@ -13,7 +13,6 @@ import numberTypeCaster from "@/lib/swagger/config/type-cast/type-casters/number
 import objectTypeCaster from "@/lib/swagger/config/type-cast/type-casters/object"
 import sorterTypeCaster from "@/lib/swagger/config/type-cast/type-casters/sorter"
 import stringTypeCaster from "@/lib/swagger/config/type-cast/type-casters/string"
-import syntaxHighlightTypeCaster from "@/lib/swagger/config/type-cast/type-casters/syntax-highlight"
 import undefinedStringTypeCaster from "@/lib/swagger/config/type-cast/type-casters/undefined-string"
 import defaultOptions from "@/lib/swagger/config/defaults"
 
@@ -109,15 +108,6 @@ const mappings = {
     typeCaster: arrayTypeCaster,
     defaultValue: defaultOptions.supportedSubmitMethods,
   },
-  syntaxHighlight: {
-    typeCaster: syntaxHighlightTypeCaster,
-    defaultValue: defaultOptions.syntaxHighlight,
-  },
-  "syntaxHighlight.activated": {
-    typeCaster: booleanTypeCaster,
-    defaultValue: defaultOptions.syntaxHighlight.activated,
-  },
-  "syntaxHighlight.theme": { typeCaster: stringTypeCaster },
   tagsSorter: {
     typeCaster: sorterTypeCaster,
   },

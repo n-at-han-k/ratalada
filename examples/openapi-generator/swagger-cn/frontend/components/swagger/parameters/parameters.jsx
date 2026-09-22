@@ -3,6 +3,14 @@ import PropTypes from "prop-types"
 import { Map, List } from "immutable"
 import ImPropTypes from "react-immutable-proptypes"
 import createHtmlReadyId from "@/lib/swagger/utils/create-html-ready-id"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 export default class Parameters extends Component {
 
@@ -167,14 +175,14 @@ export default class Parameters extends Component {
         {parametersVisible ? <div className="parameters-container">
           {!groupedParametersArr.length ? <div className="opblock-description-wrapper"><p>No parameters</p></div> :
             <div className="p-5">
-              <table className="parameters">
-                <thead>
-                <tr>
-                  <th className="col_header parameters-col_name">Name</th>
-                  <th className="col_header parameters-col_description [&_select]:border [&_.markdown:first-child_p:first-child]:m-0 [&_.renderedMarkdown:first-child_p:first-child]:m-0">Description</th>
-                </tr>
-                </thead>
-                <tbody>
+              <Table className="parameters">
+                <TableHeader>
+                <TableRow>
+                  <TableHead className="col_header parameters-col_name">Name</TableHead>
+                  <TableHead className="col_header parameters-col_description [&_select]:border [&_.markdown:first-child_p:first-child]:m-0 [&_.renderedMarkdown:first-child_p:first-child]:m-0">Description</TableHead>
+                </TableRow>
+                </TableHeader>
+                <TableBody>
                 {
                   groupedParametersArr.map((parameter, i) => (
                     <ParameterRow
@@ -195,8 +203,8 @@ export default class Parameters extends Component {
                       isExecute={isExecute} />
                   ))
                 }
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           }
         </div> : null}

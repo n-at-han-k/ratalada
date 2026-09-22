@@ -1,6 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import oauth2Authorize from "@/lib/swagger/oauth2-authorize"
+import { Select } from "@/components/select"
 
 export default class Oauth2 extends React.Component {
   static propTypes = {
@@ -186,10 +187,14 @@ export default class Oauth2 extends React.Component {
                 {
                   isAuthorized ? <code> { this.state.passwordType } </code>
                     : <Col tablet={10} desktop={10}>
-                      <select id="password_type" data-name="passwordType" onChange={ this.onInputChange }>
-                        <option value="basic">Authorization header</option>
-                        <option value="request-body">Request body</option>
-                      </select>
+                      <Select
+                        id="password_type"
+                        allowEmptyValue={false}
+                        allowedValues={["basic", "request-body"]}
+                        onChange={(value) =>
+                          this.onInputChange({ target: { dataset: { name: "passwordType" }, value } })
+                        }
+                      />
                     </Col>
                 }
               </Row>
@@ -270,11 +275,11 @@ export default class Oauth2 extends React.Component {
         }
         <div className="auth-btn-wrapper">
         { isValid &&
-          ( isAuthorized ? <Button className="btn modal-btn auth authorize [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px]" onClick={ this.logout } aria-label="Remove authorization">Logout</Button>
-        : <Button className="btn modal-btn auth authorize [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px]" onClick={ this.authorize } aria-label="Apply given OAuth2 credentials">Authorize</Button>
+          ( isAuthorized ? <Button variant="success" className="auth authorize" onClick={ this.logout } aria-label="Remove authorization">Logout</Button>
+        : <Button variant="success" className="auth authorize" onClick={ this.authorize } aria-label="Apply given OAuth2 credentials">Authorize</Button>
           )
         }
-          <Button className="btn modal-btn auth btn-done [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px] ml-[1em]" onClick={ this.close }>Close</Button>
+          <Button variant="outline" className="auth ml-[1em]" onClick={ this.close }>Close</Button>
         </div>
 
       </div>

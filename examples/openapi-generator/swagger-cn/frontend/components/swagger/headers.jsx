@@ -1,6 +1,14 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { Map } from "immutable"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 const propClass = "header-example"
 
@@ -22,15 +30,15 @@ export default class Headers extends React.Component {
       return (
       <div className="headers-wrapper">
         <h4 className="headers__title">Headers:</h4>
-        <table className="headers [&_.header-example]:italic [&_.header-example]:text-[#999]">
-          <thead>
-            <tr className="header-row">
-              <th className="header-col">Name</th>
-              <th className="header-col">Description</th>
-              <th className="header-col">Type</th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table className="headers [&_.header-example]:italic [&_.header-example]:text-[#999]">
+          <TableHeader>
+            <TableRow className="header-row">
+              <TableHead className="header-col">Name</TableHead>
+              <TableHead className="header-col">Description</TableHead>
+              <TableHead className="header-col">Type</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
           {
             headers.entrySeq().map( ([ key, header ]) => {
               if(!Map.isMap(header)) {
@@ -41,17 +49,17 @@ export default class Headers extends React.Component {
               const type = header.getIn(["schema"]) ? header.getIn(["schema", "type"]) : header.getIn(["type"])
               const schemaExample = header.getIn(["schema", "example"])
 
-              return (<tr key={ key }>
-                <td className="header-col">{ key }</td>
-                <td className="header-col">{
+              return (<TableRow key={ key }>
+                <TableCell className="header-col">{ key }</TableCell>
+                <TableCell className="header-col">{
                   !description ? null : <Markdown source={ description } />
-                }</td>
-                <td className="header-col">{ type } { schemaExample ? <Property propKey={ "Example" } propVal={ schemaExample } propClass={ propClass } /> : null }</td>
-              </tr>)
+                }</TableCell>
+                <TableCell className="header-col">{ type } { schemaExample ? <Property propKey={ "Example" } propVal={ schemaExample } propClass={ propClass } /> : null }</TableCell>
+              </TableRow>)
             }).toArray()
           }
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     )
   }

@@ -28,7 +28,7 @@ import SwaggerClientPlugin from "@/lib/swagger/plugins/swagger-client/index"
 import UtilPlugin from "@/lib/swagger/plugins/util/index"
 import ViewPlugin from "@/lib/swagger/plugins/view/index"
 import DownloadUrlPlugin from "@/lib/swagger/plugins/download-url/index"
-import SyntaxHighlightingPlugin from "@/lib/swagger/plugins/syntax-highlighting/index"
+import CodeBlockPlugin from "@/lib/swagger/plugins/code-block/index"
 import VersionsPlugin from "@/lib/swagger/plugins/versions/index"
 import SafeRenderPlugin from "@/lib/swagger/plugins/safe-render/index"
 
@@ -164,7 +164,7 @@ SwaggerUI.plugins = {
   Util: UtilPlugin,
   View: ViewPlugin,
   DownloadUrl: DownloadUrlPlugin,
-  SyntaxHighlighting: SyntaxHighlightingPlugin,
+  CodeBlock: CodeBlockPlugin,
   Versions: VersionsPlugin,
   SafeRender: SafeRenderPlugin,
 }

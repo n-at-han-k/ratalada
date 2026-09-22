@@ -6,6 +6,14 @@ import win from "@/lib/swagger/window"
 import { getExtensions, getCommonExtensions, numberToString, stringify, isEmptyValue } from "@/lib/swagger/utils/index"
 import getParameterSchema from "@/lib/swagger/utils/get-parameter-schema"
 import { parseParameterArrayValue } from "@/lib/swagger/utils/parse-parameter-array-value"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 export default class ParameterRow extends Component {
   static propTypes = {
@@ -350,8 +358,8 @@ export default class ParameterRow extends Component {
       />
 
     return (
-      <tr data-param-name={param.get("name")} data-param-in={param.get("in")}>
-        <td className="parameters-col_name">
+      <TableRow data-param-name={param.get("name")} data-param-in={param.get("in")}>
+        <TableCell className="parameters-col_name">
           <div className={`${required ? "parameter__name required" : "parameter__name"} [&.required]:font-bold`}>
             { param.get("name") }
             { !required ? null : <span>&nbsp;*</span> }
@@ -364,9 +372,9 @@ export default class ParameterRow extends Component {
             { isOAS3 && param.get("deprecated") ? "deprecated": null }
           </div>
           <div className="parameter__in">({ param.get("in") })</div>
-        </td>
+        </TableCell>
 
-        <td className="parameters-col_description [&_select]:border [&_.markdown:first-child_p:first-child]:m-0 [&_.renderedMarkdown:first-child_p:first-child]:m-0">
+        <TableCell className="parameters-col_description [&_select]:border [&_.markdown:first-child_p:first-child]:m-0 [&_.renderedMarkdown:first-child_p:first-child]:m-0">
           { param.get("description") ? <Markdown source={ param.get("description") }/> : null }
 
           { (bodyParam || !isExecute) && isDisplayParamEnum ?
@@ -459,9 +467,9 @@ export default class ParameterRow extends Component {
           { !showCommonExtensions || !commonExt.size ? null : commonExt.entrySeq().map(([key, v]) => <ParameterExt key={`${key}-${v}`} xKey={key} xVal={v} /> )}
           { !showExtensions || !extensions.size ? null : extensions.entrySeq().map(([key, v]) => <ParameterExt key={`${key}-${v}`} xKey={key} xVal={v} /> )}
 
-        </td>
+        </TableCell>
 
-      </tr>
+      </TableRow>
     )
 
   }

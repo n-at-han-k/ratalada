@@ -1,5 +1,13 @@
 import React from "react"
 import PropTypes from "prop-types"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 export const OperationExt = ({ extensions, getComponent }) => {
     let OperationExtRow = getComponent("OperationExtRow")
@@ -10,19 +18,19 @@ export const OperationExt = ({ extensions, getComponent }) => {
         </div>
         <div className="p-5">
 
-          <table>
-            <thead>
-              <tr>
-                <td className="col_header">Field</td>
-                <td className="col_header">Value</td>
-              </tr>
-            </thead>
-            <tbody>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableCell className="col_header">Field</TableCell>
+                <TableCell className="col_header">Value</TableCell>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
                 {
                     extensions.entrySeq().map(([k, v]) => <OperationExtRow key={`${k}-${v}`} xKey={k} xVal={v} />)
                 }
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
     )

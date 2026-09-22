@@ -4,6 +4,14 @@ import PropTypes from "prop-types"
 import ImPropTypes from "react-immutable-proptypes"
 import { defaultStatusCode, getAcceptControllingResponse, isExtension } from "@/lib/swagger/utils/index"
 import createHtmlReadyId from "@/lib/swagger/utils/create-html-ready-id"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 export default class Responses extends React.Component {
   static propTypes = {
@@ -122,15 +130,15 @@ export default class Responses extends React.Component {
 
           }
 
-          <table aria-live="polite" className="responses-table" id={regionId} role="region">
-            <thead>
-              <tr className="responses-header">
-                <td className="col_header response-col_status">Code</td>
-                <td className="col_header response-col_description [&_.markdown_p:first-child]:m-0 [&_.renderedMarkdown_p:first-child]:m-0 [&_.markdown_p:last-child]:mb-0 [&_.renderedMarkdown_p:last-child]:mb-0">Description</td>
-                { specSelectors.isOAS3() ? <td className="col col_header response-col_links [&_.operation-link]:mb-[1.5em] [&_.operation-link_.description]:mb-[0.5em]">Links</td> : null }
-              </tr>
-            </thead>
-            <tbody>
+          <Table aria-live="polite" className="responses-table" id={regionId} role="region">
+            <TableHeader>
+              <TableRow className="responses-header">
+                <TableCell className="col_header response-col_status">Code</TableCell>
+                <TableCell className="col_header response-col_description [&_.markdown_p:first-child]:m-0 [&_.renderedMarkdown_p:first-child]:m-0 [&_.markdown_p:last-child]:mb-0 [&_.renderedMarkdown_p:last-child]:mb-0">Description</TableCell>
+                { specSelectors.isOAS3() ? <TableCell className="col col_header response-col_links [&_.operation-link]:mb-[1.5em] [&_.operation-link_.description]:mb-[0.5em]">Links</TableCell> : null }
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {
                 nonExtensionResponses.entrySeq().map( ([code, response]) => {
 
@@ -162,8 +170,8 @@ export default class Responses extends React.Component {
                     )
                 }).toArray()
               }
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
     )

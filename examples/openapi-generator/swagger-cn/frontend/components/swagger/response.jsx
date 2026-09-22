@@ -5,6 +5,14 @@ import cx from "classnames"
 import { fromJS, Seq, Iterable, Map } from "immutable"
 import { getExtensions, fromJSOrdered, stringify } from "@/lib/swagger/utils/index"
 import { getKnownSyntaxHighlighterLanguage } from "@/lib/swagger/utils/jsonParse"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 
 const getExampleComponent = ( sampleResponse, HighlightCode ) => {
@@ -190,11 +198,11 @@ export default class Response extends React.Component {
     const example = getExampleComponent( sampleResponse, HighlightCode )
 
     return (
-      <tr className={ "response " + ( className || "") } data-code={code}>
-        <td className="response-col_status">
+      <TableRow className={ "response " + ( className || "") } data-code={code}>
+        <TableCell className="response-col_status">
           { code }
-        </td>
-        <td className="response-col_description [&_.markdown_p:first-child]:m-0 [&_.renderedMarkdown_p:first-child]:m-0 [&_.markdown_p:last-child]:mb-0 [&_.renderedMarkdown_p:last-child]:mb-0">
+        </TableCell>
+        <TableCell className="response-col_description [&_.markdown_p:first-child]:m-0 [&_.renderedMarkdown_p:first-child]:m-0 [&_.markdown_p:last-child]:mb-0 [&_.renderedMarkdown_p:last-child]:mb-0">
 
           <div className="response-col_description__inner">
             <Markdown source={ response.get( "description" ) } />
@@ -280,15 +288,15 @@ export default class Response extends React.Component {
             />
           ) : null}
 
-        </td>
-        {isOAS3 ? <td className="response-col_links [&_.operation-link]:mb-[1.5em] [&_.operation-link_.description]:mb-[0.5em]">
+        </TableCell>
+        {isOAS3 ? <TableCell className="response-col_links [&_.operation-link]:mb-[1.5em] [&_.operation-link_.description]:mb-[0.5em]">
           { links ?
             links.toSeq().entrySeq().map(([key, link]) => {
               return <OperationLink key={key} name={key} link={ link } getComponent={getComponent}/>
             })
           : <i>No links</i>}
-        </td> : null}
-      </tr>
+        </TableCell> : null}
+      </TableRow>
     )
   }
 }

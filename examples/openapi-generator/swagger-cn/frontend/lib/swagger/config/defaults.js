@@ -79,10 +79,6 @@ const defaultOptions = Object.freeze({
   fn: {},
   components: {},
 
-  syntaxHighlight: {
-    activated: true,
-    theme: "agate",
-  },
   operationsSorter: null,
   tagsSorter: null,
   onComplete: null,

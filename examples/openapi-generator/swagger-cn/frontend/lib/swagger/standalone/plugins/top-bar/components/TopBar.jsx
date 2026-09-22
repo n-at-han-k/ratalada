@@ -2,6 +2,7 @@ import React, { cloneElement } from "react"
 import PropTypes from "prop-types"
 
 import {parseSearch, serializeSearch} from "@/lib/swagger/utils/index"
+import { Select } from "@/components/select"
 
 class TopBar extends React.Component {
 
@@ -41,11 +42,15 @@ class TopBar extends React.Component {
     this.props.specActions.download(url)
   }
 
-  onUrlSelect =(e)=> {
-    let url = e.target.value || e.target.href
+  // The registry's Select hands over the value; the anchor form still
+  // arrives as an event, so both are accepted.
+  onUrlSelect = (eventOrValue) => {
+    const url = typeof eventOrValue === "string"
+      ? eventOrValue
+      : eventOrValue?.target?.value || eventOrValue?.target?.href
     this.loadSpec(url)
     this.setSelectedUrl(url)
-    e.preventDefault()
+    eventOrValue?.preventDefault?.()
   }
 
   downloadUrl = (e) => {
@@ -127,16 +132,16 @@ class TopBar extends React.Component {
     let formOnSubmit = null
 
     if(urls) {
-      let rows = []
-      urls.forEach((link, i) => {
-        rows.push(<option key={i} value={link.url}>{link.name}</option>)
-      })
-
       control.push(
         <label className="select-label" htmlFor="select"><span>Select a definition</span>
-          <select id="select" disabled={isLoading} onChange={ this.onUrlSelect } value={urls[this.state.selectedIndex].url}>
-            {rows}
-          </select>
+          <Select
+            id="select"
+            disabled={isLoading}
+            onChange={this.onUrlSelect}
+            allowEmptyValue={false}
+            value={urls[this.state.selectedIndex].url}
+            allowedValues={urls.map((link) => ({ value: link.url, label: link.name }))}
+          />
         </label>
       )
     }
@@ -152,7 +157,7 @@ class TopBar extends React.Component {
           id="download-url-input"
         />
       )
-      control.push(<Button className="download-url-button" onClick={ this.downloadUrl }>Explore</Button>)
+      control.push(<Button variant="default" className="download-url-button" onClick={ this.downloadUrl }>Explore</Button>)
     }
 
     return (

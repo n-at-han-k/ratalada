@@ -93,7 +93,7 @@ export class JsonSchema_string extends Component {
 
     if ( enumValue ) {
       const Select = getComponent("Select")
-      return (<Select className={ errors.length ? "invalid" : ""}
+      return (<Select aria-invalid={errors.length > 0}
                       title={ errors.length ? errors : ""}
                       allowedValues={ [...enumValue] }
                       value={ value }
@@ -107,7 +107,7 @@ export class JsonSchema_string extends Component {
     if (type && type === "file") {
       return (
         <Input type="file"
-          className={errors.length ? "invalid" : ""}
+          aria-invalid={errors.length > 0}
           title={errors.length ? errors : ""}
           onChange={this.onChange}
           disabled={isDisabled} />
@@ -117,7 +117,7 @@ export class JsonSchema_string extends Component {
       return (
         <DebounceInput
           type={format && format === "password" ? "password" : "text"}
-          className={errors.length ? "invalid" : ""}
+          aria-invalid={errors.length > 0}
           title={errors.length ? errors : ""}
           value={value}
           minLength={0}
@@ -218,7 +218,7 @@ export class JsonSchema_array extends PureComponent {
 
     if ( schemaItemsEnum ) {
       const Select = getComponent("Select")
-      return (<Select className={ errors.length ? "invalid" : ""}
+      return (<Select aria-invalid={errors.length > 0}
                       title={ errors.length ? errors : ""}
                       multiple={ true }
                       value={ value }
@@ -313,7 +313,7 @@ export class JsonSchemaArrayItemText extends Component {
 
     return (<DebounceInput
       type={"text"}
-      className={errors.length ? "invalid" : ""}
+      aria-invalid={errors.length > 0}
       title={errors.length ? errors : ""}
       value={value}
       minLength={0}
@@ -339,7 +339,7 @@ export class JsonSchemaArrayItemFile extends Component {
     const isDisabled = disabled || !("FormData" in window)
 
     return (<Input type="file"
-      className={errors.length ? "invalid" : ""}
+      aria-invalid={errors.length > 0}
       title={errors.length ? errors : ""}
       onChange={this.onFileChange}
       disabled={isDisabled} />)
@@ -359,7 +359,7 @@ export class JsonSchema_boolean extends Component {
     let booleanValue = !enumValue && ["true", "false"]
     const Select = getComponent("Select")
 
-    return (<Select className={ errors.length ? "invalid" : ""}
+    return (<Select aria-invalid={errors.length > 0}
                     title={ errors.length ? errors : ""}
                     value={ String(value) }
                     disabled={ disabled }

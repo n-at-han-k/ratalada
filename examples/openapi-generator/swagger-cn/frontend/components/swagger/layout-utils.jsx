@@ -108,104 +108,15 @@ Row.propTypes = {
   className: PropTypes.string
 }
 
-export class Button extends React.Component {
+// Button, TextArea and Input are gone. They were a <button>, a <textarea>
+// and an <input> with a class on them; the registry now answers those names
+// with the shadcn components, so every `getComponent("Button")` in the app
+// gets one without a single call site changing.
+//
+// See presets/base/plugins/form-components.
 
-  static propTypes = {
-    className: PropTypes.string
-  }
-
-  static defaultProps = {
-    className: ""
-  }
-
-  render() {
-    return <button {...this.props} className={xclass(this.props.className, "button")} />
-  }
-
-}
-
-
-export const TextArea = (props) => <textarea {...props} />
-
-export const Input = (props) => <input {...props} />
-
-export class Select extends React.Component {
-  static propTypes = {
-    allowedValues: PropTypes.array,
-    value: PropTypes.any,
-    onChange: PropTypes.func,
-    multiple: PropTypes.bool,
-    allowEmptyValue: PropTypes.bool,
-    className: PropTypes.string,
-    disabled: PropTypes.bool,
-  }
-
-  static defaultProps = {
-    multiple: false,
-    allowEmptyValue: true
-  }
-
-  constructor(props, context) {
-    super(props, context)
-
-    let value
-
-    if (props.value) {
-      value = props.value
-    } else {
-      value = props.multiple ? [""] : ""
-    }
-
-    this.state = { value: value }
-  }
-
-  onChange = (e) => {
-    let { onChange, multiple } = this.props
-    let options = [].slice.call(e.target.options)
-    let value
-
-
-    if (multiple) {
-      value = options.filter(function (option) {
-          return option.selected
-        })
-        .map(function (option){
-          return option.value
-        })
-    } else {
-      value = e.target.value
-    }
-
-    this.setState({value: value})
-
-    if(onChange) {
-      onChange(value)
-    }
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    // TODO: this puts us in a weird area btwn un/controlled selection... review
-    if(nextProps.value !== this.props.value) {
-      this.setState({ value: nextProps.value })
-    }
-  }
-
-  render(){
-    let { allowedValues, multiple, allowEmptyValue, disabled } = this.props
-    let value = this.state.value?.toJS?.() || this.state.value
-
-    return (
-      <select className={this.props.className} multiple={ multiple } value={value} onChange={ this.onChange } disabled={disabled} >
-        { allowEmptyValue ? <option value="">--</option> : null }
-        {
-          allowedValues.map(function (item, key) {
-            return <option key={ key } value={ String(item) }>{ String(item) }</option>
-          })
-        }
-      </select>
-    )
-  }
-}
+// Select is gone too -- see components/select.jsx, which presents this same
+// API over ReUI's composed Select.
 
 export class Link extends React.Component {
 

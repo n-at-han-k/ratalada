@@ -1,15 +1,15 @@
+# Packages whose postinstall scripts pnpm must not run. Nothing here invokes
+# them -- tree-sitter and @parcel/watcher come in through shadcn's registry
+# tooling, core-js-pure through swagger-ui's babel runtime -- and leaving them
+# undeclared makes every `pnpm install` exit non-zero with
+# ERR_PNPM_IGNORED_BUILDS.
 allowBuilds:
-  # react-email ships the esbuild CLI; nothing here invokes it, so its native
-  # postinstall stays unrun.
-  '@carbon/grid': false
-  '@carbon/layout': false
-  '@parcel/watcher': set this to true or false
-  '@scarf/scarf': set this to true or false
-  '@tree-sitter-grammars/tree-sitter-yaml': set this to true or false
-  core-js-pure: set this to true or false
+  '@parcel/watcher': false
+  '@scarf/scarf': false
+  '@tree-sitter-grammars/tree-sitter-yaml': false
+  core-js-pure: false
   esbuild: false
-  inferno: false
-  tree-sitter: set this to true or false
-  tree-sitter-json: set this to true or false
+  tree-sitter: false
+  tree-sitter-json: false
 minimumReleaseAgeExclude:
   - vite@8.3.0

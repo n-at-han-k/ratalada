@@ -6,6 +6,12 @@ import { Iterable, List } from "immutable"
 import ImPropTypes from "react-immutable-proptypes"
 
 import RollingLoadSVG from "@/lib/swagger/assets/rolling-load.svg"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 export default class Operation extends PureComponent {
   static propTypes = {
@@ -94,7 +100,6 @@ export default class Operation extends PureComponent {
     const Parameters = getComponent( "parameters", true )
     const Execute = getComponent( "execute" )
     const Clear = getComponent( "clear" )
-    const Collapse = getComponent( "Collapse" )
     const Markdown = getComponent("Markdown", true)
     const Schemes = getComponent( "schemes" )
     const OperationServers = getComponent( "OperationServers" )
@@ -114,33 +119,55 @@ export default class Operation extends PureComponent {
 
     const validationErrors = specSelectors.validationErrors([path, method])
 
+    const accordionValue = escapeDeepLinkPath(isShownKey.join("-"))
+
     return (
-        <div className={`${deprecated ? "opblock opblock-deprecated" : isShown ? `opblock opblock-${method} is-open` : `opblock opblock-${method}`} [&_.tab-header_.tab-item]:cursor-pointer [&_.tab-header_.tab-item]:py-0 [&_.tab-header_.tab-item]:px-10 [&_.tab-header_.tab-item:first-of-type]:py-0 [&_.tab-header_.tab-item:first-of-type]:pl-0 [&_.tab-header_.tab-item:first-of-type]:pr-10 [&.is-open]:[&_.opblock-summary]:border-b [&.is-open]:[&_.opblock-summary]:border-solid [&.is-open]:[&_.opblock-summary]:border-black [&_.opblock-summary]:items-center [&_.opblock-summary]:cursor-pointer [&_.opblock-summary]:flex [&_.opblock-summary]:p-[5px] [&.opblock-post]:[&_.opblock-summary]:border-[#49cc90] [&.opblock-put]:[&_.opblock-summary]:border-[#fca130] [&.opblock-delete]:[&_.opblock-summary]:border-[#f93e3e] [&.opblock-get]:[&_.opblock-summary]:border-[#61affe] [&.opblock-patch]:[&_.opblock-summary]:border-[#50e3c2] [&.opblock-head]:[&_.opblock-summary]:border-[#9012fe] [&.opblock-options]:[&_.opblock-summary]:border-[#0d5aa7] [&.opblock-query]:[&_.opblock-summary]:border-[#9d408a] [&.opblock-deprecated]:[&_.opblock-summary]:border-[#ebebeb] [&_.opblock-schemes_.schemes-title]:py-0 [&_.opblock-schemes_.schemes-title]:pl-0 [&_.opblock-schemes_.schemes-title]:pr-2.5`} id={escapeDeepLinkPath(isShownKey.join("-"))} >
-          <OperationSummary operationProps={operationProps} isShown={isShown} toggleShown={toggleShown} getComponent={getComponent} authActions={authActions} authSelectors={authSelectors} specPath={specPath} />
-          <Collapse isOpened={isShown}>
-            <div className="opblock-body [&_pre.microlight_.headerline]:block">
+      <Accordion
+        multiple
+        value={isShown ? [accordionValue] : []}
+        onValueChange={(next) => {
+          if (next.includes(accordionValue) !== isShown) toggleShown()
+        }}
+        className="border-0"
+      >
+        <AccordionItem
+          value={accordionValue}
+          id={accordionValue}
+          className={`${deprecated ? "opblock opblock-deprecated" : isShown ? `opblock opblock-${method} is-open` : `opblock opblock-${method}`} border-border bg-card rounded-lg border`}
+        >
+          {/* Rendered as a div, not a button: the row still carries the copy
+              and authorize buttons, and a button cannot contain one. */}
+          <AccordionTrigger
+            render={<div />}
+            nativeButton={false}
+            className="items-center px-1 py-0 hover:no-underline w-full [&>*:first-child]:flex-1 [&>*:first-child]:w-full"
+          >
+            <OperationSummary operationProps={operationProps} getComponent={getComponent} authActions={authActions} authSelectors={authSelectors} specPath={specPath} />
+          </AccordionTrigger>
+          <AccordionContent className="px-0 pt-0 pb-0">
+            <div className="space-y-4 px-1 pb-4">
               { (operation && operation.size) || operation === null ? null :
                 <RollingLoadSVG height="32px" width="32px" className="opblock-loading-animation" />
               }
-              { deprecated && <h4 className="opblock-title_normal"> Warning: Deprecated</h4>}
+              { deprecated && <h4 className="text-muted-foreground text-sm font-semibold">Warning: Deprecated</h4>}
               { description &&
-                <div className="opblock-description-wrapper">
-                  <div className="opblock-description">
+                <div className="text-sm">
+                  <div>
                     <Markdown source={ description } />
                   </div>
                 </div>
               }
               {
                 externalDocsUrl ?
-                <div className="opblock-external-docs-wrapper">
-                  <h4 className="opblock-title_normal">Find more details</h4>
-                  <div className="opblock-external-docs">
+                <div className="space-y-1 text-sm">
+                  <h4 className="text-sm font-semibold">Find more details</h4>
+                  <div className="space-y-1">
                     {externalDocs.description &&
-                      <span className="opblock-external-docs__description">
+                      <span className="text-muted-foreground">
                         <Markdown source={ externalDocs.description } />
                       </span>
                     }
-                    <Link target="_blank" className="opblock-external-docs__link" href={sanitizeUrl(externalDocsUrl)}>{externalDocsUrl}</Link>
+                    <Link target="_blank" className="text-primary underline underline-offset-4" href={sanitizeUrl(externalDocsUrl)}>{externalDocsUrl}</Link>
                   </div>
                 </div> : null
               }
@@ -249,8 +276,9 @@ export default class Operation extends PureComponent {
                 <OperationExt extensions={ extensions } getComponent={ getComponent } />
               }
             </div>
-          </Collapse>
-        </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     )
   }
 

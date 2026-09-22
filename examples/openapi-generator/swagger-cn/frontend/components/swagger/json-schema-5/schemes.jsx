@@ -1,5 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
+import { Select } from "@/components/select"
 
 export default class Schemes extends React.Component {
 
@@ -26,8 +27,8 @@ export default class Schemes extends React.Component {
     }
   }
 
-  onChange =( e ) => {
-    this.setScheme( e.target.value )
+  onChange = (value) => {
+    this.setScheme(value)
   }
 
   setScheme = ( value ) => {
@@ -42,11 +43,13 @@ export default class Schemes extends React.Component {
     return (
       <label htmlFor="schemes">
         <span className="schemes-title">Schemes</span>
-        <select onChange={ this.onChange } value={currentScheme} id="schemes">
-          { schemes.valueSeq().map(
-            ( scheme ) => <option value={ scheme } key={ scheme }>{ scheme }</option>
-          ).toArray()}
-        </select>
+        <Select
+          id="schemes"
+          onChange={ this.onChange }
+          value={ currentScheme }
+          allowEmptyValue={ false }
+          allowedValues={ schemes.valueSeq().toArray() }
+        />
       </label>
     )
   }

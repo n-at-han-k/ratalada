@@ -89,7 +89,7 @@ export default class Model extends ImmutablePureComponent {
     }
 
     if(!schema) {
-      return <strong className="model model-title">
+      return <strong className="model model-title [&_.property.primitive]:text-[#6b6b6b] [&_.property.primitive.extension]:block [&_tr.property-row_td]:align-top [&_tr.property-row_td:first-child]:pr-[0.2em] [&_tr.property-row_.star]:text-[red] [&_tr.extension]:text-[#777] [&_tr.extension_td:last-child]:align-top [&_tr_.renderedMarkdown_p:first-child]:mt-0">
               <span className="model-title__text">{ displayName || name }</span>
               {!$ref && <RollingLoadSVG height="20px" width="20px" />}
             </strong>

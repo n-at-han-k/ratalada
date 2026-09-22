@@ -270,11 +270,11 @@ export default class Oauth2 extends React.Component {
         }
         <div className="auth-btn-wrapper">
         { isValid &&
-          ( isAuthorized ? <Button className="btn modal-btn auth authorize" onClick={ this.logout } aria-label="Remove authorization">Logout</Button>
-        : <Button className="btn modal-btn auth authorize" onClick={ this.authorize } aria-label="Apply given OAuth2 credentials">Authorize</Button>
+          ( isAuthorized ? <Button className="btn modal-btn auth authorize [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px] [&_[disabled]]:cursor-not-allowed [&_[disabled]]:opacity-30" onClick={ this.logout } aria-label="Remove authorization">Logout</Button>
+        : <Button className="btn modal-btn auth authorize [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px] [&_[disabled]]:cursor-not-allowed [&_[disabled]]:opacity-30" onClick={ this.authorize } aria-label="Apply given OAuth2 credentials">Authorize</Button>
           )
         }
-          <Button className="btn modal-btn auth btn-done" onClick={ this.close }>Close</Button>
+          <Button className="btn modal-btn auth btn-done [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px] [&_[disabled]]:cursor-not-allowed [&_[disabled]]:opacity-30 ml-[1em]" onClick={ this.close }>Close</Button>
         </div>
 
       </div>

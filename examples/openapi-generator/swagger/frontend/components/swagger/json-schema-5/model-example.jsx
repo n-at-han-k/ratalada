@@ -98,8 +98,8 @@ const ModelExample = ({
   })
 
   return (
-    <div className="model-example">
-      <ul className="tab" role="tablist">
+    <div className="model-example mt-[1em] [&_.model-container_.model-hint:not(.model-hint--embedded)]:top-[-1.15em]">
+      <ul className="tab [&_li.active]:font-bold" role="tablist">
         <li
           className={cx("tabitem", { active: activeTab === tabs.example })}
           role="presentation"

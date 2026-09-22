@@ -35,9 +35,9 @@ export default class Curl extends React.Component {
         <div>
           <SyntaxHighlighter
             language="bash"
-            className="curl microlight"
+            className="curl microlight overflow-y-auto max-h-[400px] min-h-[6em]"
             renderPlainText={({ children, PlainTextViewer }) => (
-              <PlainTextViewer className="curl">{children}</PlainTextViewer>
+              <PlainTextViewer className="curl overflow-y-auto max-h-[400px] min-h-[6em]">{children}</PlainTextViewer>
             )}
           >
             {curl}

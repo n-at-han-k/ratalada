@@ -44,7 +44,7 @@ export default class BaseLayout extends React.Component {
 
     if (loadingStatus === "loading") {
       loadingMessage = (
-        <div className="info">
+        <div className="info [&_.title_small.version-stamp]:bg-[#89bf04]">
           <div className="loading-container">
             <div className="loading"></div>
           </div>
@@ -54,7 +54,7 @@ export default class BaseLayout extends React.Component {
 
     if (loadingStatus === "failed") {
       loadingMessage = (
-        <div className="info">
+        <div className="info [&_.title_small.version-stamp]:bg-[#89bf04]">
           <div className="loading-container">
             <h4 className="title">Failed to load API definition.</h4>
             <Errors />
@@ -67,7 +67,7 @@ export default class BaseLayout extends React.Component {
       const lastErr = errSelectors.lastError()
       const lastErrMsg = lastErr ? lastErr.get("message") : ""
       loadingMessage = (
-        <div className="info failed-config">
+        <div className="info failed-config [&_.title_small.version-stamp]:bg-[#89bf04]">
           <div className="loading-container">
             <h4 className="title">Failed to load remote configuration.</h4>
             <p>{lastErrMsg}</p>
@@ -113,8 +113,8 @@ export default class BaseLayout extends React.Component {
           </Row>
 
           {hasServers || hasSchemes || hasSecurityDefinitions ? (
-            <div className="scheme-container">
-              <Col className="schemes wrapper" mobile={12}>
+            <div className="scheme-container [&_.schemes_>_.schemes-server-container]:flex [&_.schemes_>_.schemes-server-container]:flex-wrap [&_.schemes_>_.schemes-server-container]:gap-[10px] [&_.schemes_>_.schemes-server-container_>_label_select]:uppercase [&_.schemes_>_.schemes-server-container_>_label_select]:min-w-[130px] [&_.schemes:not(:has(.schemes-server-container))]:justify-end [&_.schemes_.auth-wrapper_.authorize]:flex [&_.schemes_.auth-wrapper_.authorize]:flex-nowrap [&_.schemes_.auth-wrapper_.authorize]:m-0 [&_.schemes_.auth-wrapper_.authorize]:pr-5">
+              <Col className="schemes wrapper items-end flex flex-wrap justify-between gap-[10px]" mobile={12}>
                 {hasServers || hasSchemes ? (
                   <div className="schemes-server-container">
                     {hasServers ? <ServersContainer /> : null}

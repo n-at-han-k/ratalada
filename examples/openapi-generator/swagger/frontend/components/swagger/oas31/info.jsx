@@ -31,7 +31,7 @@ const Info = ({ getComponent, specSelectors }) => {
   const JsonSchemaDialect = getComponent("JsonSchemaDialect", true)
 
   return (
-    <div className="info">
+    <div className="info [&_.title_small.version-stamp]:bg-[#89bf04]">
       <hgroup className="main">
         <h1 className="title">
           {title}

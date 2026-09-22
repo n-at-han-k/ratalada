@@ -89,10 +89,10 @@ const Models = ({
 
   return (
     <section
-      className={classNames("models", {
+      className={`${classNames("models", {
         "is-open": isOpen,
         "models--virtualized": isVirtualized,
-      })}
+      })} [&_.pointer]:cursor-pointer [&.is-open]:pb-5 [&.is-open]:px-0 [&.is-open]:pt-0 [&.is-open]:[&.models--virtualized]:pb-0 [&_.model-container:first-of-type]:m-5 [&_.model-container:last-of-type]:my-0 [&_.model-container:last-of-type]:mx-5 [&_.models-scroll_.models-virtual-item]:pb-[15px] [&_.json-schema-2020-12:not(.json-schema-2020-12--embedded)_>_.json-schema-2020-12-head_.json-schema-2020-12\_\_title:first-of-type]:text-[16px]`}
       ref={handleModelsRef}
     >
       <h4>
@@ -107,7 +107,7 @@ const Models = ({
       </h4>
       <Collapse isOpened={isOpen}>
         {isVirtualized ? (
-          <div ref={parentRef} className="models-scroll">
+          <div ref={parentRef} className="models-scroll overflow-y-auto max-h-[min(60vh,800px)] pt-5 pb-[5px]">
             <div
               style={{
                 paddingTop: virtualizer.getVirtualItems()[0]?.start ?? 0,

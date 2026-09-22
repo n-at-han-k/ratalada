@@ -68,7 +68,7 @@ export default class Auths extends React.Component {
     let oauthDefinitions = definitions.filter( schema => schema.get("type") === "oauth2")
 
     return (
-      <div className="auth-container">
+      <div className="auth-container [&_input[type=text]]:min-w-[230px] [&_input[type=password]]:min-w-[230px]">
         {
           !!nonOauthDefinitions.size && <form onSubmit={ this.submitAuth }>
             {
@@ -87,10 +87,10 @@ export default class Auths extends React.Component {
             }
             <div className="auth-btn-wrapper">
               {
-                nonOauthDefinitions.size === authorizedAuth.size ? <Button className="btn modal-btn auth" onClick={ this.logoutClick } aria-label="Remove authorization">Logout</Button>
-              : <Button type="submit" className="btn modal-btn auth authorize" aria-label="Apply credentials">Authorize</Button>
+                nonOauthDefinitions.size === authorizedAuth.size ? <Button className="btn modal-btn auth [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px] [&_[disabled]]:cursor-not-allowed [&_[disabled]]:opacity-30" onClick={ this.logoutClick } aria-label="Remove authorization">Logout</Button>
+              : <Button type="submit" className="btn modal-btn auth authorize [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px] [&_[disabled]]:cursor-not-allowed [&_[disabled]]:opacity-30" aria-label="Apply credentials">Authorize</Button>
               }
-              <Button className="btn modal-btn auth btn-done" onClick={ this.close }>Close</Button>
+              <Button className="btn modal-btn auth btn-done [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px] [&_[disabled]]:cursor-not-allowed [&_[disabled]]:opacity-30 ml-[1em]" onClick={ this.close }>Close</Button>
             </div>
           </form>
         }

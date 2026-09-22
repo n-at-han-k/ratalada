@@ -88,7 +88,7 @@ export default class OperationTag extends React.Component {
         }
 
         {!tagExternalDocsUrl ? null :
-          <div className="info__externaldocs">
+          <div className="info__externaldocs text-right">
             <small>
               <Link
                   href={sanitizeUrl(tagExternalDocsUrl)}

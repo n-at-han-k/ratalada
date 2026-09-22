@@ -115,10 +115,10 @@ export default class Operation extends PureComponent {
     const validationErrors = specSelectors.validationErrors([path, method])
 
     return (
-        <div className={deprecated ? "opblock opblock-deprecated" : isShown ? `opblock opblock-${method} is-open` : `opblock opblock-${method}`} id={escapeDeepLinkPath(isShownKey.join("-"))} >
+        <div className={`${deprecated ? "opblock opblock-deprecated" : isShown ? `opblock opblock-${method} is-open` : `opblock opblock-${method}`} [&_.tab-header_.tab-item]:cursor-pointer [&_.tab-header_.tab-item]:py-0 [&_.tab-header_.tab-item]:px-10 [&_.tab-header_.tab-item:first-of-type]:py-0 [&_.tab-header_.tab-item:first-of-type]:pl-0 [&_.tab-header_.tab-item:first-of-type]:pr-10 [&.is-open]:[&_.opblock-summary]:border-b [&.is-open]:[&_.opblock-summary]:border-solid [&.is-open]:[&_.opblock-summary]:border-black [&_.opblock-summary]:items-center [&_.opblock-summary]:cursor-pointer [&_.opblock-summary]:flex [&_.opblock-summary]:p-[5px] [&.opblock-post]:[&_.opblock-summary]:border-[#49cc90] [&.opblock-put]:[&_.opblock-summary]:border-[#fca130] [&.opblock-delete]:[&_.opblock-summary]:border-[#f93e3e] [&.opblock-get]:[&_.opblock-summary]:border-[#61affe] [&.opblock-patch]:[&_.opblock-summary]:border-[#50e3c2] [&.opblock-head]:[&_.opblock-summary]:border-[#9012fe] [&.opblock-options]:[&_.opblock-summary]:border-[#0d5aa7] [&.opblock-query]:[&_.opblock-summary]:border-[#9d408a] [&.opblock-deprecated]:[&_.opblock-summary]:border-[#ebebeb] [&_.opblock-schemes_.schemes-title]:py-0 [&_.opblock-schemes_.schemes-title]:pl-0 [&_.opblock-schemes_.schemes-title]:pr-2.5`} id={escapeDeepLinkPath(isShownKey.join("-"))} >
           <OperationSummary operationProps={operationProps} isShown={isShown} toggleShown={toggleShown} getComponent={getComponent} authActions={authActions} authSelectors={authSelectors} specPath={specPath} />
           <Collapse isOpened={isShown}>
-            <div className="opblock-body">
+            <div className="opblock-body [&_pre.microlight_.headerline]:block">
               { (operation && operation.size) || operation === null ? null :
                 <RollingLoadSVG height="32px" width="32px" className="opblock-loading-animation" />
               }
@@ -183,7 +183,7 @@ export default class Operation extends PureComponent {
                 />
               }
 
-              {!tryItOutEnabled || !allowTryItOut ? null : schemes && schemes.size ? <div className="opblock-schemes">
+              {!tryItOutEnabled || !allowTryItOut ? null : schemes && schemes.size ? <div className="opblock-schemes py-2 px-5">
                     <Schemes schemes={ schemes }
                              path={ path }
                              method={ method }
@@ -192,7 +192,7 @@ export default class Operation extends PureComponent {
                   </div> : null
               }
 
-              { !tryItOutEnabled || !allowTryItOut || validationErrors.length <= 0 ? null : <div className="validation-errors errors-wrapper">
+              { !tryItOutEnabled || !allowTryItOut || validationErrors.length <= 0 ? null : <div className="validation-errors errors-wrapper [&_.errors_.message]:whitespace-pre-line [&_.errors_.message.thrown]:max-w-full">
                   Please correct the following validation errors and try again.
                   <ul>
                     { validationErrors.map((error, index) => <li key={index}> { error } </li>) }

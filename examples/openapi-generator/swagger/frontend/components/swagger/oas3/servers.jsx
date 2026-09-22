@@ -70,7 +70,7 @@ const Servers = ({
   )
 
   return (
-    <div className="servers">
+    <div className="servers [&_h4.message]:pb-[2em] [&_table_td:first-of-type]:pr-[1em]">
       <label htmlFor="servers">
         <select
           onChange={handleServerChange}

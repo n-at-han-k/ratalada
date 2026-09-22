@@ -121,9 +121,9 @@ export default class ObjectModel extends Component {
       <strong className="model-title">
         {isRef && schema.get("$$ref") && (
           <span
-            className={classNames("model-hint", {
+            className={`${classNames("model-hint", {
               "model-hint--embedded": isEmbedded,
-            })}
+            })} hover:[.model-title_&]:block`}
           >
             {schema.get("$$ref")}
           </span>
@@ -133,7 +133,7 @@ export default class ObjectModel extends Component {
     )
 
     return (
-      <span className="model">
+      <span className="model [&_.property.primitive]:text-[#6b6b6b] [&_.property.primitive.extension]:block [&_tr.property-row_td]:align-top [&_tr.property-row_td:first-child]:pr-[0.2em] [&_tr.property-row_.star]:text-[red] [&_tr.extension]:text-[#777] [&_tr.extension_td:last-child]:align-top [&_tr_.renderedMarkdown_p:first-child]:mt-0">
         <ModelCollapse
           modelName={name}
           title={titleEl}
@@ -145,10 +145,10 @@ export default class ObjectModel extends Component {
           {!isRef ? null : <JumpToPathSection />}
           <span className="inner-object">
             {
-              <table className="model">
+              <table className="model [&_.property.primitive]:text-[#6b6b6b] [&_.property.primitive.extension]:block [&_tr.property-row_td]:align-top [&_tr.property-row_td:first-child]:pr-[0.2em] [&_tr.property-row_.star]:text-[red] [&_tr.extension]:text-[#777] [&_tr.extension_td:last-child]:align-top [&_tr_.renderedMarkdown_p:first-child]:mt-0">
                 <tbody>
                   {!description ? null : (
-                    <tr className="description">
+                    <tr className="description text-[#666] font-normal">
                       <td>description:</td>
                       <td>
                         <Markdown source={description} />

@@ -89,7 +89,7 @@ export default class LiveResponse extends React.Component {
           <thead>
           <tr className="responses-header">
             <td className="col_header response-col_status">Code</td>
-            <td className="col_header response-col_description">Details</td>
+            <td className="col_header response-col_description [&_.markdown_p:first-child]:m-0 [&_.renderedMarkdown_p:first-child]:m-0 [&_.markdown_p:last-child]:mb-0 [&_.renderedMarkdown_p:last-child]:mb-0">Details</td>
           </tr>
           </thead>
           <tbody>
@@ -103,7 +103,7 @@ export default class LiveResponse extends React.Component {
                                 : null
                 }
               </td>
-              <td className="response-col_description">
+              <td className="response-col_description [&_.markdown_p:first-child]:m-0 [&_.renderedMarkdown_p:first-child]:m-0 [&_.markdown_p:last-child]:mb-0 [&_.renderedMarkdown_p:last-child]:mb-0">
                 {
                   isError ? <Markdown source={`${response.get("name") !== "" ? `${response.get("name")}: ` : ""}${response.get("message")}`}/>
                           : null

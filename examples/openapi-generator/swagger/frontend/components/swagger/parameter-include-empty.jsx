@@ -40,9 +40,9 @@ export default class ParameterIncludeEmpty extends Component {
       <div>
         <label 
           htmlFor="include_empty_value" 
-          className={cx("parameter__empty_value_toggle", {
+          className={`${cx("parameter__empty_value_toggle", {
             "disabled": isDisabled
-          })}
+          })} [&.disabled]:opacity-70`}
         >
           <input 
             id="include_empty_value"

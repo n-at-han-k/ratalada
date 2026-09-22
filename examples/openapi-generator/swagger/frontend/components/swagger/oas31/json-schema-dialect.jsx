@@ -28,7 +28,7 @@ const JsonSchemaDialect = ({ getComponent, specSelectors }) => {
         <div className="error-wrapper">
           <div className="h-auto m-0 p-0 border-none">
             <div className="errors">
-              <div className="errors-wrapper">
+              <div className="errors-wrapper [&_.errors_.message]:whitespace-pre-line [&_.errors_.message.thrown]:max-w-full">
                 <h4 className="mx-auto">Warning</h4>
                 <p className="message">
                   <strong>OpenAPI.jsonSchemaDialect</strong> field contains a

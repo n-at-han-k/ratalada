@@ -68,7 +68,7 @@ const HighlightCode = ({
   }, [children, className, language])
 
   return (
-    <div className="highlight-code" ref={rootRef}>
+    <div className="highlight-code [&>_.microlight]:overflow-y-auto [&>_.microlight]:max-h-[400px] [&>_.microlight]:min-h-[6em]" ref={rootRef}>
       {canCopy && (
         <div
           className="copy-to-clipboard"

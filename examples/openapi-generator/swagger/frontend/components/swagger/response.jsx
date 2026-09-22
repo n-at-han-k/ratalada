@@ -194,7 +194,7 @@ export default class Response extends React.Component {
         <td className="response-col_status">
           { code }
         </td>
-        <td className="response-col_description">
+        <td className="response-col_description [&_.markdown_p:first-child]:m-0 [&_.renderedMarkdown_p:first-child]:m-0 [&_.markdown_p:last-child]:mb-0 [&_.renderedMarkdown_p:last-child]:mb-0">
 
           <div className="response-col_description__inner">
             <Markdown source={ response.get( "description" ) } />
@@ -205,9 +205,9 @@ export default class Response extends React.Component {
           {isOAS3 && response.get("content") ? (
             <section className="flex pt-[1em]">
               <div
-                className={cx("response-control-media-type", {
+                className={`${cx("response-control-media-type", {
                   "response-control-media-type--accept-controller": controlsAcceptHeader
-                })}
+                })} mr-[1em]`}
               >
                 <small className="block mb-[0.2em] text-[0.7em]">
                   Media type
@@ -281,7 +281,7 @@ export default class Response extends React.Component {
           ) : null}
 
         </td>
-        {isOAS3 ? <td className="response-col_links">
+        {isOAS3 ? <td className="response-col_links [&_.operation-link]:mb-[1.5em] [&_.operation-link_.description]:mb-[0.5em]">
           { links ?
             links.toSeq().entrySeq().map(([key, link]) => {
               return <OperationLink key={key} name={key} link={ link } getComponent={getComponent}/>

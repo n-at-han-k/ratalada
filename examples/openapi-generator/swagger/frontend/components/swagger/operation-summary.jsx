@@ -70,7 +70,7 @@ export default class OperationSummary extends PureComponent {
           onClick={toggleShown}
         >
           <OperationSummaryMethod method={method} />
-          <div className="opblock-summary-path-description-wrapper">
+          <div className="opblock-summary-path-description-wrapper items-center flex flex-row grow flex-wrap gap-[0px_10px] py-0 px-2.5">
             <OperationSummaryPath getComponent={getComponent} operationProps={operationProps} specPath={specPath} />
 
             {!showSummary ? null :
@@ -80,7 +80,7 @@ export default class OperationSummary extends PureComponent {
             }
           </div>
 
-          {displayOperationId && (originalOperationId || operationId) ? <span className="opblock-summary-operation-id">{originalOperationId || operationId}</span> : null}
+          {displayOperationId && (originalOperationId || operationId) ? <span className="opblock-summary-operation-id text-[14px]">{originalOperationId || operationId}</span> : null}
         </button>
         <CopyToClipboardBtn textToCopy={`${specPath.get(1)}`} />
         {

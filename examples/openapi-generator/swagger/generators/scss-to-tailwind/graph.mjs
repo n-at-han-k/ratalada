@@ -166,6 +166,13 @@ const classesOf = (attr) => {
   return out
 }
 
+// Class names that appear as plain strings in the code rather than in a
+// className attribute -- `let classes = ["model-box"]`, `classes="model-box"`.
+// The extractor cannot attribute those to an element, so for any class in
+// here the set of carriers is NOT known, and a later pass must not remove its
+// rule from the stylesheet on the assumption that it found them all.
+const classesInCode = new Set()
+
 const nodes = []          // { id, file, tag, classes, dynamic, children:[ids], component }
 const byFile = new Map()  // file -> root node ids
 let unresolvedComponent = 0
@@ -242,6 +249,22 @@ for (const [f, tree] of ast) {
   byFile.set(f, roots)
 }
 
+// Every string literal that is not a className value, tokenised.
+for (const [f, tree] of ast) {
+  const inClassName = new Set()
+  walk(tree, (n) => {
+    if (n.type !== "JSXAttribute" || (n.name?.name ?? "") !== "className") return
+    walk(n.value, (x) => { if (x.type === "Literal" || x.type === "StringLiteral") inClassName.add(x) })
+  })
+  walk(tree, (n) => {
+    if (n.type !== "Literal" && n.type !== "StringLiteral") return
+    if (inClassName.has(n) || typeof n.value !== "string") return
+    for (const tok of n.value.split(/\s+/)) {
+      if (/^[a-zA-Z][-\w]*$/.test(tok) && tok.includes("-")) classesInCode.add(tok)
+    }
+  })
+}
+
 // ── getComponent("Name") edges ─────────────────────────────────────────
 let getComponentStatic = 0, getComponentDynamic = 0
 const getComponentEdges = new Map() // file -> [target files]
@@ -278,6 +301,7 @@ const out = {
 }
 writeFileSync(path.join(OUT, "graph.json"), JSON.stringify({
   nodes, registry,
+  classesInCode: [...classesInCode],
   roots: [...byFile],
   getComponentEdges: [...getComponentEdges],
 }, null, 1))
@@ -291,6 +315,7 @@ console.log(`registry entries        ${out.registry}`)
 console.log(`<Component/> edges      ${out.edges.jsxComponent} resolved, ${transparentNodes} transparent, ${out.edges.unresolvedComponent} unresolved`)
 console.log(`getComponent("x") edges ${out.edges.getComponentStatic} resolved, ${out.edges.getComponentDynamic} dynamic`)
 console.log(`dynamic classNames      ${out.dynamicClassName}`)
+console.log(`classes named in code   ${classesInCode.size} (their carriers are not knowable)`)
 console.log(`\nunresolved tags, most common:`)
 Object.entries(unresolvedTags).sort((a, b) => b[1] - a[1]).slice(0, 15)
   .forEach(([tag, n]) => console.log(`  ${String(n).padStart(4)}  <${tag}/>`))

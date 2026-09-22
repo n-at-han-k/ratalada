@@ -34,13 +34,13 @@ export default class AuthorizationPopup extends React.Component {
         <div className="modal-ux">
           <div className="modal-dialog-ux">
             <div className="modal-ux-inner">
-              <div className="modal-ux-header">
+              <div className="modal-ux-header items-center flex py-3 px-0 border-b border-solid border-[rgb(92%,92%,92%)]">
                 <h3>Available authorizations</h3>
                 <button type="button" className="close-modal" onClick={ this.close }>
                   <CloseIcon />
                 </button>
               </div>
-              <div className="modal-ux-content">
+              <div className="modal-ux-content overflow-y-auto max-h-[540px] p-5">
 
                 {
                   definitions.valueSeq().map(( definition, key ) => {

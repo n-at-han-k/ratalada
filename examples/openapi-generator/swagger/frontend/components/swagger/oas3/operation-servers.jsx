@@ -85,7 +85,7 @@ export default class OperationServers extends React.Component {
         </div>
       </div>
       <div className="opblock-description-wrapper">
-        <h4 className="message">
+        <h4 className="message mb-[2em]">
           These {displaying}-level options override the global server options.
         </h4>
         <Servers

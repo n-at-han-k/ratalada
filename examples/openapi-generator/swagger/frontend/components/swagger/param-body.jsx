@@ -130,8 +130,8 @@ export default class ParamBody extends PureComponent {
         <div className="body-param-options">
           {
             !isExecute ? null
-                       : <div className="body-param-edit">
-                        <Button className={isEditBox ? "btn cancel body-param__example-edit" : "btn edit body-param__example-edit"}
+                       : <div className="body-param-edit py-2.5 px-0">
+                        <Button className={`${isEditBox ? "btn cancel body-param__example-edit" : "btn edit body-param__example-edit"} [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px] [&_[disabled]]:cursor-not-allowed [&_[disabled]]:opacity-30`}
                                  onClick={this.toggleIsEditBox}>{ isEditBox ? "Cancel" : "Edit"}
                          </Button>
                          </div>

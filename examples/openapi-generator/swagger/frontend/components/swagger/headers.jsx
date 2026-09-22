@@ -22,7 +22,7 @@ export default class Headers extends React.Component {
       return (
       <div className="headers-wrapper">
         <h4 className="headers__title">Headers:</h4>
-        <table className="headers">
+        <table className="headers [&_.header-example]:italic [&_.header-example]:text-[#999]">
           <thead>
             <tr className="header-row">
               <th className="header-col">Name</th>

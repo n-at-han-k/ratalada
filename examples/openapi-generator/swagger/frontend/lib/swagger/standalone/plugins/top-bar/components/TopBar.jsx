@@ -156,9 +156,9 @@ class TopBar extends React.Component {
     }
 
     return (
-      <header className="topbar" role="banner">
+      <header className="topbar [&_.download-url-wrapper_.select-label_span]:text-right [&_.download-url-wrapper_.select-label_span]:text-[16px] [&_.download-url-wrapper_.select-label_span]:flex-[1] [&_.download-url-wrapper_.select-label_span]:py-0 [&_.download-url-wrapper_.select-label_span]:pl-0 [&_.download-url-wrapper_.select-label_span]:pr-2.5 [&_.dark-mode-toggle_button_svg]:fill-[#e4e6e6] [&_.dark-mode-toggle:hover]:opacity-100" role="banner">
         <div className="wrapper">
-          <div className="topbar-wrapper">
+          <div className="topbar-wrapper items-center flex flex-wrap gap-[10px]">
             <Link>
               <Logo/>
             </Link>

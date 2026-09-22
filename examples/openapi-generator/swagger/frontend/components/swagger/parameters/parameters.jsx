@@ -171,7 +171,7 @@ export default class Parameters extends Component {
                 <thead>
                 <tr>
                   <th className="col_header parameters-col_name">Name</th>
-                  <th className="col_header parameters-col_description">Description</th>
+                  <th className="col_header parameters-col_description [&_select]:border [&_.markdown:first-child_p:first-child]:m-0 [&_.renderedMarkdown:first-child_p:first-child]:m-0">Description</th>
                 </tr>
                 </thead>
                 <tbody>

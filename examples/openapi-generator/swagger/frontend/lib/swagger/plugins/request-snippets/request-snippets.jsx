@@ -122,7 +122,7 @@ const RequestSnippets = ({ request, requestSnippetsSelectors, getComponent }) =>
               snippetGenerators.entrySeq().map(([key, gen]) => {
                 return (
                   <div
-                    className={classNames("btn", {"active": key === activeLanguage })}
+                    className={`${classNames("btn", {"active": key === activeLanguage })} [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px] [&_[disabled]]:cursor-not-allowed [&_[disabled]]:opacity-30`}
                     style={handleGetBtnStyle(key)}
                     key={key}
                     onClick={() => handleGenChange(key)}
@@ -149,7 +149,7 @@ const RequestSnippets = ({ request, requestSnippetsSelectors, getComponent }) =>
           <div>
             <SyntaxHighlighter
               language={activeGenerator.get("syntax")}
-              className="curl microlight"
+              className="curl microlight overflow-y-auto max-h-[400px] min-h-[6em]"
               renderPlainText={({ children, PlainTextViewer }) => (
                 <PlainTextViewer className="curl">{children}</PlainTextViewer>
               )}

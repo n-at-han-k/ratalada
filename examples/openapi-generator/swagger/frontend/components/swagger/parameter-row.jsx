@@ -352,7 +352,7 @@ export default class ParameterRow extends Component {
     return (
       <tr data-param-name={param.get("name")} data-param-in={param.get("in")}>
         <td className="parameters-col_name">
-          <div className={required ? "parameter__name required" : "parameter__name"}>
+          <div className={`${required ? "parameter__name required" : "parameter__name"} [&.required]:font-bold`}>
             { param.get("name") }
             { !required ? null : <span>&nbsp;*</span> }
           </div>
@@ -366,7 +366,7 @@ export default class ParameterRow extends Component {
           <div className="parameter__in">({ param.get("in") })</div>
         </td>
 
-        <td className="parameters-col_description">
+        <td className="parameters-col_description [&_select]:border [&_.markdown:first-child_p:first-child]:m-0 [&_.renderedMarkdown:first-child_p:first-child]:m-0">
           { param.get("description") ? <Markdown source={ param.get("description") }/> : null }
 
           { (bodyParam || !isExecute) && isDisplayParamEnum ?

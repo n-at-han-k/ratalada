@@ -1,7 +1,7 @@
 import "@/lib/node-globals"
 
+// swagger.css is imported by application.css, into a layer.
 import "@/styles/application.css"
-import "@/styles/swagger.css"
 
 import SwaggerUI from "@/lib/swagger/swagger-ui"
 

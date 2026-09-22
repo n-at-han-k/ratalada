@@ -205,7 +205,7 @@ const RequestBody = ({
 
               return <tr key={key} className="parameters" data-property-name={key}>
               <td className="parameters-col_name">
-                <div className={required ? "parameter__name required" : "parameter__name"}>
+                <div className={`${required ? "parameter__name required" : "parameter__name"} [&.required]:font-bold`}>
                   { key }
                   { !required ? null : <span>&nbsp;*</span> }
                 </div>
@@ -218,7 +218,7 @@ const RequestBody = ({
                   { schema.get("deprecated") ? "deprecated": null }
                 </div>
               </td>
-              <td className="parameters-col_description">
+              <td className="parameters-col_description [&_select]:border [&_.markdown:first-child_p:first-child]:m-0 [&_.renderedMarkdown:first-child_p:first-child]:m-0">
                 <Markdown source={ description }></Markdown>
                 {isExecute ? <div>
                   {(objectType === "object" || schemaItemsType === "object") ? (

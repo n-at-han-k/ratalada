@@ -36,10 +36,10 @@ export default class Errors extends React.Component {
     let sortedJSErrors = allErrorsToDisplay.sortBy(err => err.get("line"))
 
     return (
-      <pre className="errors-wrapper">
+      <pre className="errors-wrapper [&_.errors_.message]:whitespace-pre-line [&_.errors_.message.thrown]:max-w-full">
         <hgroup className="error">
           <h4 className="errors__title">Errors</h4>
-          <button className="btn errors__clear-btn" onClick={ toggleVisibility }>{ isVisible ? "Hide" : "Show" }</button>
+          <button className="btn errors__clear-btn [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px] [&_[disabled]]:cursor-not-allowed [&_[disabled]]:opacity-30" onClick={ toggleVisibility }>{ isVisible ? "Hide" : "Show" }</button>
         </hgroup>
         <Collapse isOpened={ isVisible } animated >
           <div className="errors">

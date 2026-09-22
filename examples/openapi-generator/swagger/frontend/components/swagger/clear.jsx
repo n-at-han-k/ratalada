@@ -11,7 +11,7 @@ export default class Clear extends Component {
 
   render(){
     return (
-      <button className="btn btn-clear opblock-control__btn" onClick={ this.onClick }>
+      <button className="btn btn-clear opblock-control__btn [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px] [&_[disabled]]:cursor-not-allowed [&_[disabled]]:opacity-30" onClick={ this.onClick }>
         Clear
       </button>
     )

@@ -24,11 +24,29 @@ import postcss from "postcss"
 import { createRequire } from "node:module"
 const { gen } = createRequire(import.meta.url)("tailwind-generator")
 
+// tailwind-generator is a scrape of the v3 docs and gets three things wrong.
+// These live here as well as in map.mjs because this is the pass that ships:
+// `rgba(59,,65,,81,,0.3)` is not a colour, and every border that used one was
+// silently lost.
+const REPAIRS = [
+  [/,,/g, ","],                       // a space inside a value became a comma
+  [/^font-\[bold\]$/, "font-bold"],   // font-[x] is arbitrary font-FAMILY
+  [/^font-\[normal\]$/, "font-normal"],
+]
+const repair = (u) => REPAIRS.reduce((c, [from, to]) => c.replace(from, to), u)
+
 const [SHEET, OUT] = process.argv.slice(2)
 const ROOT_CLASS = "swagger-ui"
 const graph = JSON.parse(readFileSync(path.join(OUT, "graph.json"), "utf8"))
 const nodes = graph.nodes
 const roots = new Map(graph.roots)
+// Classes assembled in code rather than written in a className attribute.
+// `oas3/wrap-components/model.jsx` does `let classes = ["model-box"]`, so the
+// extractor never sees that element carry it. Utilities can still be added to
+// the elements we DID find, but the rule cannot leave the stylesheet -- the
+// ones we did not find would lose their styling, which is exactly what turned
+// every nested .model-box inline.
+const inCode = new Set(graph.classesInCode ?? [])
 
 // callers of a file: nodes whose component edge points at it
 const callers = new Map()
@@ -99,10 +117,14 @@ const mediaPrefix = (params) => {
 // node -> variant -> [{prop, value, spec, order}]
 const applied = new Map()
 const residue = []
+// Every rule, with what it sets and how strongly, so the cascade can be
+// checked for closure once the first pass has decided what converts.
+const converted = []   // { selector, spec, props:Set, classes:Set, rule, raw }
+const kept = []        // the same, for rules that stay in the stylesheet
 // rule -> set of declaration indexes that found a home in the JSX
 const consumed = new Map()
 let order = 0
-let matched = 0, unprovableCount = 0, noTarget = 0, hoistedCount = 0, unexpressible = 0
+let matched = 0, unprovableCount = 0, noTarget = 0, hoistedCount = 0, unexpressible = 0, namedInCode = 0
 
 const css = postcss.parse(readFileSync(SHEET, "utf8"))
 
@@ -121,21 +143,27 @@ css.walkRules((rule) => {
   // truth for one element.
   const whole = {}
   for (const d of decls) if (!d.important) whole[d.prop] = d.value
+  const ruleClasses = new Set((rule.selector.match(/\.[-\w]+/g) ?? []).map((c) => c.slice(1)))
+  // The classes on the element a selector actually styles -- its rightmost
+  // compound. Two rules can only fight over an element that satisfies both.
+  const targetClassesOf = (sel) => new Set(
+    ((sel.trim().split(/\s+|[>+~]/).filter(Boolean).pop() ?? "").match(/\.[-\w]+/g) ?? []).map((c) => c.slice(1)))
+  const ruleProps = new Set(decls.map((d) => d.prop))
   const probe = gen(whole)
   // A utility carrying a quote cannot live in a JSX attribute -- an inline
   // `url("data:image/svg+xml,<svg ...>")` ends the attribute where the quote
   // is. A bracket nested inside an arbitrary variant is not parseable by
   // tailwind either. Both stay as CSS.
-  const hostile = (probe.success ?? "").split(/\s+/).some(
+  const hostile = (probe.success ?? "").split(/\s+/).map(repair).some(
     (u) => /["']/.test(u) || /\[[^\]]*\[/.test(u)
   )
   if (hostile) {
-    for (const raw of rule.selector.split(",")) residue.push([raw.trim(), "not expressible in a className"])
+    for (const raw of rule.selector.split(",")) { residue.push([raw.trim(), "not expressible in a className"]); kept.push({ raw: raw.trim(), spec: specificity(raw), props: ruleProps, target: targetClassesOf(raw) }) }
     unexpressible++
     return
   }
   if (probe.failed.length || decls.some((d) => d.important)) {
-    for (const raw of rule.selector.split(",")) residue.push([raw.trim(), `cannot express: ${probe.failed.join(" ") || "!important"}`])
+    for (const raw of rule.selector.split(",")) { residue.push([raw.trim(), `cannot express: ${probe.failed.join(" ") || "!important"}`]); kept.push({ raw: raw.trim(), spec: specificity(raw), props: ruleProps, target: targetClassesOf(raw) }) }
     unexpressible++
     return
   }
@@ -166,12 +194,22 @@ css.walkRules((rule) => {
     }
     if (bad) { residue.push([raw.trim(), bad]); continue }
 
-    // a second class on the host is a condition on the host itself
-    for (const extra of host.classes.slice(1)) variantBits.push(`[&.${esc(extra)}]:`)
+    // Conditions on the host element. These are only valid while the
+    // utilities STAY on the host -- `[&.opblock-post]` asks whether THIS
+    // element carries the class. If the declarations are later pushed down to
+    // a descendant they have to be re-expressed from the descendant's point
+    // of view, as an ancestor selector; see `hostSideBits` below.
+    const hostSideBits = host.classes.slice(1).map((extra) => `[&.${esc(extra)}]:`)
+    variantBits.push(...hostSideBits)
 
     const hostClass = host.classes[0]
     const hosts = nodes.filter((n) => n.classes.includes(hostClass))
     if (!hosts.length) { noTarget++; residue.push([raw.trim(), `no jsx node for .${hostClass}`]); continue }
+    if (inCode.has(hostClass)) {
+      namedInCode++
+      residue.push([raw.trim(), `.${hostClass} is built in code -- carriers unknown`])
+      continue
+    }
 
     let targets = hosts
     let hoisted = false
@@ -191,6 +229,16 @@ css.walkRules((rule) => {
 
       if (down.length && down.every((n) => alwaysUnder(n.id, hostClass))) {
         targets = down
+        // Moving down means the host's own conditions are now conditions on an
+        // ANCESTOR. `.opblock.opblock-post .opblock-summary-method` becomes
+        // `[.opblock.opblock-post_&]:` on the badge -- not `[&.opblock-post]:`,
+        // which asks whether the badge itself carries the verb class and is
+        // never true. That mistake painted every method badge black.
+        if (hostSideBits.length || host.pseudos.length) {
+          variantBits.length = 0
+          for (const p of host.pseudos) variantBits.push(PSEUDO_OK[p] ? `${PSEUDO_OK[p]}:` : `${p}:`)
+          variantBits.push(`[${esc(hostText.replace(/:[-\w()]+/g, ""))}_&]:`)
+        }
       } else {
         // The condition survives as a condition, on the host.
         variantBits.push(`[&${rest.startsWith(">") || rest.startsWith("+") || rest.startsWith("~") ? "" : "_"}${esc(rest).replace(/\s+/g, "_")}]:`)
@@ -199,6 +247,7 @@ css.walkRules((rule) => {
       }
     }
 
+    converted.push({ raw: raw.trim(), spec: specificity(raw), props: ruleProps, target: targetClassesOf(raw), rule })
     matched++
     if (hoisted) hoistedCount++
     if (!consumed.has(rule)) consumed.set(rule, new Set())
@@ -209,10 +258,75 @@ css.walkRules((rule) => {
       if (!applied.has(n.id)) applied.set(n.id, new Map())
       const buckets = applied.get(n.id)
       if (!buckets.has(variant)) buckets.set(variant, [])
-      for (const d of decls) buckets.get(variant).push({ prop: d.prop, value: d.value, spec, order, important: d.important })
+      for (const d of decls) buckets.get(variant).push({ prop: d.prop, value: d.value, spec, order, important: d.important, from: raw.trim() })
     }
   }
 })
+
+// ── cascade closure ───────────────────────────────────────────────────
+//
+// A converted rule becomes a utility, in `layer(utilities)`. Everything that
+// stays behind sits in `layer(components)`, which loses to utilities whatever
+// its specificity. So a rule that USED to be overridden by a stronger one
+// will now win, if the stronger one could not be converted.
+//
+// `.swagger-ui .copy-to-clipboard { position: absolute }` is 0-2-0 and was
+// overridden by `.swagger-ui .opblock .opblock-summary .view-line-link`
+// at 0-3-0 -- which carries a `transition` and cannot be expressed. Converting
+// the weaker rule alone moved the copy link to the top right of the page.
+//
+// So the cascade has to be closed: a rule may only convert when no rule that
+// stayed behind, could match the same element, and sets the same property,
+// is stronger than it. Sharing a class is a loose test for "could match the
+// same element", and loose in the safe direction -- it demotes more than
+// strictly necessary, never less.
+const collisionCache = new Map()
+const canCollide = (a, b) => {
+  if (!a.size || !b.size) return true            // an untargeted rule might hit anything
+  const key = [...a].sort().join(".") + "|" + [...b].sort().join(".")
+  if (collisionCache.has(key)) return collisionCache.get(key)
+  const hit = nodes.some((n) => {
+    for (const c of a) if (!n.classes.includes(c)) return false
+    for (const c of b) if (!n.classes.includes(c)) return false
+    return true
+  })
+  collisionCache.set(key, hit)
+  return hit
+}
+
+const demoted = new Set()
+for (const c of converted) {
+  for (const k of kept) {
+    if (k.spec <= c.spec) continue
+    // Could one element satisfy both rules' target compounds? Ask the JSX,
+    // rather than guessing from a shared class name -- `.copy-to-clipboard`
+    // and `.view-line-link` do land on one element, `.opblock` and
+    // `.model-box` never do.
+    if (!canCollide(c.target, k.target)) continue
+    let overlaps = false
+    for (const prop of c.props) if (k.props.has(prop)) { overlaps = true; break }
+    if (!overlaps) continue
+    demoted.add(c.raw)
+    residue.push([c.raw, `overridden by a rule that stays: ${k.raw.slice(0, 40)}`])
+    break
+  }
+}
+
+// Undo their utilities, and put their selectors back in the stylesheet.
+for (const c of converted) {
+  if (!demoted.has(c.raw)) continue
+  const done = consumed.get(c.rule)
+  if (done) done.delete(c.raw)
+  matched--
+}
+for (const [id, buckets] of applied) {
+  for (const [variant, list] of buckets) {
+    const survivors = list.filter((d) => !demoted.has(d.from))
+    if (survivors.length) buckets.set(variant, survivors)
+    else buckets.delete(variant)
+  }
+  if (!buckets.size) applied.delete(id)
+}
 
 // ── pass 4: cascade, then utilities ────────────────────────────────────
 const plan = {}          // file -> [{ nodeId, tag, classes, add: [...] }]
@@ -227,7 +341,7 @@ for (const [id, buckets] of applied) {
     for (const d of list) winner.set(d.prop, d.value)
     const { success, failed } = gen(Object.fromEntries(winner))
     for (const f of failed) failedProps[f] = (failedProps[f] ?? 0) + 1
-    const us = (success ? success.split(/\s+/).filter(Boolean) : []).map((u) => variant + u)
+    const us = (success ? success.split(/\s+/).filter(Boolean) : []).map((u) => variant + repair(u))
     add.push(...us)
     utilities += us.length
   }
@@ -264,8 +378,10 @@ writeFileSync(path.join(OUT, "residue.txt"), residue.map(([s, why]) => `${why.pa
 const sizes = Object.values(plan).flat().map((e) => e.add.length).sort((a, b) => b - a)
 console.log(`selectors inlined        ${matched}`)
 console.log(`  no jsx node            ${noTarget}`)
+console.log(`  class built in code    ${namedInCode}`)
 console.log(`  of which hoisted to an ancestor variant  ${hoistedCount}`)
 console.log(`  ancestry unprovable, unhoistable         ${unprovableCount - hoistedCount}`)
+console.log(`  demoted for cascade    ${demoted.size}`)
 console.log(`residue (stays as css)   ${residue.length}`)
 console.log(`\nelements receiving utilities ${sizes.length} in ${Object.keys(plan).length} files`)
 console.log(`utilities emitted            ${utilities}`)

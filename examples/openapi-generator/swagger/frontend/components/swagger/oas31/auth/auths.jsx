@@ -78,7 +78,7 @@ class Auths extends React.Component {
       (schema) => schema.get("type") === "mutualTLS"
     )
     return (
-      <div className="auth-container">
+      <div className="auth-container [&_input[type=text]]:min-w-[230px] [&_input[type=password]]:min-w-[230px]">
         {nonOauthDefinitions.size > 0 && (
           <form onSubmit={this.submitAuth}>
             {nonOauthDefinitions
@@ -101,7 +101,7 @@ class Auths extends React.Component {
             <div className="auth-btn-wrapper">
               {nonOauthDefinitions.size === authorizedAuth.size ? (
                 <Button
-                  className="btn modal-btn auth"
+                  className="btn modal-btn auth [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px] [&_[disabled]]:cursor-not-allowed [&_[disabled]]:opacity-30"
                   onClick={this.logoutClick}
                   aria-label="Remove authorization"
                 >
@@ -110,14 +110,14 @@ class Auths extends React.Component {
               ) : (
                 <Button
                   type="submit"
-                  className="btn modal-btn auth authorize"
+                  className="btn modal-btn auth authorize [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px] [&_[disabled]]:cursor-not-allowed [&_[disabled]]:opacity-30"
                   aria-label="Apply credentials"
                 >
                   Authorize
                 </Button>
               )}
               <Button
-                className="btn modal-btn auth btn-done"
+                className="btn modal-btn auth btn-done [&.btn-sm]:text-[12px] [&.btn-sm]:py-1 [&.btn-sm]:pr-[23px] [&.btn-sm]:pl-[23px] [&_[disabled]]:cursor-not-allowed [&_[disabled]]:opacity-30 ml-[1em]"
                 onClick={this.close}
               >
                 Close

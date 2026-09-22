@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react"
 import classNames from "classnames"
 import PropTypes from "prop-types"
 import { CopyToClipboard } from "react-copy-to-clipboard"
+import { Button } from "@/components/ui/button"
 
 const COPY_REQUEST_SNIPPET_LABEL = "Copy request snippet to clipboard"
 
@@ -107,13 +108,13 @@ const RequestSnippets = ({ request, requestSnippetsSelectors, getComponent }) =>
           onClick={() => handleSetIsExpanded()}
           style={{ cursor: "pointer" }}
         >Snippets</h4>
-        <button
+        <Button variant="ghost" size="sm"
           onClick={() => handleSetIsExpanded()}
           style={{ border: "none", background: "none" }}
           title={isExpanded ? "Collapse operation" : "Expand operation"}
         >
           {isExpanded ? <ArrowDownIcon className="arrow" width="10" height="10" /> : <ArrowIcon className="arrow" width="10" height="10" />}
-        </button>
+        </Button>
       </div>
       {
         isExpanded && <div className="curl-command">
@@ -139,7 +140,7 @@ const RequestSnippets = ({ request, requestSnippetsSelectors, getComponent }) =>
             aria-label={COPY_REQUEST_SNIPPET_LABEL}
           >
             <CopyToClipboard text={snippet}>
-              <button
+              <Button variant="ghost" size="sm"
                 aria-label={COPY_REQUEST_SNIPPET_LABEL}
                 title={COPY_REQUEST_SNIPPET_LABEL}
                 type="button"

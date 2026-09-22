@@ -1,6 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import ImPropTypes from "react-immutable-proptypes"
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 
 export default class BasicAuth extends React.Component {
   static propTypes = {
@@ -48,61 +49,58 @@ export default class BasicAuth extends React.Component {
   }
 
   render() {
-    let { schema, getComponent, name, errSelectors, authSelectors } = this.props
+    const { schema, getComponent, name, errSelectors, authSelectors } = this.props
     const Input = getComponent("Input")
-    const Row = getComponent("Row")
-    const Col = getComponent("Col")
     const AuthError = getComponent("authError")
-    const JumpToPath = getComponent("JumpToPath", true)
     const Markdown = getComponent("Markdown", true)
-    const path = authSelectors.selectAuthPath(name)
-    let username = this.getValue().username
-    let errors = errSelectors.allErrors().filter( err => err.get("authId") === name)
+    const username = this.getValue().username
+    const errors = errSelectors.allErrors().filter((err) => err.get("authId") === name)
 
     return (
-      <div>
-        <h4>Basic authorization<JumpToPath path={path} /></h4>
-        { username && <h6>Authorized</h6> }
-        <Row>
-          <Markdown source={ schema.get("description") } />
-        </Row>
-        <Row>
-          <label htmlFor="auth_username">Username:</label>
-          {
-            username ? <code> { username } </code>
-                     : <Col>
-                          <Input 
-                            id="auth_username" 
-                            type="text" 
-                            required="required" 
-                            name="username" 
-                            onChange={ this.onChange } 
-                            autoFocus
-                          />
-                        </Col>
-          }
-        </Row>
-        <Row>
-          <label htmlFor="auth_password">Password:</label>
-            {
-              username ? <code> ****** </code>
-                       : <Col>
-                            <Input 
-                              id="auth_password"
-                              autoComplete="new-password"
-                              name="password"
-                              type="password"
-                              onChange={ this.onChange }
-                            />
-                          </Col>
-            }
-        </Row>
-        {
-          errors.valueSeq().map( (error, key) => {
-            return <AuthError error={ error }
-                              key={ key }/>
-          } )
-        }
+      <div className="space-y-3">
+        <h4 className="text-sm font-semibold">Basic authorization</h4>
+        {username && <p className="text-success text-sm">Authorized</p>}
+
+        <div className="text-muted-foreground text-sm">
+          <Markdown source={schema.get("description")} />
+        </div>
+
+        <FieldGroup>
+          <Field>
+            <FieldLabel htmlFor="auth_username">Username</FieldLabel>
+            {username ? (
+              <code className="text-sm">{username}</code>
+            ) : (
+              <Input
+                id="auth_username"
+                type="text"
+                required
+                name="username"
+                onChange={this.onChange}
+                autoFocus
+              />
+            )}
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="auth_password">Password</FieldLabel>
+            {username ? (
+              <code className="text-sm">******</code>
+            ) : (
+              <Input
+                id="auth_password"
+                autoComplete="new-password"
+                name="password"
+                type="password"
+                onChange={this.onChange}
+              />
+            )}
+          </Field>
+        </FieldGroup>
+
+        {errors.valueSeq().map((error, key) => (
+          <AuthError error={error} key={key} />
+        ))}
       </div>
     )
   }

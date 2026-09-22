@@ -2,6 +2,8 @@ import React from "react"
 import PropTypes from "prop-types"
 import oauth2Authorize from "@/lib/swagger/oauth2-authorize"
 import { Select } from "@/components/select"
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
 
 export default class Oauth2 extends React.Component {
   static propTypes = {
@@ -113,8 +115,6 @@ export default class Oauth2 extends React.Component {
       schema, getComponent, authSelectors, errSelectors, name, specSelectors
     } = this.props
     const Input = getComponent("Input")
-    const Row = getComponent("Row")
-    const Col = getComponent("Col")
     const Button = getComponent("Button")
     const AuthError = getComponent("authError")
     const JumpToPath = getComponent("JumpToPath", true)
@@ -160,33 +160,33 @@ export default class Oauth2 extends React.Component {
 
         {
           flow !== AUTH_FLOW_PASSWORD ? null
-            : <Row>
-              <Row>
-                <label htmlFor="oauth_username">username:</label>
+            : <Field>
+              <Field>
+                <FieldLabel htmlFor="oauth_username">username</FieldLabel>
                 {
                   isAuthorized ? <code> { this.state.username } </code>
-                    : <Col tablet={10} desktop={10}>
-                      <input id="oauth_username" type="text" data-name="username" onChange={ this.onInputChange } autoFocus/>
-                    </Col>
+                    : <>
+                      <Input id="oauth_username" type="text" data-name="username" onChange={ this.onInputChange } autoFocus />
+                    </>
                 }
-              </Row>
+              </Field>
               {
 
               }
-              <Row>
-                <label htmlFor="oauth_password">password:</label>
+              <Field>
+                <FieldLabel htmlFor="oauth_password">password</FieldLabel>
                 {
                   isAuthorized ? <code> ****** </code>
-                    : <Col tablet={10} desktop={10}>
-                      <input id="oauth_password" type="password" data-name="password" onChange={ this.onInputChange }/>
-                    </Col>
+                    : <>
+                      <Input id="oauth_password" type="password" data-name="password" onChange={ this.onInputChange } />
+                    </>
                 }
-              </Row>
-              <Row>
-                <label htmlFor="password_type">Client credentials location:</label>
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="password_type">Client credentials location</FieldLabel>
                 {
                   isAuthorized ? <code> { this.state.passwordType } </code>
-                    : <Col tablet={10} desktop={10}>
+                    : <>
                       <Select
                         id="password_type"
                         allowEmptyValue={false}
@@ -195,44 +195,44 @@ export default class Oauth2 extends React.Component {
                           this.onInputChange({ target: { dataset: { name: "passwordType" }, value } })
                         }
                       />
-                    </Col>
+                    </>
                 }
-              </Row>
-            </Row>
+              </Field>
+            </Field>
         }
         {
           ( flow === AUTH_FLOW_APPLICATION || flow === AUTH_FLOW_IMPLICIT || flow === AUTH_FLOW_ACCESS_CODE || flow === AUTH_FLOW_PASSWORD ) &&
-          ( !isAuthorized || isAuthorized && this.state.clientId) && <Row>
-            <label htmlFor={ `client_id_${flow}` }>client_id:</label>
+          ( !isAuthorized || isAuthorized && this.state.clientId) && <Field>
+            <FieldLabel htmlFor={ `client_id_${flow}` }>client_id:</FieldLabel>
             {
               isAuthorized ? <code> ****** </code>
-                           : <Col tablet={10} desktop={10}>
+                           : <>
                                <InitializedInput id={`client_id_${flow}`}
                                       type="text"
                                       required={ flow === AUTH_FLOW_PASSWORD }
                                       initialValue={ this.state.clientId }
                                       data-name="clientId"
                                       onChange={ this.onInputChange }/>
-                             </Col>
+                             </>
             }
-          </Row>
+          </Field>
         }
 
         {
-          ( (flow === AUTH_FLOW_APPLICATION || flow === AUTH_FLOW_ACCESS_CODE || flow === AUTH_FLOW_PASSWORD) && <Row>
-            <label htmlFor={ `client_secret_${flow}` }>client_secret:</label>
+          ( (flow === AUTH_FLOW_APPLICATION || flow === AUTH_FLOW_ACCESS_CODE || flow === AUTH_FLOW_PASSWORD) && <Field>
+            <FieldLabel htmlFor={ `client_secret_${flow}` }>client_secret:</FieldLabel>
             {
               isAuthorized ? <code> ****** </code>
-                           : <Col tablet={10} desktop={10}>
+                           : <>
                                <InitializedInput id={ `client_secret_${flow}` }
                                       initialValue={ this.state.clientSecret }
                                       type="password"
                                       data-name="clientSecret"
                                       onChange={ this.onInputChange }/>
-                             </Col>
+                             </>
             }
 
-          </Row>
+          </Field>
         )}
 
         {
@@ -244,7 +244,7 @@ export default class Oauth2 extends React.Component {
             </h2>
             { scopes.map((description, name) => {
               return (
-                <Row key={ name }>
+                <Field key={ name }>
                   <div className="checkbox">
                     <Input data-value={ name }
                           id={`${name}-${flow}-checkbox-${this.state.name}`}
@@ -252,15 +252,15 @@ export default class Oauth2 extends React.Component {
                            checked={ this.state.scopes.includes(name) }
                            type="checkbox"
                            onChange={ this.onScopeChange }/>
-                         <label htmlFor={`${name}-${flow}-checkbox-${this.state.name}`}>
+                         <FieldLabel htmlFor={`${name}-${flow}-checkbox-${this.state.name}`}>
                            <span className="item"></span>
                            <div className="text">
                              <p className="name">{name}</p>
                              <p className="description">{description}</p>
                            </div>
-                         </label>
+                         </FieldLabel>
                   </div>
-                </Row>
+                </Field>
               )
               }).valueSeq().toArray()
             }

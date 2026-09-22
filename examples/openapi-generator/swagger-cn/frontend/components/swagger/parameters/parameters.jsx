@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Field, FieldLabel } from "@/components/ui/field"
 
 export default class Parameters extends Component {
 
@@ -221,7 +222,7 @@ export default class Parameters extends Component {
             <div className="opblock-section-header">
               <h4 className={`opblock-title parameter__name ${requestBody.get("required") && "required"}`}>Request
                 body</h4>
-              <label id={controlId}>
+              <Field>
                 <ContentType
                   value={oas3Selectors.requestContentType(...pathMethod)}
                   contentTypes={requestBody.get("content", List()).keySeq()}
@@ -232,7 +233,7 @@ export default class Parameters extends Component {
                   ariaLabel="Request content type" 
                   controlId={controlId}
                 />
-              </label>
+              </Field>
             </div>
             <div className="opblock-description-wrapper">
               <RequestBody

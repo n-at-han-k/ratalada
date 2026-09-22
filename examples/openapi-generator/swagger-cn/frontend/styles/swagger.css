@@ -231,9 +231,6 @@
 .swagger-ui .opblock .opblock-schemes {
   padding: 8px 20px;
 }
-.swagger-ui .opblock .opblock-schemes .schemes-title {
-  padding: 0 10px 0 0;
-}
 .swagger-ui .filter .operation-filter-input {
   width: 100%;
   margin: 20px 0;
@@ -912,15 +909,6 @@
   font-family: monospace;
   font-weight: 600;
   color: rgb(50%, 50%, 50%);
-}
-.swagger-ui .parameter__empty_value_toggle {
-  display: block;
-  font-size: 13px;
-  padding-top: 5px;
-  padding-bottom: 12px;
-}
-.swagger-ui .parameter__empty_value_toggle.disabled {
-  opacity: 0.7;
 }
 .swagger-ui .response-col_description {
   width: 99%;
@@ -1884,10 +1872,6 @@ html.dark-mode .swagger-ui .opblock .parameter__name.required span {
 
 html.dark-mode .swagger-ui .opblock .parameter__name.required:after {
   color: #ff5f5f;
-}
-
-html.dark-mode .swagger-ui .opblock .parameter__empty_value_toggle {
-  color: #e4e6e6;
 }
 
 html.dark-mode .swagger-ui .opblock pre.microlight {

@@ -3,6 +3,7 @@ import PropTypes from "prop-types"
 import { fromJS, List } from "immutable"
 import { getKnownSyntaxHighlighterLanguage } from "@/lib/swagger/utils/jsonParse"
 import createHtmlReadyId from "@/lib/swagger/utils/create-html-ready-id"
+import { Field, FieldLabel } from "@/components/ui/field"
 
 const NOOP = Function.prototype
 
@@ -136,8 +137,8 @@ export default class ParamBody extends PureComponent {
                          </Button>
                          </div>
           }
-          <label htmlFor={controlId}>
-            <span>Parameter content type</span>
+          <Field>
+            <FieldLabel htmlFor={controlId}>Parameter content type</FieldLabel>
             <ContentType
               value={ consumesValue }
               contentTypes={ consumes }
@@ -146,7 +147,7 @@ export default class ParamBody extends PureComponent {
               ariaLabel="Parameter content type"
               controlId={controlId}
             />
-          </label>
+          </Field>
         </div>
 
       </div>

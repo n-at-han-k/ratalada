@@ -14,6 +14,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Field, FieldLabel } from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
 
 const Servers = ({
   servers,
@@ -80,7 +82,7 @@ const Servers = ({
 
   return (
     <div className="servers [&_h4.message]:pb-[2em] [&_table_td:first-of-type]:pr-[1em]">
-      <label htmlFor="servers">
+      <Field>
         <Select
           id="servers"
           onChange={handleServerChange}
@@ -88,7 +90,7 @@ const Servers = ({
           allowEmptyValue={false}
           allowedValues={servers.valueSeq().map((s) => s.get("url")).toArray()}
         />
-      </label>
+      </Field>
       {shouldShowVariableUI && (
         <div>
           <div className={"computed-url"}>
@@ -115,12 +117,12 @@ const Servers = ({
                           }
                         />
                       ) : (
-                        <input
-                          type={"text"}
+                        <Input
+                          type="text"
                           value={getServerVariable(currentServer, name) || ""}
                           onChange={handleServerVariableChange}
                           data-variable={name}
-                        ></input>
+                        />
                       )}
                     </TableCell>
                   </TableRow>

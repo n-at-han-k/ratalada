@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Field, FieldLabel } from "@/components/ui/field"
 
 export default class Responses extends React.Component {
   static propTypes = {
@@ -103,8 +104,8 @@ export default class Responses extends React.Component {
       <div className="responses-wrapper">
         <div className="opblock-section-header">
           <h4>Responses</h4>
-            { specSelectors.isOAS3() ? null : <label htmlFor={controlId}>
-              <span>Response content type</span>
+            { specSelectors.isOAS3() ? null : <Field>
+              <FieldLabel htmlFor={controlId}>Response content type</FieldLabel>
               <ContentType value={producesValue}
                          ariaControls={regionId}
                          ariaLabel="Response content type"
@@ -112,7 +113,7 @@ export default class Responses extends React.Component {
                          contentTypes={produces}
                          controlId={controlId}
                          onChange={this.onChangeProducesWrapper} />
-                     </label> }
+                     </Field> }
         </div>
         <div className="responses-inner">
           {

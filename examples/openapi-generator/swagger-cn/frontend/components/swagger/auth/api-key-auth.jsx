@@ -1,5 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 
 export default class ApiKeyAuth extends React.Component {
   static propTypes = {
@@ -42,8 +43,6 @@ export default class ApiKeyAuth extends React.Component {
   render() {
     let { schema, getComponent, errSelectors, name, authSelectors } = this.props
     const Input = getComponent("Input")
-    const Row = getComponent("Row")
-    const Col = getComponent("Col")
     const AuthError = getComponent("authError")
     const Markdown = getComponent("Markdown", true)
     const JumpToPath = getComponent("JumpToPath", true)
@@ -58,29 +57,29 @@ export default class ApiKeyAuth extends React.Component {
           <JumpToPath path={path} />
         </h4>
         { value && <h6>Authorized</h6>}
-        <Row>
+        <Field>
           <Markdown source={ schema.get("description") } />
-        </Row>
-        <Row>
+        </Field>
+        <Field>
           <p>Name: <code>{ schema.get("name") }</code></p>
-        </Row>
-        <Row>
+        </Field>
+        <Field>
           <p>In: <code>{ schema.get("in") }</code></p>
-        </Row>
-        <Row>
-          <label htmlFor="api_key_value">Value:</label>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="api_key_value">Value</FieldLabel>
           {
             value ? <code> ****** </code>
-                  : <Col>
+                  : <>
                       <Input 
                         id="api_key_value" 
                         type="text" 
                         onChange={ this.onChange } 
                         autoFocus
                       />
-                    </Col>
+                    </>
           }
-        </Row>
+        </Field>
         {
           errors.valueSeq().map( (error, key) => {
             return <AuthError error={ error }

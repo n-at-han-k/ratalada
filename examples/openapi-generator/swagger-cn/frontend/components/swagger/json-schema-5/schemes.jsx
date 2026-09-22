@@ -1,6 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { Select } from "@/components/select"
+import { Field, FieldLabel } from "@/components/ui/field"
 
 export default class Schemes extends React.Component {
 
@@ -41,8 +42,8 @@ export default class Schemes extends React.Component {
     let { schemes, currentScheme } = this.props
 
     return (
-      <label htmlFor="schemes">
-        <span className="schemes-title">Schemes</span>
+      <Field>
+        <FieldLabel htmlFor="schemes">Schemes</FieldLabel>
         <Select
           id="schemes"
           onChange={ this.onChange }
@@ -50,7 +51,7 @@ export default class Schemes extends React.Component {
           allowEmptyValue={ false }
           allowedValues={ schemes.valueSeq().toArray() }
         />
-      </label>
+      </Field>
     )
   }
 }

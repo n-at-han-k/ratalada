@@ -12,6 +12,7 @@
 
 import React from "react"
 import PropTypes from "prop-types"
+import { Input } from "@/components/ui/input"
 
 export default class InitializedInput extends React.Component {
   componentDidMount() {
@@ -27,7 +28,7 @@ export default class InitializedInput extends React.Component {
     // `initialValue` interface that we provide.
     // eslint-disable-next-line no-unused-vars, react/prop-types
     const { value, defaultValue, initialValue, ...otherProps } = this.props
-    return <input {...otherProps} ref={c => this.inputRef = c} />
+    return <Input {...otherProps} ref={(c) => (this.inputRef = c)} />
   }
 }
 

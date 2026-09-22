@@ -5,6 +5,7 @@ import React, { Component } from "react"
 
 import LightBulb from "@/lib/swagger/standalone/plugins/top-bar/assets/lightbulb.svg"
 import LightBulbOff from "@/lib/swagger/standalone/plugins/top-bar/assets/lightbulb-off.svg"
+import { Button } from "@/components/ui/button"
 
 class DarkModeToggle extends Component {
   constructor(props) {
@@ -33,7 +34,7 @@ class DarkModeToggle extends Component {
 
     return (
       <div className="dark-mode-toggle">
-        <button
+        <Button variant="ghost" size="icon-sm"
           aria-label={label}
           title={label}
           type="button"
@@ -45,7 +46,7 @@ class DarkModeToggle extends Component {
           ) : (
             <LightBulb aria-hidden="true" height="24" />
           )}
-        </button>
+        </Button>
       </div>
     )
   }

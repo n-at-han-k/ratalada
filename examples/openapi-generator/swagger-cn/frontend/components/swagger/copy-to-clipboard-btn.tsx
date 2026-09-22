@@ -3,6 +3,8 @@
  */
 import React from "react"
 import { CopyToClipboard } from "react-copy-to-clipboard"
+import { Button } from "@/components/ui/button"
+import { CopyIcon } from "lucide-react"
 
 const COPY_PATH_LABEL = "Copy path to clipboard"
 
@@ -17,11 +19,15 @@ const CopyToClipboardBtn = ({ textToCopy }: Props) => (
     aria-label={COPY_PATH_LABEL}
   >
     <CopyToClipboard text={textToCopy}>
-      <button
+      <Button
+        variant="ghost"
+        size="icon-sm"
         aria-label={COPY_PATH_LABEL}
         title={COPY_PATH_LABEL}
         type="button"
-      />
+      >
+        <CopyIcon />
+      </Button>
     </CopyToClipboard>
   </div>
 )

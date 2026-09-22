@@ -1,5 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 
 export default class HttpAuth extends React.Component {
   static propTypes = {
@@ -49,8 +50,6 @@ export default class HttpAuth extends React.Component {
   render() {
     let { schema, getComponent, errSelectors, name, authSelectors } = this.props
     const Input = getComponent("Input")
-    const Row = getComponent("Row")
-    const Col = getComponent("Col")
     const AuthError = getComponent("authError")
     const Markdown = getComponent("Markdown", true)
     const JumpToPath = getComponent("JumpToPath", true)
@@ -69,14 +68,14 @@ export default class HttpAuth extends React.Component {
             <JumpToPath path={path} />
           </h4>
         { username && <h6>Authorized</h6> }
-        <Row>
+        <Field>
           <Markdown source={ schema.get("description") } />
-        </Row>
-        <Row>
-          <label htmlFor="auth-basic-username">Username:</label>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="auth-basic-username">Username</FieldLabel>
           {
             username ? <code> { username } </code>
-              : <Col>
+              : <>
                   <Input 
                     id="auth-basic-username"
                     type="text"
@@ -86,14 +85,14 @@ export default class HttpAuth extends React.Component {
                     onChange={ this.onChange }
                     autoFocus
                   />
-                </Col>
+                </>
           }
-        </Row>
-        <Row>
-          <label htmlFor="auth-basic-password">Password:</label>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="auth-basic-password">Password</FieldLabel>
             {
               username ? <code> ****** </code>
-                       : <Col>
+                       : <>
                             <Input 
                               id="auth-basic-password"
                               autoComplete="new-password"
@@ -102,9 +101,9 @@ export default class HttpAuth extends React.Component {
                               aria-label="auth-basic-password"
                               onChange={ this.onChange }
                             />
-                          </Col>
+                          </>
           }
-        </Row>
+        </Field>
         {
           errors.valueSeq().map( (error, key) => {
             return <AuthError error={ error }
@@ -123,14 +122,14 @@ export default class HttpAuth extends React.Component {
               <JumpToPath path={path} />
             </h4>
             { value && <h6>Authorized</h6>}
-            <Row>
+            <Field>
               <Markdown source={ schema.get("description") } />
-            </Row>
-            <Row>
-              <label htmlFor="auth-bearer-value">Value:</label>
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="auth-bearer-value">Value</FieldLabel>
               {
                 value ? <code> ****** </code>
-              : <Col>
+              : <>
                   <Input
                     id="auth-bearer-value"
                     type="text"
@@ -138,9 +137,9 @@ export default class HttpAuth extends React.Component {
                     onChange={ this.onChange }
                     autoFocus
                   />
-                </Col>
+                </>
           }
-        </Row>
+        </Field>
         {
           errors.valueSeq().map( (error, key) => {
             return <AuthError error={ error }

@@ -2,6 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 import { requestSnippetGenerator_curl_bash } from "@/lib/swagger/plugins/request-snippets/fn"
+import { Button } from "@/components/ui/button"
 
 const COPY_CURL_COMMAND_LABEL = "Copy cURL command to clipboard"
 
@@ -25,7 +26,7 @@ export default class Curl extends React.Component {
           aria-label={COPY_CURL_COMMAND_LABEL}
         >
           <CopyToClipboard text={curl}>
-            <button
+            <Button variant="ghost" size="icon-sm"
               aria-label={COPY_CURL_COMMAND_LABEL}
               title={COPY_CURL_COMMAND_LABEL}
               type="button"

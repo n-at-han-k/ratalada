@@ -1,6 +1,8 @@
 import React, { Component } from "react"
 import cx from "classnames"
 import PropTypes from "prop-types"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Field, FieldLabel } from "@/components/ui/field"
 
 
 const noop = () => { }
@@ -37,23 +39,17 @@ export default class ParameterIncludeEmpty extends Component {
     let { isIncluded, isDisabled } = this.props
 
     return (
-      <div>
-        <label 
-          htmlFor="include_empty_value" 
-          className={`${cx("parameter__empty_value_toggle", {
-            "disabled": isDisabled
-          })} [&.disabled]:opacity-70`}
-        >
-          <input 
-            id="include_empty_value"
-            type="checkbox" 
-            disabled={isDisabled}
-            checked={!isDisabled && isIncluded}
-            onChange={this.onCheckboxChange} 
-          />
+      <Field orientation="horizontal">
+        <Checkbox
+          id="include_empty_value"
+          disabled={isDisabled}
+          checked={!isDisabled && isIncluded}
+          onCheckedChange={(checked) => this.onCheckboxChange({ target: { checked } })}
+        />
+        <FieldLabel htmlFor="include_empty_value" className={isDisabled ? "opacity-70" : undefined}>
           Send empty value
-        </label>
-      </div>
+        </FieldLabel>
+      </Field>
     )
   }
 }

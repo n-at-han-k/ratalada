@@ -3,6 +3,8 @@ import PropTypes from "prop-types"
 
 import {parseSearch, serializeSearch} from "@/lib/swagger/utils/index"
 import { Select } from "@/components/select"
+import { Field, FieldLabel } from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
 
 class TopBar extends React.Component {
 
@@ -133,7 +135,8 @@ class TopBar extends React.Component {
 
     if(urls) {
       control.push(
-        <label className="select-label" htmlFor="select"><span>Select a definition</span>
+        <Field>
+          <FieldLabel htmlFor="select">Select a definition</FieldLabel>
           <Select
             id="select"
             disabled={isLoading}
@@ -142,13 +145,13 @@ class TopBar extends React.Component {
             value={urls[this.state.selectedIndex].url}
             allowedValues={urls.map((link) => ({ value: link.url, label: link.name }))}
           />
-        </label>
+        </Field>
       )
     }
     else {
       formOnSubmit = this.downloadUrl
       control.push(
-        <input
+        <Input
           className={classNames.join(" ")}
           type="text"
           onChange={this.onUrlChange}

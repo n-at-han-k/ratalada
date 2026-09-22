@@ -6,6 +6,7 @@ import PropTypes from "prop-types"
 import classNames from "classnames"
 
 import { useComponent } from "@/lib/swagger/plugins/json-schema-2020-12/hooks"
+import { Button } from "@/components/ui/button"
 
 const Accordion = ({ expanded = false, children, onChange }) => {
   const ChevronRightIcon = useComponent("ChevronRightIcon")
@@ -18,7 +19,7 @@ const Accordion = ({ expanded = false, children, onChange }) => {
   )
 
   return (
-    <button
+    <Button variant="ghost" size="sm"
       type="button"
       className="json-schema-2020-12-accordion"
       onClick={handleExpansion}
@@ -32,7 +33,7 @@ const Accordion = ({ expanded = false, children, onChange }) => {
       >
         <ChevronRightIcon />
       </span>
-    </button>
+    </Button>
   )
 }
 

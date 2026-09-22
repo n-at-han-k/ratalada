@@ -12,11 +12,11 @@ const DiscriminatorMapping = ({ discriminator }) => {
   }
 
   return Object.entries(mapping).map(([key, value]) => (
-    <div key={`${key}-${value}`} className="json-schema-2020-12-keyword">
+    <div key={`${key}-${value}`} className="mx-0 mt-[5px] mb-[5px]">
       <span className="json-schema-2020-12-keyword__name json-schema-2020-12-keyword__name--secondary">
         {key}
       </span>
-      <span className="json-schema-2020-12-keyword__value json-schema-2020-12-keyword__value--secondary">
+      <span className="italic text-[#6b6b6b] text-[12px] font-normal json-schema-2020-12-keyword__value--secondary">
         {value}
       </span>
     </div>

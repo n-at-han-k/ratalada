@@ -16,7 +16,7 @@ const Default = ({ schema }) => {
     <JSONViewer
       name="Default"
       value={schema.default}
-      className="json-schema-2020-12-keyword json-schema-2020-12-keyword--default"
+      className="mx-0 mt-[5px] mb-[5px] json-schema-2020-12-keyword--default"
     />
   )
 }

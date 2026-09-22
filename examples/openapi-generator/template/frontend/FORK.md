@@ -22,10 +22,26 @@ depends on where a file sits any more:
 Filenames under `components/swagger/` are kebab-case; everything else keeps
 upstream's spelling. 462 files, 738 imports respelled, no relative import left.
 
-Two things upstream's webpack did that vite is told to do instead
-(`../vite.config.ts`): `.svg` imports are React components (`@svgr/webpack`
-there, `vite-plugin-svgr` here), and `main.scss` loads tachyons from
-`node_modules` (`~tachyons-sass` there, a sass `loadPath` here).
+`.svg` imports are React components, as upstream's `@svgr/webpack` made them
+(`vite-plugin-svgr` here, `../vite.config.ts`).
+
+## No SCSS
+
+Upstream's 40 stylesheets are gone. `styles/swagger.css` is what sass made of
+them, minus tachyons -- 2,056 utility classes carried for four usages, which
+are now `mx-auto`, `italic` and `no-underline` -- and minus the rules whose
+classes became tailwind utilities in the JSX.
+
+`../generators/scss-to-tailwind/` is how, and it still runs against
+`swagger.css` as that file shrinks: `pnpm scss:map` writes the class ->
+utilities map, `pnpm scss:apply --write` inlines the ones that are safe to
+inline. A class is safe only when one rule mentions it, that rule is
+unconditional, and every use of the name is a `className="..."` literal.
+What is left is conditional on an ancestor -- `.opblock.opblock-post
+.opblock-summary-method` colours the method badge by verb, 20 selectors for
+one class name -- and a className cannot carry that. Those are variants:
+`class-variance-authority` is already a dependency, and the component that
+renders the badge already knows the verb.
 
 ## The seam worth knowing
 

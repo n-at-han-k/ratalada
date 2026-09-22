@@ -21,7 +21,7 @@ const PropertyNames = ({ schema }) => {
   if (!fn.hasKeyword(schema, "propertyNames")) return null
 
   return (
-    <div className="json-schema-2020-12-keyword json-schema-2020-12-keyword--propertyNames">
+    <div className="mx-0 mt-[5px] mb-[5px] json-schema-2020-12-keyword--propertyNames">
       <JSONSchema
         name={name}
         schema={schema.propertyNames}

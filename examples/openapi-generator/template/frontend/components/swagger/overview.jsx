@@ -40,7 +40,7 @@ export default class Overview extends React.Component {
                 <div key={"overview-"+tag}>
 
 
-                  <h4 onClick={toggleShow} className="link overview-tag"> {showTag ? "-" : "+"}{tag}</h4>
+                  <h4 onClick={toggleShow} className="no-underline overview-tag"> {showTag ? "-" : "+"}{tag}</h4>
 
                   <Collapse isOpened={showTag} animated>
                     {

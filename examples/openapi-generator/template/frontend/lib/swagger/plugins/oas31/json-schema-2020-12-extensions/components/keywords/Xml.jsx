@@ -60,7 +60,7 @@ const Xml = ({ schema, getSystem }) => {
     <JSONSchemaPathContext.Provider value={path}>
       <JSONSchemaLevelContext.Provider value={nextLevel}>
         <div
-          className="json-schema-2020-12-keyword json-schema-2020-12-keyword--xml"
+          className="mx-0 mt-[5px] mb-[5px] json-schema-2020-12-keyword--xml"
           data-json-schema-level={level}
         >
           {isExpandable ? (
@@ -81,16 +81,16 @@ const Xml = ({ schema, getSystem }) => {
             </span>
           )}
           {xml.attribute === true && (
-            <span className="json-schema-2020-12__attribute json-schema-2020-12__attribute--muted">
+            <span className="lowercase font-[monospace] text-[#3b4151] text-[12px] pl-2.5 json-schema-2020-12__attribute--muted">
               attribute
             </span>
           )}
           {xml.wrapped === true && (
-            <span className="json-schema-2020-12__attribute json-schema-2020-12__attribute--muted">
+            <span className="lowercase font-[monospace] text-[#3b4151] text-[12px] pl-2.5 json-schema-2020-12__attribute--muted">
               wrapped
             </span>
           )}
-          <strong className="json-schema-2020-12__attribute json-schema-2020-12__attribute--primary">
+          <strong className="lowercase font-[monospace] text-[#3b4151] text-[12px] pl-2.5 json-schema-2020-12__attribute--primary">
             object
           </strong>
           <ul
@@ -102,11 +102,11 @@ const Xml = ({ schema, getSystem }) => {
               <>
                 {xml.name && (
                   <li className="json-schema-2020-12-property">
-                    <div className="json-schema-2020-12-keyword json-schema-2020-12-keyword">
+                    <div className="mx-0 mt-[5px] mb-[5px]">
                       <span className="json-schema-2020-12-keyword__name json-schema-2020-12-keyword__name--secondary">
                         name
                       </span>
-                      <span className="json-schema-2020-12-keyword__value json-schema-2020-12-keyword__value--secondary">
+                      <span className="italic text-[#6b6b6b] text-[12px] font-normal json-schema-2020-12-keyword__value--secondary">
                         {xml.name}
                       </span>
                     </div>
@@ -115,11 +115,11 @@ const Xml = ({ schema, getSystem }) => {
 
                 {xml.namespace && (
                   <li className="json-schema-2020-12-property">
-                    <div className="json-schema-2020-12-keyword">
+                    <div className="mx-0 mt-[5px] mb-[5px]">
                       <span className="json-schema-2020-12-keyword__name json-schema-2020-12-keyword__name--secondary">
                         namespace
                       </span>
-                      <span className="json-schema-2020-12-keyword__value json-schema-2020-12-keyword__value--secondary">
+                      <span className="italic text-[#6b6b6b] text-[12px] font-normal json-schema-2020-12-keyword__value--secondary">
                         {xml.namespace}
                       </span>
                     </div>
@@ -128,11 +128,11 @@ const Xml = ({ schema, getSystem }) => {
 
                 {xml.prefix && (
                   <li className="json-schema-2020-12-property">
-                    <div className="json-schema-2020-12-keyword">
+                    <div className="mx-0 mt-[5px] mb-[5px]">
                       <span className="json-schema-2020-12-keyword__name json-schema-2020-12-keyword__name--secondary">
                         prefix
                       </span>
-                      <span className="json-schema-2020-12-keyword__value json-schema-2020-12-keyword__value--secondary">
+                      <span className="italic text-[#6b6b6b] text-[12px] font-normal json-schema-2020-12-keyword__value--secondary">
                         {xml.prefix}
                       </span>
                     </div>

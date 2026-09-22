@@ -102,7 +102,7 @@ export default class Primitive extends Component {
           collapsedContent="[...]"
         >
           <span className="prop">
-            {name && depth > 1 && <span className="prop-name">{title}</span>}
+            {name && depth > 1 && <span className="inline-block mr-[1em]">{title}</span>}
             <span className="prop-type">{type}</span>
             {format && <span className="prop-format">(${format})</span>}
             {properties.size

@@ -8,7 +8,7 @@ export const OperationExt = ({ extensions, getComponent }) => {
         <div className="opblock-section-header">
           <h4>Extensions</h4>
         </div>
-        <div className="table-container">
+        <div className="p-5">
 
           <table>
             <thead>

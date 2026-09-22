@@ -22,7 +22,7 @@ const Then = ({ schema }) => {
   )
 
   return (
-    <div className="json-schema-2020-12-keyword json-schema-2020-12-keyword--then">
+    <div className="mx-0 mt-[5px] mb-[5px] json-schema-2020-12-keyword--then">
       <JSONSchema name={name} schema={schema.then} identifier="then" />
     </div>
   )

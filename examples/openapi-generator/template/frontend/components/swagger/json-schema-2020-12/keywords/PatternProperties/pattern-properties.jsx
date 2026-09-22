@@ -21,7 +21,7 @@ const PatternProperties = ({ schema }) => {
 
   return (
     <JSONSchemaPathContext.Provider value={path}>
-      <div className="json-schema-2020-12-keyword json-schema-2020-12-keyword--patternProperties">
+      <div className="mx-0 mt-[5px] mb-[5px] json-schema-2020-12-keyword--patternProperties">
         <ul>
           {Object.entries(patternProperties).map(([propertyName, schema]) => (
             <li key={propertyName} className="json-schema-2020-12-property">

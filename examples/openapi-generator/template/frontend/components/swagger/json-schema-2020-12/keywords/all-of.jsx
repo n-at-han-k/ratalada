@@ -58,7 +58,7 @@ const AllOf = ({ schema }) => {
     <JSONSchemaPathContext.Provider value={path}>
       <JSONSchemaLevelContext.Provider value={nextLevel}>
         <div
-          className="json-schema-2020-12-keyword json-schema-2020-12-keyword--allOf"
+          className="mx-0 mt-[5px] mb-[5px] json-schema-2020-12-keyword--allOf"
           data-json-schema-level={level}
         >
           <Accordion expanded={isExpanded} onChange={handleExpansion}>

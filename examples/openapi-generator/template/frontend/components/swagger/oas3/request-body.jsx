@@ -142,7 +142,7 @@ const RequestBody = ({
     const bodyProperties = schemaForMediaType.get("properties", OrderedMap())
     requestBodyValue = Map.isMap(requestBodyValue) ? requestBodyValue : OrderedMap()
 
-    return <div className="table-container">
+    return <div className="p-5">
       { requestBodyDescription &&
         <Markdown source={requestBodyDescription} />
       }
@@ -214,7 +214,7 @@ const RequestBody = ({
                   { format && <span className="prop-format">(${format})</span>}
                   {!showCommonExtensions || !commonExt.size ? null : commonExt.entrySeq().map(([key, v]) => <ParameterExt key={`${key}-${v}`} xKey={key} xVal={v} />)}
                 </div>
-                <div className="parameter__deprecated">
+                <div className="italic font-semibold text-[12px] font-[monospace] text-[#f00]">
                   { schema.get("deprecated") ? "deprecated": null }
                 </div>
               </td>

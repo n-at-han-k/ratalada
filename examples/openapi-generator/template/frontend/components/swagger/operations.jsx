@@ -284,7 +284,7 @@ const Operations = ({
               key={vItem.key}
               data-index={vItem.index}
               ref={virtualizer.measureElement}
-              className="operations-virtual__item"
+              className="flex flex-col w-full"
             >
               {item.type === "tag" ? (
                 <OperationTag

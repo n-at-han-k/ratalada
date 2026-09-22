@@ -128,7 +128,7 @@ class Auths extends React.Component {
 
         {oauthDefinitions.size > 0 ? (
           <div>
-            <div className="scope-def">
+            <div className="pb-5 px-0 pt-0">
               <p>
                 Scopes are used to grant an application different levels of
                 access to data on behalf of the end user. Each API may declare

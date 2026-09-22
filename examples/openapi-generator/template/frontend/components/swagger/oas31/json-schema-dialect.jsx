@@ -26,10 +26,10 @@ const JsonSchemaDialect = ({ getComponent, specSelectors }) => {
 
       {jsonSchemaDialect && jsonSchemaDialect !== jsonSchemaDialectDefault && (
         <div className="error-wrapper">
-          <div className="no-margin">
+          <div className="h-auto m-0 p-0 border-none">
             <div className="errors">
               <div className="errors-wrapper">
-                <h4 className="center">Warning</h4>
+                <h4 className="mx-auto">Warning</h4>
                 <p className="message">
                   <strong>OpenAPI.jsonSchemaDialect</strong> field contains a
                   value different from the default value of{" "}

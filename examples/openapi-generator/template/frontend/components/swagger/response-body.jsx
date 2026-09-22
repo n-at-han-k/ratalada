@@ -144,7 +144,7 @@ export default class ResponseBody extends React.PureComponent {
         // We were able to squeeze something out of content
         // in `updateParsedContent`, so let's display it
         bodyEl = <div>
-          <p className="i">
+          <p className="italic">
             Unrecognized response type; displaying content as text.
           </p>
           <HighlightCode downloadable fileName={`${downloadName}.txt`} canCopy>{parsedContent}</HighlightCode>
@@ -152,7 +152,7 @@ export default class ResponseBody extends React.PureComponent {
 
       } else {
         // Give up
-        bodyEl = <p className="i">
+        bodyEl = <p className="italic">
           Unrecognized response type; unable to display.
         </p>
       }

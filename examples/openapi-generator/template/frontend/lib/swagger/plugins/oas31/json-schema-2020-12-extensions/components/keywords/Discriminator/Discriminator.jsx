@@ -57,7 +57,7 @@ const Discriminator = ({ schema, getSystem }) => {
     <JSONSchemaPathContext.Provider value={path}>
       <JSONSchemaLevelContext.Provider value={nextLevel}>
         <div
-          className="json-schema-2020-12-keyword json-schema-2020-12-keyword--discriminator"
+          className="mx-0 mt-[5px] mb-[5px] json-schema-2020-12-keyword--discriminator"
           data-json-schema-level={level}
         >
           {isExpandable ? (
@@ -79,11 +79,11 @@ const Discriminator = ({ schema, getSystem }) => {
           )}
 
           {discriminator.propertyName && (
-            <span className="json-schema-2020-12__attribute json-schema-2020-12__attribute--muted">
+            <span className="lowercase font-[monospace] text-[#3b4151] text-[12px] pl-2.5 json-schema-2020-12__attribute--muted">
               {discriminator.propertyName}
             </span>
           )}
-          <strong className="json-schema-2020-12__attribute json-schema-2020-12__attribute--primary">
+          <strong className="lowercase font-[monospace] text-[#3b4151] text-[12px] pl-2.5 json-schema-2020-12__attribute--primary">
             object
           </strong>
           <ul

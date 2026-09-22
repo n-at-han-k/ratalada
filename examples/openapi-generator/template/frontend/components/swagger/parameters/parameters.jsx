@@ -166,7 +166,7 @@ export default class Parameters extends Component {
         </div>
         {parametersVisible ? <div className="parameters-container">
           {!groupedParametersArr.length ? <div className="opblock-description-wrapper"><p>No parameters</p></div> :
-            <div className="table-container">
+            <div className="p-5">
               <table className="parameters">
                 <thead>
                 <tr>

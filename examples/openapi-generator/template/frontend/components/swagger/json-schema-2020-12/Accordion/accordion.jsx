@@ -23,7 +23,7 @@ const Accordion = ({ expanded = false, children, onChange }) => {
       className="json-schema-2020-12-accordion"
       onClick={handleExpansion}
     >
-      <div className="json-schema-2020-12-accordion__children">{children}</div>
+      <div className="inline-block">{children}</div>
       <span
         className={classNames("json-schema-2020-12-accordion__icon", {
           "json-schema-2020-12-accordion__icon--expanded": expanded,

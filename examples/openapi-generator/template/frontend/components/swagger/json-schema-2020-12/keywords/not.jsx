@@ -22,7 +22,7 @@ const Not = ({ schema }) => {
   )
 
   return (
-    <div className="json-schema-2020-12-keyword json-schema-2020-12-keyword--not">
+    <div className="mx-0 mt-[5px] mb-[5px] json-schema-2020-12-keyword--not">
       <JSONSchema name={name} schema={schema.not} identifier="not" />
     </div>
   )

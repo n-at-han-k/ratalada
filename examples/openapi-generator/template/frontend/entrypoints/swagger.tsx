@@ -1,5 +1,5 @@
 import "@/styles/application.css"
-import "@/styles/swagger/main.scss"
+import "@/styles/swagger.css"
 
 import SwaggerUI from "@/lib/swagger/swagger-ui"
 

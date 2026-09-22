@@ -203,13 +203,13 @@ export default class Response extends React.Component {
           { !showExtensions || !extensions.size ? null : extensions.entrySeq().map(([key, v]) => <ResponseExtension key={`${key}-${v}`} xKey={key} xVal={v} /> )}
 
           {isOAS3 && response.get("content") ? (
-            <section className="response-controls">
+            <section className="flex pt-[1em]">
               <div
                 className={cx("response-control-media-type", {
                   "response-control-media-type--accept-controller": controlsAcceptHeader
                 })}
               >
-                <small className="response-control-media-type__title">
+                <small className="block mb-[0.2em] text-[0.7em]">
                   Media type
                 </small>
                 <ContentType
@@ -230,7 +230,7 @@ export default class Response extends React.Component {
               </div>
               {Map.isMap(examplesForMediaType) && !examplesForMediaType.isEmpty() ? (
                 <div className="response-control-examples">
-                  <small className="response-control-examples__title">
+                  <small className="block mb-[0.2em] text-[0.7em]">
                     Examples
                   </small>
                   <ExamplesSelect

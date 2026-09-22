@@ -22,7 +22,7 @@ const Else = ({ schema }) => {
   )
 
   return (
-    <div className="json-schema-2020-12-keyword json-schema-2020-12-keyword--if">
+    <div className="mx-0 mt-[5px] mb-[5px] json-schema-2020-12-keyword--if">
       <JSONSchema name={name} schema={schema.else} identifier="else" />
     </div>
   )

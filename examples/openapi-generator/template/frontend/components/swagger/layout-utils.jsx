@@ -219,7 +219,7 @@ Link.propTypes = {
   className: PropTypes.string
 }
 
-const NoMargin = ({children}) => <div className="no-margin"> {children} </div>
+const NoMargin = ({children}) => <div className="h-auto m-0 p-0 border-none"> {children} </div>
 
 NoMargin.propTypes = {
   children: PropTypes.node

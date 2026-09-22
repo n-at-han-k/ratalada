@@ -24,7 +24,7 @@ const Properties = ({ schema }) => {
 
   return (
     <JSONSchemaPathContext.Provider value={path}>
-      <div className="json-schema-2020-12-keyword json-schema-2020-12-keyword--properties">
+      <div className="mx-0 mt-[5px] mb-[5px] json-schema-2020-12-keyword--properties">
         <ul>
           {Object.entries(properties).map(([propertyName, propertySchema]) => {
             const isRequired = required.includes(propertyName)

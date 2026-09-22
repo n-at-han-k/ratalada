@@ -60,11 +60,11 @@ const ExtensionKeywords = ({ schema }) => {
     <JSONSchemaPathContext.Provider value={path}>
       <JSONSchemaLevelContext.Provider value={nextLevel}>
         <div
-          className="json-schema-2020-12-keyword json-schema-2020-12-keyword--extension-keywords"
+          className="mx-0 mt-[5px] mb-[5px] json-schema-2020-12-keyword--extension-keywords"
           data-json-schema-level={level}
         >
           <Accordion expanded={isExpanded} onChange={handleExpansion}>
-            <span className="json-schema-2020-12-keyword__name json-schema-2020-12-keyword__name--extension">
+            <span className="json-schema-2020-12-keyword__name italic text-[#929292]">
               Extension Keywords
             </span>
           </Accordion>

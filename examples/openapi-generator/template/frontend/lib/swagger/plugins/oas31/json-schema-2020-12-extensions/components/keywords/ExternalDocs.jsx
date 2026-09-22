@@ -63,7 +63,7 @@ const ExternalDocs = ({ schema, getSystem }) => {
     <JSONSchemaPathContext.Provider value={path}>
       <JSONSchemaLevelContext.Provider value={nextLevel}>
         <div
-          className="json-schema-2020-12-keyword json-schema-2020-12-keyword--externalDocs"
+          className="mx-0 mt-[5px] mb-[5px] json-schema-2020-12-keyword--externalDocs"
           data-json-schema-level={level}
         >
           {isExpandable ? (
@@ -83,7 +83,7 @@ const ExternalDocs = ({ schema, getSystem }) => {
               External documentation
             </span>
           )}
-          <strong className="json-schema-2020-12__attribute json-schema-2020-12__attribute--primary">
+          <strong className="lowercase font-[monospace] text-[#3b4151] text-[12px] pl-2.5 json-schema-2020-12__attribute--primary">
             object
           </strong>
           <ul
@@ -104,11 +104,11 @@ const ExternalDocs = ({ schema, getSystem }) => {
 
                 {externalDocs.url && (
                   <li className="json-schema-2020-12-property">
-                    <div className="json-schema-2020-12-keyword json-schema-2020-12-keyword">
+                    <div className="mx-0 mt-[5px] mb-[5px]">
                       <span className="json-schema-2020-12-keyword__name json-schema-2020-12-keyword__name--secondary">
                         url
                       </span>
-                      <span className="json-schema-2020-12-keyword__value json-schema-2020-12-keyword__value--secondary">
+                      <span className="italic text-[#6b6b6b] text-[12px] font-normal json-schema-2020-12-keyword__value--secondary">
                         <Link
                           target="_blank"
                           href={sanitizeUrl(externalDocs.url)}

@@ -17,11 +17,6 @@ export default defineConfig({
   resolve: {
     alias: { "@": resolve(import.meta.dirname, "frontend") },
   },
-  css: {
-    // main.scss pulls tachyons out of node_modules; sass has no bundler
-    // resolution of its own.
-    preprocessorOptions: { scss: { loadPaths: ["node_modules"] } },
-  },
   // swagger-client and immutable both expect node globals in the browser.
   define: { global: "globalThis" },
 })

@@ -23,7 +23,7 @@ class ModelComponent extends Component {
 
     if(isDeprecated) {
       classes.push("deprecated")
-      message = <span className="model-deprecated-warning">Deprecated:</span>
+      message = <span className="font-semibold text-[16px] mr-[1em] font-[sans-serif] text-[#f93e3e]">Deprecated:</span>
     }
 
     return <div className={classes.join(" ")}>

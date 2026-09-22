@@ -30,13 +30,13 @@ const $vocabulary = ({ schema }) => {
 
   return (
     <JSONSchemaPathContext.Provider value={path}>
-      <div className="json-schema-2020-12-keyword json-schema-2020-12-keyword--$vocabulary">
+      <div className="mx-0 mt-[5px] mb-[5px] json-schema-2020-12-keyword--$vocabulary">
         <Accordion expanded={isExpanded} onChange={handleExpansion}>
           <span className="json-schema-2020-12-keyword__name json-schema-2020-12-keyword__name--secondary">
             $vocabulary
           </span>
         </Accordion>
-        <strong className="json-schema-2020-12__attribute json-schema-2020-12__attribute--primary">
+        <strong className="lowercase font-[monospace] text-[#3b4151] text-[12px] pl-2.5 json-schema-2020-12__attribute--primary">
           object
         </strong>
         <ul>
@@ -48,7 +48,7 @@ const $vocabulary = ({ schema }) => {
                   "json-schema-2020-12-$vocabulary-uri--disabled": !enabled,
                 })}
               >
-                <span className="json-schema-2020-12-keyword__value json-schema-2020-12-keyword__value--secondary">
+                <span className="italic text-[#6b6b6b] text-[12px] font-normal json-schema-2020-12-keyword__value--secondary">
                   {uri}
                 </span>
               </li>

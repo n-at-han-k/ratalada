@@ -360,7 +360,7 @@ export default class ParameterRow extends Component {
             { schemaObjectTypeLabel }
             { format && <span className="prop-format">(${format})</span>}
           </div>
-          <div className="parameter__deprecated">
+          <div className="italic font-semibold text-[12px] font-[monospace] text-[#f00]">
             { isOAS3 && param.get("deprecated") ? "deprecated": null }
           </div>
           <div className="parameter__in">({ param.get("in") })</div>
@@ -391,7 +391,7 @@ export default class ParameterRow extends Component {
 
           {
             isOAS3 && param.get("examples") ? (
-              <section className="parameter-controls">
+              <section className="mt-[0.75em]">
                 <ExamplesSelectValueRetainer
                   examples={param.get("examples")}
                   onSelect={this._onExampleSelect}

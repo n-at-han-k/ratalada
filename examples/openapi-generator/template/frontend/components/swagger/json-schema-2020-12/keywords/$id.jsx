@@ -9,11 +9,11 @@ const $id = ({ schema }) => {
   if (!schema?.$id) return null
 
   return (
-    <div className="json-schema-2020-12-keyword json-schema-2020-12-keyword--$id">
+    <div className="mx-0 mt-[5px] mb-[5px] json-schema-2020-12-keyword--$id">
       <span className="json-schema-2020-12-keyword__name json-schema-2020-12-keyword__name--secondary">
         $id
       </span>
-      <span className="json-schema-2020-12-keyword__value json-schema-2020-12-keyword__value--secondary">
+      <span className="italic text-[#6b6b6b] text-[12px] font-normal json-schema-2020-12-keyword__value--secondary">
         {schema.$id}
       </span>
     </div>

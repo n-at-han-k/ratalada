@@ -22,7 +22,7 @@ const Contains = ({ schema }) => {
   )
 
   return (
-    <div className="json-schema-2020-12-keyword json-schema-2020-12-keyword--contains">
+    <div className="mx-0 mt-[5px] mb-[5px] json-schema-2020-12-keyword--contains">
       <JSONSchema name={name} schema={schema.contains} identifier="contains" />
     </div>
   )

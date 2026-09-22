@@ -52,6 +52,7 @@ GEM
       json
     diff-lcs (1.6.2)
     drb (2.2.3)
+    dry-cli (1.4.1)
     dry-configurable (1.4.0)
       dry-core (~> 1.0)
       zeitwerk (~> 2.6)
@@ -120,6 +121,7 @@ GEM
       drb (~> 2.0)
       prism (~> 1.5)
     mustermann (3.1.1)
+    mutex_m (0.3.0)
     openapi-ruby (5.0.0)
       activesupport (>= 7.0)
       json_schemer (~> 2.4)
@@ -144,6 +146,8 @@ GEM
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
       rack (>= 3.0.0, < 4)
+    rack-proxy (2.0.1)
+      rack (>= 2.0, < 4)
     rack-session (2.1.2)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
@@ -217,6 +221,12 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     uri (1.1.1)
+    vite_ruby (3.11.0)
+      dry-cli (>= 0.7, < 2)
+      logger (~> 1.6)
+      mutex_m
+      rack-proxy (>= 0.6.1)
+      zeitwerk (~> 2.2)
     zeitwerk (2.8.3)
 
 PLATFORMS
@@ -236,6 +246,7 @@ DEPENDENCIES
   rspec
   sinatra
   sqlite3 (~> 2.0)
+  vite_ruby
 
 BUNDLED WITH
    2.7.2

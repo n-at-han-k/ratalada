@@ -5,8 +5,10 @@
 # document changes the routes without touching this file.
 
 require "json"
+require "yaml"
 
 require "ratalada/falcon"
+require "ratalada/contrib/vite"
 require "ratalada/contrib/router/file_based/sinatra_adapter"
 
 require_relative "config/rom"
@@ -31,6 +33,11 @@ end
 # installing onto `Server` builds a stack nothing then runs -- and the
 # middleware is silently absent.
 stack = Ratalada::Server::Stack.new
+
+# Fronts the app with vite's dev server while `bin/vite dev` runs, and is a
+# pass-through otherwise. It goes on before the validator: the assets the index
+# page loads are not in the document.
+stack = stack.use(Ratalada::Contrib::Vite::DevServerProxy)
 
 OpenapiRuby::Middleware::Installer.install!(stack, root: __dir__)
 

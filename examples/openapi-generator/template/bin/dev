@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+OVERMIND_PROCFILE=Procfile.dev overmind start --any-can-die --auto-restart web,vite "$@"

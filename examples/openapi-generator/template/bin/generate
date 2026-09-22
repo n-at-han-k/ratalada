@@ -61,11 +61,16 @@ FANOUT = {
 # What the document decides, which a run writes out itself: the pages, the
 # tables, the components, the factories. Everything else here is the project,
 # and the project is copied as it stands.
-GENERATED = %r{\A(app/(?!_layout\.rb)|db/|openapi/|tmp/|spec/factories/|lib/(models|entities|schemas)/)}
+GENERATED = %r{\A(app/(?!_layout\.rb|index\.rb)|db/|openapi/|tmp/|spec/factories/|lib/(models|entities|schemas)/)}
+
+# Nothing a package manager or a build wrote: node_modules is pnpm's, and
+# public/vite* is vite's. Both are rebuilt in the output by `pnpm install`.
+BUILT = %r{\A(node_modules/|public/vite)}
 
 def copied?(relative)
   !File.directory?(File.join(TEMPLATE, relative)) &&
     !relative.match?(GENERATED) &&
+    !relative.match?(BUILT) &&
     !relative.match?(%r{\A(\.\.?\z|\.git/)})
 end
 
@@ -77,16 +82,21 @@ COPIED = Dir.glob("**/*", File::FNM_DOTMATCH, base: TEMPLATE).select { |relative
   pages endpoints tests wiring
 ].each { |part| require_relative "../generators/#{part}" }
 
+# What is copied byte for byte rather than run through ERB: the generators are
+# the next run's, not this one's, and frontend/ is a fork of somebody else's
+# source -- 462 files of JSX that ERB has no business reading. app/index.rb
+# carries an ERB template of its OWN, for Sinatra to render at request time.
+VERBATIM = %r{\A(generators/|frontend/|app/index\.rb\z)}
+
 # A file of the template, at the same path in the output, with its mode. Most
 # carry no ERB tags at all; the few that do read the same methods the
-# generators do. The generators themselves are copied as they are: they are
-# the next run's, not this one's.
+# generators do.
 def emit(root, relative, name: nil)
   source = File.join(name ? TEMPLATES : TEMPLATE, relative)
   target = File.join(root, name ? relative.sub("[name]", snake(name)) : relative)
   body = File.read(source)
 
-  write(target, relative.start_with?("generators/") ? body : ERB.new(body).result_with_hash(name: name))
+  write(target, VERBATIM.match?(relative) ? body : ERB.new(body).result_with_hash(name: name))
   FileUtils.chmod(File.stat(source).mode & 0o7777, target)
 end
 

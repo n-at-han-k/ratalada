@@ -1,5 +1,13 @@
 # frozen_string_literal: true
 
+# The specs build this app without going through server.rb, so the layout
+# requires what the layout uses.
+require "ratalada/contrib/vite"
+
+# The index page is a vite entrypoint (app/index.rb); every other page under
+# here is the API, which never renders HTML.
+helpers Ratalada::Contrib::Vite::TagHelpers
+
 helpers do
   def relations = ROM_CONTAINER.relations
 

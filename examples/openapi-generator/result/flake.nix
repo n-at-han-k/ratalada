@@ -74,12 +74,6 @@
             # openapi-generator-cli is the same jar fetched at runtime, which a
             # flake cannot pin, so this is the packaged one instead.
             openapi-generator-cli
-
-            # The index page: the forked swagger-ui under frontend/, built by
-            # vite. `overmind` runs the two processes in Procfile.dev.
-            nodejs
-            pnpm
-            overmind
           ];
 
           shellHook = /* bash */ ''
@@ -96,12 +90,6 @@
             if [ -f "$root/lib/ratalada.rb" ]; then
               export RUBYLIB="$root/lib''${RUBYLIB:+:$RUBYLIB}"
             fi
-
-            # ponytail: `pnpm install` hits the registry, so this shell is not
-            # offline-reproducible the way the gems are. Pin it like the other
-            # examples -- `pkgs.fetchPnpmDeps` + `pnpmConfigHook` -- once
-            # pnpm-lock.yaml is committed.
-            [ -f package.json ] && pnpm install
           '';
         };
       }));

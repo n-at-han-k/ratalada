@@ -1,8 +1,0 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-
-@custom-variant dark (&:is(.dark *));
-
-/* swagger-ui's own SCSS scopes everything under .swagger-ui, so tailwind's
-   preflight and the fork's styles do not fight over bare element selectors. */

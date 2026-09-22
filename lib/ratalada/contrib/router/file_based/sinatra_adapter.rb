@@ -12,12 +12,26 @@ module Ratalada
         # hangs off it, which is how a route file's own `get "/members"` lands
         # under the prefix its path spelled.
         module SinatraAdapter
+          # Expo spelling, kept all the way to the pattern. Sinatra's own
+          # syntax has no way to say `[user-id]`: `:user-id` reads as the
+          # capture `user` followed by the literal `-id`, so a hyphenated
+          # parameter silently routes nowhere. Mustermann::Expo is the pattern
+          # the file path already is.
+          SPELLING = {placeholder: "[%s]", catch_all: "[...%s]"}.freeze
+
+          def route_spelling = SPELLING
+
           def route(verb, path, options = {}, &block)
             unless route_prefix.to_s.empty?
-              path = FileBased.join(route_prefix, path)
+              path = Mustermann.new(FileBased.join(route_prefix, path), type: :expo)
             end
 
-            super
+            super(
+              verb,
+              path,
+              options,
+              &block
+            )
           end
         end
       end

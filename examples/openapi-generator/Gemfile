@@ -1,0 +1,26 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+# The tool: Mustermann::Expo (../../lib) is what spells a file path as a route.
+gem "mustermann", "~> 3.0"
+
+# The specs and the schema components: openapi_ruby declares the document in
+# RSpec and writes it back out with `rake openapi_ruby:generate`.
+gem "openapi-ruby", "~> 5.0"
+gem "rack-test"
+gem "rake"
+gem "rspec"
+
+# Persistence: relations and structs, on sqlite.
+gem "rom", "~> 5.4"
+gem "rom-sql", "~> 3.6"
+gem "rom-factory", "~> 0.12"
+gem "sqlite3", "~> 2.0"
+
+# The server that mounts what the tool writes. dry-configurable and rack are
+# ratalada's own dependencies: it is the working tree here, not a gem.
+gem "dry-configurable", "~> 1.4"
+gem "falcon"
+gem "rack", "~> 3.0"
+gem "sinatra"

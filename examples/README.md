@@ -17,6 +17,14 @@ BUNDLE_GEMFILE=gemfiles/sinatra.gemfile bundle exec ruby examples/sinatra.rb   #
 BUNDLE_GEMFILE=gemfiles/grape.gemfile   bundle exec ruby examples/grape.rb     # grape DSL on falcon
 ```
 
+`examples/openapi-generator` has a bundle and a flake of its own: it generates
+its `app/` from an OpenAPI document before serving it.
+
+```bash
+cd examples/openapi-generator && nix develop
+ruby generate.rb forgejo.json . && bundle exec rspec && bin/schema
+```
+
 Some examples bring their own dependencies (via an inline gemfile) instead of
 the repo bundle — run them with plain `ruby`:
 

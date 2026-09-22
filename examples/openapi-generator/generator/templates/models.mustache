@@ -1,0 +1,31 @@
+{
+  "models": [
+{{#models}}{{#model}}    {
+      "name": {{#lambda.doublequote}}{{name}}{{/lambda.doublequote}},
+      "vars": [
+{{#vars}}        {
+          "name": {{#lambda.doublequote}}{{baseName}}{{/lambda.doublequote}},
+          "dataType": {{#lambda.doublequote}}{{dataType}}{{/lambda.doublequote}},
+          "complexType": {{#lambda.doublequote}}{{complexType}}{{/lambda.doublequote}},
+          "itemsType": {{#lambda.doublequote}}{{#items}}{{complexType}}{{/items}}{{/lambda.doublequote}},
+          "format": {{#lambda.doublequote}}{{dataFormat}}{{/lambda.doublequote}},
+          "required": {{#required}}true{{/required}}{{^required}}false{{/required}},
+          "isArray": {{#isArray}}true{{/isArray}}{{^isArray}}false{{/isArray}},
+          "isMap": {{#isMap}}true{{/isMap}}{{^isMap}}false{{/isMap}},
+          "isModel": {{#isModel}}true{{/isModel}}{{^isModel}}false{{/isModel}},
+          "isInteger": {{#isInteger}}true{{/isInteger}}{{^isInteger}}false{{/isInteger}},
+          "isLong": {{#isLong}}true{{/isLong}}{{^isLong}}false{{/isLong}},
+          "isNumber": {{#isNumber}}true{{/isNumber}}{{^isNumber}}false{{/isNumber}},
+          "isFloat": {{#isFloat}}true{{/isFloat}}{{^isFloat}}false{{/isFloat}},
+          "isDouble": {{#isDouble}}true{{/isDouble}}{{^isDouble}}false{{/isDouble}},
+          "isBoolean": {{#isBoolean}}true{{/isBoolean}}{{^isBoolean}}false{{/isBoolean}},
+          "isDate": {{#isDate}}true{{/isDate}}{{^isDate}}false{{/isDate}},
+          "isDateTime": {{#isDateTime}}true{{/isDateTime}}{{^isDateTime}}false{{/isDateTime}},
+          "isString": {{#isString}}true{{/isString}}{{^isString}}false{{/isString}}
+        }{{^-last}},{{/-last}}
+{{/vars}}
+      ]
+    }{{^-last}},{{/-last}}
+{{/model}}{{/models}}
+  ]
+}

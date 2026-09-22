@@ -76,6 +76,16 @@ RSpec.describe Ratalada::Contrib::Router::FileBased do
     end
   end
 
+  it "orders a segment that spells a literal ahead of the bare capture" do
+    with_tree(
+      "pulls/[index].rb",
+      "pulls/[index].[diffType].rb",
+    ) do |map, _root|
+      # Both match "/pulls/7.diff"; the one that spells the dot means it.
+      expect(map.keys).to eq(["/pulls/:index.:diffType", "/pulls/:index"])
+    end
+  end
+
   it "spells placeholders the way the adapter asks" do
     with_tree("teams/[team].rb") do |map, _root|
       expect(map.keys).to eq(["/teams/:team"])

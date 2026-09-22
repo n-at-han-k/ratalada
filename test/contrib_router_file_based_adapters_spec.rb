@@ -80,6 +80,35 @@ RSpec.describe "Ratalada::Contrib::Router::FileBased::SinatraAdapter", adapter: 
   it_behaves_like "a file-based router", Ratalada::Frontends::Sinatra
 end
 
+# Sinatra's own pattern syntax cannot spell a hyphenated parameter -- `:user-id`
+# is the capture `user` then the literal `-id` -- so the adapter keeps the Expo
+# pattern the file path already is.
+RSpec.describe "Ratalada::Contrib::Router::FileBased::SinatraAdapter hyphens", adapter: "ratalada/contrib/router/file_based/sinatra_adapter" do
+  around do |example|
+    previous = Ratalada.frontend
+    Ratalada.config.frontend = Ratalada::Frontends::Sinatra
+
+    Dir.mktmpdir do |root|
+      FileUtils.mkdir_p(File.join(root, "activitypub/user-id/[user-id]"))
+      File.write(
+        File.join(root, "activitypub/user-id/[user-id]/index.rb"),
+        %(get("/") { params["user-id"] }),
+      )
+
+      @app = Ratalada::Contrib::Router::FileBased.build(root)
+      example.run
+    end
+  ensure
+    Ratalada.config.frontend = previous
+  end
+
+  it "routes a hyphenated parameter and captures it under that name" do
+    status, _headers, body = @app.call(env_for("GET", "/activitypub/user-id/7"))
+
+    expect([status, body.each.to_a.join]).to eq([200, "7"])
+  end
+end
+
 RSpec.describe "Ratalada::Contrib::Router::FileBased::GrapeAdapter", adapter: "ratalada/contrib/router/file_based/grape_adapter" do
   it_behaves_like "a file-based router", Ratalada::Frontends::Grape
 end

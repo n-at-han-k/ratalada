@@ -1,0 +1,8 @@
+app/
+bin/
+config/
+db/
+lib/
+openapi/
+spec/
+tmp/

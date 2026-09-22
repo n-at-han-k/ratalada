@@ -20,7 +20,15 @@ module Ratalada
         #
         #   Server.run { Ratalada::Contrib::Router::FileBased.mount(self, "app") }
         def mount(app, directory)
-          build_map(directory).each do |prefix, paths|
+          # The adapter says how its frontend spells a placeholder; the default
+          # is `:name`, which is what hanami and grape read.
+          if app.respond_to?(:route_spelling)
+            spelling = app.route_spelling
+          else
+            spelling = {}
+          end
+
+          build_map(directory, **spelling).each do |prefix, paths|
             app.route_prefix = prefix
             paths.each { |path| app.class_eval(File.read(path), path, 1) }
           end
@@ -75,12 +83,18 @@ module Ratalada
           "#{prefix}#{route.delete_suffix("/")}".sub(/\A\z/, "/")
         end
 
+        # Least specific last. A segment that is PARTLY literal beats a bare
+        # capture: `[index].[diffType]` and `[index]` both match "7.diff", and
+        # the one that spells the dot is the one that means it -- so the
+        # patterns are anchored to a single capture rather than to the whole
+        # segment, which `[index].[diffType]` would also satisfy.
         def specificity(route)
           route.split("/").drop(1).map do |segment|
             case segment
-            when "[...#{Mustermann::Expo::NOT_FOUND_CAPTURE}]" then 3
-            when /\A\[\.\.\..+\]\z/ then 2
-            when /\A\[.+\]\z/ then 1
+            when "[...#{Mustermann::Expo::NOT_FOUND_CAPTURE}]" then 4
+            when /\A\[\.\.\.[^\[\]]+\]\z/ then 3
+            when /\A\[[^\[\]]+\]\z/ then 2
+            when /\[.+\]/ then 1
             else 0
             end
           end

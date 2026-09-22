@@ -27,5 +27,32 @@ colouring the method badge by verb, and a class name cannot carry which verb
 it is. Those are `class-variance-authority` variants, moved by hand into the
 component that already knows -- and `swagger.css` shrinks as they go.
 
+## The passes
+
+| | |
+|---|---|
+| `graph.mjs` | the render graph -- every JSX element, its classes, and what renders it. `getComponent("X")` and `useComponent("X")` resolve through the static registry |
+| `plan.mjs` | selector resolution, dominance, cascade reduction. Decides what can be inlined, what must stay a variant, and what stays CSS |
+| `apply.mjs` | writes the classNames and the reduced stylesheet. Parses every file back before writing it -- an offset that is off by one turns source into rubble |
+| `verify-styles.js` | the proof: computed styles from a real render, before against after |
+| `map.mjs`, `variants.mjs` | earlier, simpler attempts, kept because their numbers are the argument for the current design |
+
+## Verifying
+
+Nothing here is trustworthy without `verify-styles.js`. Paste it into the page
+once per build, same origin both times:
+
+```
+converted tree      -> verify("after")
+git checkout HEAD   -> verify("before")   # prints the diff
+```
+
+Run it twice on ONE build first. That control should report 0 differing (or 1
+mid-animation `opacity`); more than that means the page had not settled and
+the comparison is noise, not a finding.
+
+`style-diff.md` is the last run. It is not zero, so the conversion is not
+applied.
+
 `fork.py` is separate: it is how the vendored source was laid out in the first
 place. Read its docstring before running it.

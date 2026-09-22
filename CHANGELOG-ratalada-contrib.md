@@ -6,6 +6,41 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.1.1] - 2026-09-22
+
+### Added
+
+- **`route_spelling` on a file-based router adapter,** an optional hook read by
+  `Ratalada::Contrib::Router::FileBased.mount`. An adapter that defines it
+  returns the `placeholder:`/`catch_all:` pair `build_map` should use for that
+  frontend; an adapter that does not keeps the `":%s"` / `"*%s"` defaults,
+  which is what the hanami and grape adapters read. Only matters if you wrote
+  your own adapter — the ones shipped here are already updated.
+
+- **`Ratalada::Contrib::Router::FileBased::SinatraAdapter::SPELLING`,** the
+  expo spelling (`"[%s]"` / `"[...%s]"`) the sinatra adapter now returns from
+  `route_spelling`.
+
+### Fixed
+
+- **A hyphenated parameter now routes under sinatra.** The sinatra adapter
+  used to translate an expo path into sinatra's own pattern syntax, which has
+  no way to spell `[user-id]`: `:user-id` reads as the capture `user` followed
+  by the literal `-id`, so `app/[user-id]/index.rb` matched nothing and
+  `params["user-id"]` was never set. The adapter now keeps the expo spelling
+  and hands `Server.route` a `Mustermann.new(path, type: :expo)` pattern
+  instead of a string, so the pattern is the one the file path already is.
+  Routes without hyphens are unaffected, and `params` keys are unchanged for
+  them.
+
+- **A route segment that spells a literal now beats the bare capture.**
+  `FileBased.build_map` ordered `[index].[diffType]` and `[index]` as equally
+  specific, so `/pulls/7.diff` could land on whichever sorted first. Segments
+  that are partly literal now rank between a literal segment and a bare
+  capture, and `[index].[diffType]` is matched ahead of `[index]`. The
+  relative order of literal, capture and splat segments is otherwise the
+  same.
+
 ## [3.1.0] - 2026-09-16
 
 ### Added

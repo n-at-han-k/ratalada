@@ -22,7 +22,13 @@ const files = globSync("frontend/**/*.{js,jsx,ts,tsx}").filter(
 // so the test is deliberately blunt: does this class name appear anywhere in
 // the source? It over-keeps, which is the safe direction -- a rule wrongly
 // kept costs bytes, a rule wrongly deleted costs styling.
-const blob = files.map((f) => readFileSync(f, "utf8")).join("\n")
+// Comments are stripped first. A comment that explains which classes were
+// retired -- "was dialog-ux, backdrop-ux, modal-ux" -- otherwise keeps every
+// one of those rules alive, which is exactly what happened.
+const stripComments = (s) =>
+  s.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(^|[^:])\/\/[^\n]*/g, "$1 ")
+
+const blob = files.map((f) => stripComments(readFileSync(f, "utf8"))).join("\n")
 // Class names are also COMPOSED: `opblock-${method}` never appears in the
 // source as "opblock-post", but every verb class is real at runtime. Collect
 // the text that precedes an interpolation and treat anything starting with it

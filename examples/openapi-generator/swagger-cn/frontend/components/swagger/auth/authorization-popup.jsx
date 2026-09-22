@@ -1,67 +1,26 @@
 import React from "react"
 import PropTypes from "prop-types"
 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { ScrollArea } from "@/components/ui/scroll-area"
+
+/**
+ * The authorizations modal.
+ *
+ * Was five nested divs -- dialog-ux, backdrop-ux, modal-ux, modal-dialog-ux,
+ * modal-ux-inner -- plus a hand-rolled backdrop click, a close button with
+ * its own icon, and a document-level Escape listener. Dialog does all four,
+ * and adds the focus trap and `aria-modal` they never had.
+ *
+ * It renders open because swagger-ui only mounts it when there is something
+ * to show; closing is telling swagger-ui that, not local state.
+ */
 export default class AuthorizationPopup extends React.Component {
-  close =() => {
-    let { authActions } = this.props
-
-    authActions.showDefinitions(false)
-  }
-
-  handleEscKeydown = (event) => {
-    if (event.key === "Escape") {
-      this.close()
-    }
-  }
-
-  componentDidMount() {
-    document.addEventListener("keydown", this.handleEscKeydown)
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleEscKeydown)
-  }
-
-  render() {
-    let { authSelectors, authActions, getComponent, errSelectors, specSelectors, fn: { AST = {} } } = this.props
-    let definitions = authSelectors.shownDefinitions()
-    const Auths = getComponent("auths")
-    const CloseIcon = getComponent("CloseIcon")
-
-    return (
-      <div className="dialog-ux">
-        <div className="backdrop-ux" onClick={ this.close }></div>
-        <div className="modal-ux">
-          <div className="modal-dialog-ux">
-            <div className="modal-ux-inner">
-              <div className="modal-ux-header items-center flex py-3 px-0 border-b border-solid border-[rgb(92%,92%,92%)]">
-                <h3>Available authorizations</h3>
-                <button type="button" className="close-modal" onClick={ this.close }>
-                  <CloseIcon />
-                </button>
-              </div>
-              <div className="modal-ux-content overflow-y-auto max-h-[540px] p-5">
-
-                {
-                  definitions.valueSeq().map(( definition, key ) => {
-                    return <Auths key={ key }
-                                  AST={AST}
-                                  definitions={ definition }
-                                  getComponent={ getComponent }
-                                  errSelectors={ errSelectors }
-                                  authSelectors={ authSelectors }
-                                  authActions={ authActions }
-                                  specSelectors={ specSelectors }/>
-                  })
-                }
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   static propTypes = {
     fn: PropTypes.object.isRequired,
     getComponent: PropTypes.func.isRequired,
@@ -69,5 +28,50 @@ export default class AuthorizationPopup extends React.Component {
     specSelectors: PropTypes.object.isRequired,
     errSelectors: PropTypes.object.isRequired,
     authActions: PropTypes.object.isRequired,
+  }
+
+  close = () => this.props.authActions.showDefinitions(false)
+
+  render() {
+    const {
+      authSelectors,
+      authActions,
+      getComponent,
+      errSelectors,
+      specSelectors,
+      fn: { AST = {} },
+    } = this.props
+
+    const definitions = authSelectors.shownDefinitions()
+    const Auths = getComponent("auths")
+
+    return (
+      <Dialog open onOpenChange={(open) => !open && this.close()}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Available authorizations</DialogTitle>
+          </DialogHeader>
+
+          <ScrollArea className="**:data-[slot=scroll-area-viewport]:max-h-[60vh]">
+            <div className="space-y-6 pr-4">
+              {definitions
+                .valueSeq()
+                .map((definition, key) => (
+                  <Auths
+                    key={key}
+                    AST={AST}
+                    definitions={definition}
+                    getComponent={getComponent}
+                    errSelectors={errSelectors}
+                    authSelectors={authSelectors}
+                    authActions={authActions}
+                    specSelectors={specSelectors}
+                  />
+                ))}
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+    )
   }
 }

@@ -1,0 +1,34 @@
+# frozen_string_literal: true
+
+class Schemas::DispatchWorkflowOption
+  include OpenapiRuby::Components::Base
+
+  # The document's own spelling: nothing here is camelized on the way out.
+  skip_key_transformation true
+
+  schema({
+    "description" => "DispatchWorkflowOption options when dispatching a workflow",
+    "type" => "object",
+    "required" => ["ref"],
+    "properties" => {
+      "inputs" => {
+        "description" => "Input keys and values configured in the workflow file.",
+        "type" => "object",
+        "additionalProperties" => {"type" => "string"},
+        "x-go-name" => "Inputs",
+      },
+      "ref" => {
+        "description" => "Git reference for the workflow",
+        "type" => "string",
+        "x-go-name" => "Ref",
+      },
+      "return_run_info" => {
+        "description" => "Flag to return the run info",
+        "type" => "boolean",
+        "default" => false,
+        "x-go-name" => "ReturnRunInfo",
+      },
+    },
+    "x-go-package" => "forgejo.org/modules/structs",
+  })
+end

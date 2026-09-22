@@ -1,0 +1,35 @@
+# frozen_string_literal: true
+
+class Schemas::OAuth2Application
+  include OpenapiRuby::Components::Base
+
+  # The document's own spelling: nothing here is camelized on the way out.
+  skip_key_transformation true
+
+  schema({
+    "type" => "object",
+    "title" => "OAuth2Application represents an OAuth2 application.",
+    "properties" => {
+      "client_id" => {"type" => "string", "x-go-name" => "ClientID"},
+      "client_secret" => {"type" => "string", "x-go-name" => "ClientSecret"},
+      "confidential_client" => {"type" => "boolean", "x-go-name" => "ConfidentialClient"},
+      "created" => {
+        "type" => "string",
+        "format" => "date-time",
+        "x-go-name" => "Created",
+      },
+      "id" => {
+        "type" => "integer",
+        "format" => "int64",
+        "x-go-name" => "ID",
+      },
+      "name" => {"type" => "string", "x-go-name" => "Name"},
+      "redirect_uris" => {
+        "type" => "array",
+        "items" => {"type" => "string"},
+        "x-go-name" => "RedirectURIs",
+      },
+    },
+    "x-go-package" => "forgejo.org/modules/structs",
+  })
+end

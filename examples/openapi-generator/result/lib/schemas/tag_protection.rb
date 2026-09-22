@@ -1,0 +1,42 @@
+# frozen_string_literal: true
+
+class Schemas::TagProtection
+  include OpenapiRuby::Components::Base
+
+  # The document's own spelling: nothing here is camelized on the way out.
+  skip_key_transformation true
+
+  schema({
+    "description" => "TagProtection represents a tag protection",
+    "type" => "object",
+    "properties" => {
+      "created_at" => {
+        "type" => "string",
+        "format" => "date-time",
+        "x-go-name" => "Created",
+      },
+      "id" => {
+        "type" => "integer",
+        "format" => "int64",
+        "x-go-name" => "ID",
+      },
+      "name_pattern" => {"type" => "string", "x-go-name" => "NamePattern"},
+      "updated_at" => {
+        "type" => "string",
+        "format" => "date-time",
+        "x-go-name" => "Updated",
+      },
+      "whitelist_teams" => {
+        "type" => "array",
+        "items" => {"type" => "string"},
+        "x-go-name" => "WhitelistTeams",
+      },
+      "whitelist_usernames" => {
+        "type" => "array",
+        "items" => {"type" => "string"},
+        "x-go-name" => "WhitelistUsernames",
+      },
+    },
+    "x-go-package" => "forgejo.org/modules/structs",
+  })
+end

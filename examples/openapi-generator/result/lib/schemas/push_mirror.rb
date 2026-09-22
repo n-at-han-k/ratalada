@@ -1,0 +1,34 @@
+# frozen_string_literal: true
+
+class Schemas::PushMirror
+  include OpenapiRuby::Components::Base
+
+  # The document's own spelling: nothing here is camelized on the way out.
+  skip_key_transformation true
+
+  schema({
+    "description" => "PushMirror represents information of a push mirror",
+    "type" => "object",
+    "properties" => {
+      "branch_filter" => {"type" => "string", "x-go-name" => "BranchFilter"},
+      "created" => {
+        "type" => "string",
+        "format" => "date-time",
+        "x-go-name" => "CreatedUnix",
+      },
+      "interval" => {"type" => "string", "x-go-name" => "Interval"},
+      "last_error" => {"type" => "string", "x-go-name" => "LastError"},
+      "last_update" => {
+        "type" => "string",
+        "format" => "date-time",
+        "x-go-name" => "LastUpdateUnix",
+      },
+      "public_key" => {"type" => "string", "x-go-name" => "PublicKey"},
+      "remote_address" => {"type" => "string", "x-go-name" => "RemoteAddress"},
+      "remote_name" => {"type" => "string", "x-go-name" => "RemoteName"},
+      "repo_name" => {"type" => "string", "x-go-name" => "RepoName"},
+      "sync_on_commit" => {"type" => "boolean", "x-go-name" => "SyncOnCommit"},
+    },
+    "x-go-package" => "forgejo.org/modules/structs",
+  })
+end

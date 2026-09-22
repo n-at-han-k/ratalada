@@ -1,0 +1,20 @@
+# frozen_string_literal: true
+
+class Schemas::CreateTagOption
+  include OpenapiRuby::Components::Base
+
+  # The document's own spelling: nothing here is camelized on the way out.
+  skip_key_transformation true
+
+  schema({
+    "description" => "CreateTagOption options when creating a tag",
+    "type" => "object",
+    "required" => ["tag_name"],
+    "properties" => {
+      "message" => {"type" => "string", "x-go-name" => "Message"},
+      "tag_name" => {"type" => "string", "x-go-name" => "TagName"},
+      "target" => {"type" => "string", "x-go-name" => "Target"},
+    },
+    "x-go-package" => "forgejo.org/modules/structs",
+  })
+end

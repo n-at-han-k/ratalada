@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+{{#operations}}
+# {{{baseName}}} -- scaffolded from the document.
+{{#operation}}
+
+{{#summary}}
+# {{{summary}}}
+{{/summary}}
+{{#lambda.lowercase}}{{httpMethod}}{{/lambda.lowercase}} "/" do
+{{{vendorExtensions.x-handler}}}
+end
+{{/operation}}
+{{/operations}}

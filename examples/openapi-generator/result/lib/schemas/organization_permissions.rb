@@ -1,0 +1,21 @@
+# frozen_string_literal: true
+
+class Schemas::OrganizationPermissions
+  include OpenapiRuby::Components::Base
+
+  # The document's own spelling: nothing here is camelized on the way out.
+  skip_key_transformation true
+
+  schema({
+    "description" => "OrganizationPermissions list different users permissions on an organization",
+    "type" => "object",
+    "properties" => {
+      "can_create_repository" => {"type" => "boolean", "x-go-name" => "CanCreateRepository"},
+      "can_read" => {"type" => "boolean", "x-go-name" => "CanRead"},
+      "can_write" => {"type" => "boolean", "x-go-name" => "CanWrite"},
+      "is_admin" => {"type" => "boolean", "x-go-name" => "IsAdmin"},
+      "is_owner" => {"type" => "boolean", "x-go-name" => "IsOwner"},
+    },
+    "x-go-package" => "forgejo.org/modules/structs",
+  })
+end

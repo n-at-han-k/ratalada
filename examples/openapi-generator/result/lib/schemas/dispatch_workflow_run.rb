@@ -1,0 +1,34 @@
+# frozen_string_literal: true
+
+class Schemas::DispatchWorkflowRun
+  include OpenapiRuby::Components::Base
+
+  # The document's own spelling: nothing here is camelized on the way out.
+  skip_key_transformation true
+
+  schema({
+    "description" => "DispatchWorkflowRun represents a workflow run",
+    "type" => "object",
+    "properties" => {
+      "id" => {
+        "description" => "the workflow run id",
+        "type" => "integer",
+        "format" => "int64",
+        "x-go-name" => "ID",
+      },
+      "jobs" => {
+        "description" => "the jobs name",
+        "type" => "array",
+        "items" => {"type" => "string"},
+        "x-go-name" => "Jobs",
+      },
+      "run_number" => {
+        "description" => "a unique number for each run of a repository",
+        "type" => "integer",
+        "format" => "int64",
+        "x-go-name" => "RunNumber",
+      },
+    },
+    "x-go-package" => "forgejo.org/modules/structs",
+  })
+end

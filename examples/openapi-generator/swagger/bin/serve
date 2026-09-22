@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+exec env PORT="${PORT:-9295}" ruby server.rb

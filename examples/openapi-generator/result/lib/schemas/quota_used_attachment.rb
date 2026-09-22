@@ -1,0 +1,49 @@
+# frozen_string_literal: true
+
+class Schemas::QuotaUsedAttachment
+  include OpenapiRuby::Components::Base
+
+  # The document's own spelling: nothing here is camelized on the way out.
+  skip_key_transformation true
+
+  schema({
+    "description" => "QuotaUsedAttachment represents an attachment counting towards a user's quota",
+    "type" => "object",
+    "properties" => {
+      "api_url" => {
+        "description" => "API URL for the attachment",
+        "type" => "string",
+        "x-go-name" => "APIURL",
+      },
+      "contained_in" => {
+        "description" => "Context for the attachment: URLs to the containing object",
+        "type" => "object",
+        "properties" => {
+          "api_url" => {
+            "description" => "API URL for the object that contains this attachment",
+            "type" => "string",
+            "x-go-name" => "APIURL",
+          },
+          "html_url" => {
+            "description" => "HTML URL for the object that contains this attachment",
+            "type" => "string",
+            "x-go-name" => "HTMLURL",
+          },
+        },
+        "x-go-name" => "ContainedIn",
+      },
+      "name" => {
+        "description" => "Filename of the attachment",
+        "type" => "string",
+        "x-go-name" => "Name",
+      },
+      "size" => {
+        "description" => "Size of the attachment (in bytes)",
+        "type" => "integer",
+        "format" => "int64",
+        "x-go-name" => "Size",
+      },
+    },
+    "x-go-package" => "forgejo.org/modules/structs",
+  })
+end

@@ -4,7 +4,9 @@ An OpenAPI document in, a Ratalada route tree out.
 
 ```bash
 nix develop
-ruby generate.rb forgejo.json .     # writes everything below
+ruby template/bin/generate forgejo.json result   # writes the project below
+
+cd result
 bundle exec rspec                   # 512 examples against the scaffold
 bin/schema                          # the document, back out of the specs
 ruby server.rb                      # serves it on 127.0.0.1:9292
@@ -86,7 +88,7 @@ wrapper that puts both jars on the classpath (the packaged CLI runs `java
 -jar`, which ignores `-cp`). `nix build .#expo-codegen` is the whole build.
 
 What a route *answers* is a schema walk no template can do, so it travels in
-the document: `generate.rb` annotates each operation with `x-status`, `x-body`
+the document: `bin/generate` annotates each operation with `x-status`, `x-body`
 and `x-params`, and `page.mustache` prints them. The generator stays about
 structure.
 

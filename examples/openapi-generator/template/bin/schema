@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# The document, out of the specs' own declarations -- SchemaWriter directly,
+# not `rake openapi_ruby:generate`, which shells out to a subprocess that
+# does this much with none of it in reach.
+#
+# Loading a spec file must not also run it: both frameworks register an
+# at_exit hook when required, so the suppressor goes in first.
+# rspec/core, not rspec: `openapi_ruby/rspec` configures ::RSpec on
+# require, and rspec/autorun is what would run the suite.
+require "rspec/core"
+
+require "openapi_ruby"
+require "openapi_ruby/generator/autorun_suppressor"
+
+OpenapiRuby::Generator::AutorunSuppressor.install!
+
+# The specs `require "spec_helper"`, which is .rspec's `-I spec` when rspec
+# runs them and nobody's when this does.
+$LOAD_PATH.unshift(File.expand_path("../spec", __dir__))
+
+require "spec_helper"
+
+# The declarations live under each page's __END__; this loads them all.
+require "pages_spec"
+
+OpenapiRuby::Generator::SchemaWriter.generate_all!
+
+puts "wrote #{Dir[File.expand_path("../openapi/*", __dir__)].join(", ")}"

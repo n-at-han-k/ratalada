@@ -1,0 +1,152 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# An OpenAPI document in, a whole ratalada API out -- three tools, one pass:
+#
+#   bin/generate forgejo.json ../somewhere
+#
+#   1. here          the document is annotated with what each route answers
+#   2. openapi-generator-expo   writes the route half of every page: one file
+#                    per path, named as the path (generators/expo)
+#   3. openapi_ruby  the spec half, its own DSL, appended under __END__
+#
+# The project this lives in IS the template. Every file under it is written to
+# the output as it stands -- this script and generators/ included, so what
+# comes out can generate in turn, and whoever gets it can change how. A path
+# holding `[name]` is written once per resource (the file-based router's own
+# spelling for a parameter), and what the document decides -- the pages, the
+# migrations, the factories -- is written by generators/ afterwards.
+#
+# The two halves check each other. Mustermann::Expo spells file paths as
+# routes, and every file the generator writes is spelled back through
+# Mustermann::Expo.route. openapi_ruby goes the other way -- its specs DECLARE
+# the document and `bin/schema` writes it back out -- so a spec generated from
+# this document regenerates it.
+#
+# Swagger 2 and OpenAPI 3 are both read: `definitions` or `components/schemas`,
+# a body parameter or a `requestBody`, `responses.<code>.schema` or a media
+# type under `content`.
+
+require "dry/inflector"
+require "erb"
+require "fileutils"
+require "set"
+require "json"
+require "yaml"
+
+# Mustermann::Expo, out of ratalada's own working tree when this sits inside
+# it, and out of the gem when it has been copied somewhere else.
+expo = File.expand_path("../../../../lib/ratalada/contrib/router/file_based/expo", __dir__)
+require(File.exist?("#{expo}.rb") ? expo : "ratalada/contrib/router/file_based/expo")
+
+VERBS = %w[get put post delete patch options head].freeze
+INFLECT = Dry::Inflector.new
+
+# The project this script sits in, which is both the generator and the thing
+# it writes out.
+TEMPLATE = File.expand_path("..", __dir__)
+TEMPLATES = File.join(TEMPLATE, "generators/templates")
+
+# One file per resource, out of generators/templates/ and into the path it is
+# named after: `[name]` is the file-based router's own spelling for a
+# parameter. They sit with the generators rather than in the tree they are
+# written to -- a copied project has to keep them, and `lib/models/*.rb` is
+# loaded as it stands.
+FANOUT = {
+  "lib/models/[name].rb" => :resources,
+  "lib/entities/[name].rb" => :resources,
+  "lib/schemas/[name].rb" => :definitions,
+}.freeze
+
+# What the document decides, which a run writes out itself: the pages, the
+# tables, the components, the factories. Everything else here is the project,
+# and the project is copied as it stands.
+GENERATED = %r{\A(app/(?!_layout\.rb)|db/|openapi/|tmp/|spec/factories/|lib/(models|entities|schemas)/)}
+
+def copied?(relative)
+  !File.directory?(File.join(TEMPLATE, relative)) &&
+    !relative.match?(GENERATED) &&
+    !relative.match?(%r{\A(\.\.?\z|\.git/)})
+end
+
+COPIED = Dir.glob("**/*", File::FNM_DOTMATCH, base: TEMPLATE).select { |relative| copied?(relative) }.sort.freeze
+
+%w[
+  paths document values naming
+  models relations factories migrations
+  pages endpoints tests wiring
+].each { |part| require_relative "../generators/#{part}" }
+
+# A file of the template, at the same path in the output, with its mode. Most
+# carry no ERB tags at all; the few that do read the same methods the
+# generators do. The generators themselves are copied as they are: they are
+# the next run's, not this one's.
+def emit(root, relative, name: nil)
+  source = File.join(name ? TEMPLATES : TEMPLATE, relative)
+  target = File.join(root, name ? relative.sub("[name]", snake(name)) : relative)
+  body = File.read(source)
+
+  write(target, relative.start_with?("generators/") ? body : ERB.new(body).result_with_hash(name: name))
+  FileUtils.chmod(File.stat(source).mode & 0o7777, target)
+end
+
+def fanout(kind) = kind == :definitions ? definitions.keys : resources
+
+# ── main ───────────────────────────────────────────────────────────────
+
+def generate(root)
+  paths = DOCUMENT.fetch("paths")
+
+  written = pages(root)
+  load_models!(File.dirname(written))
+
+  # The schema, from the document the generator was handed.
+  @schema_path = sql_schema(root)
+  write(File.join(root, "db/schema.sql"), File.read(@schema_path))
+
+  annotate!
+  written = pages(root)
+
+  paths.each do |path, operations|
+    relative = File.join(*segments(base), file_for(path, paths.keys))
+    check(relative, "#{base}#{path}")
+
+    page = File.join(written, relative)
+
+    # The generator named this file from the same path this did. If the two
+    # disagree the spec would land on the wrong route, so say so instead.
+    unless File.exist?(page)
+      abort("#{GENERATOR} wrote no #{relative} for #{path}")
+    end
+
+    write(
+      File.join(root, "app", relative),
+      [File.read(page).rstrip, "", "__END__", "", spec(path, operations)].join("\n"),
+    )
+  end
+
+  # The template, as it stands: itself, the generators, and one file per
+  # resource where the path says so.
+  COPIED.each { |relative| emit(root, relative) }
+  FANOUT.each { |relative, kind| fanout(kind).each { |name| emit(root, relative, name: name) } }
+
+  resources.each do |name|
+    write(File.join(root, "spec/factories", "#{snake(name)}.rb"), factory_file(name))
+  end
+
+  write(File.join(root, "db/migrate/001_schema.rb"), schema_migration)
+  write(File.join(root, "db/migrate/002_route_keys.rb"), keys_migration)
+  FileUtils.rm_rf(File.join(root, "tmp"))
+
+  puts "#{paths.size} pages, #{definitions.size} components, #{resources.size} relations"
+end
+
+spec_path, root = ARGV
+
+unless spec_path && root
+  abort("usage: bin/generate <document> <output directory>")
+end
+
+DOCUMENT = YAML.safe_load(File.read(spec_path), aliases: true)
+
+generate(root)

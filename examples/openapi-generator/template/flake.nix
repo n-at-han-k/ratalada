@@ -1,7 +1,4 @@
 {
-  # The shell the generator runs in. template/flake.nix is the same shell for
-  # the project it writes: `bin/generate` is copied into it and has to run
-  # there too.
   description = "OpenAPI document -> Ratalada route tree";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -15,9 +12,9 @@
         gems = pkgs.bundlerEnv {
           name = "openapi-generator-example";
           ruby = pkgs.ruby_3_4;
-          gemfile = ./template/Gemfile;
-          lockfile = ./template/Gemfile.lock;
-          gemset = ./template/gemset.nix;
+          gemfile = ./Gemfile;
+          lockfile = ./Gemfile.lock;
+          gemset = ./gemset.nix;
         };
 
         # The two hooks a template cannot reach: which operations share a file,
@@ -25,7 +22,7 @@
         # SPI entry -- no Maven, no checkout of the generator.
         expo-codegen = pkgs.stdenv.mkDerivation {
           name = "expo-codegen";
-          src = ./template/generators/expo;
+          src = ./generators/expo;
 
           nativeBuildInputs = [ pkgs.jdk ];
 

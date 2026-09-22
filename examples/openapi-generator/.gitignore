@@ -1,8 +1,2 @@
-app/
-bin/
-config/
-db/
-lib/
-openapi/
-spec/
+result/
 tmp/

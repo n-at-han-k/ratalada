@@ -24,3 +24,6 @@ gem "dry-configurable", "~> 1.4"
 gem "falcon"
 gem "rack", "~> 3.0"
 gem "sinatra"
+
+# The index page: the forked swagger-ui under frontend/, built by vite.
+gem "vite_ruby"

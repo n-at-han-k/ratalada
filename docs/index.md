@@ -34,7 +34,7 @@ That's a whole app. Run the file, and it's listening on `http://127.0.0.1:9292`.
 
 Ratalada is two small, swappable pieces:
 
-- **Backends** run the Rack app. `require "ratalada/puma"` or `require "ratalada/falcon"` picks the server and defines the top-level `Server` constant.
+- **Backends** run the Rack app. `require "ratalada/puma"`, `"ratalada/falcon"`, `"ratalada/async"` or `"ratalada/webrick"` picks the server and defines the top-level `Server` constant.
 - **Frontends** turn your `Server.run` block into a Rack app. The default is a [pattern-matching router]({% link _guides/routing.md %}); `require "ratalada/sinatra"` or `require "ratalada/grape"` swaps in [Sinatra's]({% link _guides/sinatra.md %}) or [Grape's]({% link _guides/grape.md %}) DSL on whichever backend you chose.
 
 The core gem has no runtime dependencies of its own — install whichever server you actually run on. The Sinatra and Grape adapters are separate gems (`ratalada-sinatra`, `ratalada-grape`), but you install the gem and still `require "ratalada/sinatra"` — see [require semantics]({% link _guides/frontends.md %}).

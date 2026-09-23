@@ -30,8 +30,10 @@ Gem::Specification.new do |spec|
     lib/ratalada.rb
     lib/ratalada/version.rb
     lib/ratalada/builder.rb
+    lib/ratalada/async.rb
     lib/ratalada/falcon.rb
     lib/ratalada/puma.rb
+    lib/ratalada/webrick.rb
     exe/ratalada
     README.md
     LICENSE
@@ -49,5 +51,6 @@ Gem::Specification.new do |spec|
   # Servers the backends wrap; users install whichever they require.
   spec.add_development_dependency "falcon"
   spec.add_development_dependency "puma"
+  spec.add_development_dependency "webrick"
   spec.add_development_dependency "lefthook", "~> 2.1"
 end

@@ -304,6 +304,7 @@ GEM
       mutex_m
       rack-proxy (>= 0.6.1)
       zeitwerk (~> 2.2)
+    webrick (1.9.2)
     zeitwerk (2.8.3)
 
 PLATFORMS
@@ -323,12 +324,14 @@ DEPENDENCIES
   protocol-smtp (~> 0.1)
   puma
   rack (~> 3.0)
+  rackup (~> 2.3)
   rake (~> 13.0)
   roda
   rspec (~> 3.13)
   rubocop (~> 1.60)
   sinatra
   vite_ruby (~> 3.9)
+  webrick (~> 1.9)
 
 BUNDLED WITH
    2.7.2

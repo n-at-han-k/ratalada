@@ -18,8 +18,10 @@ module Ratalada
       super(msg || <<~MSG)
         No server backend selected. Require one before calling Server.run:
 
-          require "ratalada/puma"    # or
-          require "ratalada/falcon"
+          require "ratalada/puma"     # or
+          require "ratalada/falcon"   # or
+          require "ratalada/async"    # or
+          require "ratalada/webrick"
       MSG
     end
   end

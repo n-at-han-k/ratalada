@@ -6,6 +6,24 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-09-24
+
+### Added
+
+- **`ratalada/async` backend.** `require "ratalada/async"` selects
+  `Ratalada::Backends::Async`, a single `Async::HTTP::Server` in this process
+  wrapped in `Protocol::Rack::Adapter` — the same fiber-based server
+  `ratalada/falcon` runs, without falcon's process container. It has no
+  supervision and no restarts, so it ignores `Ratalada.config.count` and warns
+  when you set it above 1. Add `async-http` and `protocol-rack` to your own
+  Gemfile; they are not dependencies of ratalada.
+
+- **`ratalada/webrick` backend.** `require "ratalada/webrick"` selects
+  `Ratalada::Backends::Webrick`, stdlib WEBrick driven through
+  `Rackup::Handler::WEBrick`. Single process, one thread per connection, and
+  `count` is ignored the same way — it is for development and tests, not for
+  production. Add `webrick` and `rackup` to your own Gemfile.
+
 ## [3.0.0] - 2026-09-16
 
 ### Changed
@@ -179,6 +197,7 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `ratalada` gem, add `gem "ratalada-sinatra"` (or `gem "ratalada-grape"`) to
   your Gemfile. No code changes — the `require` line stays the same.
 
+[3.1.0]: https://github.com/n-at-han-k/ratalada/releases/tag/ratalada-v3.1.0
 [3.0.0]: https://github.com/n-at-han-k/ratalada/releases/tag/ratalada-v3.0.0
 [2.2.0]: https://github.com/n-at-han-k/ratalada/releases/tag/ratalada-v2.2.0
 [2.1.0]: https://github.com/n-at-han-k/ratalada/releases/tag/ratalada-v2.1.0

@@ -72,8 +72,10 @@ Local/ConstantMatchesPath:
     - ratalada/hanami.rb
     - ratalada/roda.rb
     - ratalada/sinatra.rb
+    - ratalada/async.rb
     - ratalada/falcon.rb
     - ratalada/puma.rb
+    - ratalada/webrick.rb
 
 # Bans `lvar = if ...` / `lvar = case ...`, ternaries included. Assign inside
 # each branch instead, so the branches sit under the assignment rather than off

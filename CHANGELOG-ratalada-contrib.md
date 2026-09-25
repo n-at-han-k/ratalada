@@ -6,6 +6,39 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.1.3] - 2026-09-25
+
+### Added
+
+- **`mount_files` on a file-based router adapter,** an optional hook read by
+  `Ratalada::Contrib::Router::FileBased.mount`. An adapter that defines it is
+  handed the app and the whole `build_map` result
+  (`mount_files(app, map)`) and decides for itself how the files become
+  routes; an adapter that does not keeps the previous behaviour, where every
+  file is `class_eval`'d into the one app under its `route_prefix`, which is
+  what the hanami and grape adapters do. Only matters if you wrote your own
+  adapter.
+
+### Changed
+
+- **The Sinatra adapter builds one app per route file again,** so that a
+  `_layout.rb` only reaches the files below it. `use`, `set`, `before`,
+  `error` and `helpers` are class-level Sinatra DSL, and 3.0.0 evaluated the
+  whole tree into a single `Sinatra::Base`, which made a nested layout apply
+  app-wide: an `app/(api)/_layout.rb` with `before { content_type(:json) }`
+  relabelled every HTML page in the tree. Each route file, with the layouts
+  above it, now gets its own subclass, and the subclasses are chained as rack
+  middleware — a Sinatra app used as middleware forwards the request on when
+  none of its own routes matched, so the first file that spells the path
+  answers, in `build_map`'s most-specific-first order.
+
+  If you followed 3.0.0's advice and put a `use`, `set` or `helpers` in a root
+  `_layout.rb` to reach the whole app, that still works, because the root
+  layout is evaluated into every route file. One in a *nested* layout, or in a
+  route file, now applies only to that file — move it up to the root
+  `_layout.rb` if you meant the whole app. Routes, `route_prefix` and
+  `params` are unchanged.
+
 ## [3.1.1] - 2026-09-22
 
 ### Added

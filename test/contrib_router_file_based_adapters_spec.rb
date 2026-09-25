@@ -10,7 +10,7 @@ Adapter.load("ratalada/contrib/router/file_based/hanami_adapter")
 # One tree, three frontends. Every file is ordinary DSL for its frontend — the
 # only thing the adapters add is where in the URL space the file's own routes
 # land, which is what the path spells.
-RSpec.shared_examples "a file-based router" do |frontend|
+RSpec.shared_examples "a file-based router" do |frontend_name|
   tree = {
     "index.rb"                       => %(get("/") { "home" }),
     # A layout is not a route file; its contents are evaluated into each route
@@ -25,8 +25,17 @@ RSpec.shared_examples "a file-based router" do |frontend|
   }
 
   around do |example|
+    # Captured BEFORE the guard below: the `ensure` runs on that path too, and
+    # restoring a `previous` that was never read sets the frontend to nil and
+    # breaks every spec that runs after this file.
     previous = Ratalada.frontend
-    Ratalada.config.frontend = frontend
+
+    # An adapter missing from the bundle never defined its frontend. Run the
+    # example so spec_helper's `adapter:` hook can skip it -- an `around` runs
+    # before that `before`, so resolving the constant here would raise first.
+    next example.run unless Ratalada::Frontends.const_defined?(frontend_name)
+
+    Ratalada.config.frontend = Ratalada::Frontends.const_get(frontend_name)
 
     Dir.mktmpdir do |root|
       tree.each do |file, source|
@@ -77,7 +86,50 @@ RSpec.shared_examples "a file-based router" do |frontend|
 end
 
 RSpec.describe "Ratalada::Contrib::Router::FileBased::SinatraAdapter", adapter: "ratalada/contrib/router/file_based/sinatra_adapter" do
-  it_behaves_like "a file-based router", Ratalada::Frontends::Sinatra
+  it_behaves_like "a file-based router", :Sinatra
+end
+
+# A _layout.rb must not reach files it does not sit above. `before`, `set` and
+# `use` are Sinatra class-level DSL, so building the whole tree into ONE
+# Sinatra::Base makes a nested layout's filter fire for every route in the app --
+# an (api) group that sets a JSON content type relabels the HTML pages too.
+RSpec.describe "Ratalada::Contrib::Router::FileBased::SinatraAdapter layout scope", adapter: "ratalada/contrib/router/file_based/sinatra_adapter" do
+  tree = {
+    "page.rb"             => %(get("/") { "html page" }),
+    "(api)/_layout.rb"    => %(before { content_type("application/json") }),
+    "(api)/thing.rb"      => %(get("/") { "{}" }),
+  }
+
+  around do |example|
+    previous = Ratalada.frontend
+    Ratalada.config.frontend = Ratalada::Frontends::Sinatra
+
+    Dir.mktmpdir do |root|
+      tree.each do |file, source|
+        FileUtils.mkdir_p(File.join(root, File.dirname(file)))
+        File.write(File.join(root, file), source)
+      end
+
+      @app = Ratalada::Contrib::Router::FileBased.build(root)
+      example.run
+    end
+  ensure
+    Ratalada.config.frontend = previous
+  end
+
+  def content_type_of(path)
+    _status, headers, _body = @app.call(env_for("GET", path))
+
+    headers["content-type"]
+  end
+
+  it "applies a group layout's before filter to its own routes" do
+    expect(content_type_of("/thing")).to include("application/json")
+  end
+
+  it "does NOT apply it to a route outside the group" do
+    expect(content_type_of("/page")).to include("text/html")
+  end
 end
 
 # Sinatra's own pattern syntax cannot spell a hyphenated parameter -- `:user-id`
@@ -110,9 +162,9 @@ RSpec.describe "Ratalada::Contrib::Router::FileBased::SinatraAdapter hyphens", a
 end
 
 RSpec.describe "Ratalada::Contrib::Router::FileBased::GrapeAdapter", adapter: "ratalada/contrib/router/file_based/grape_adapter" do
-  it_behaves_like "a file-based router", Ratalada::Frontends::Grape
+  it_behaves_like "a file-based router", :Grape
 end
 
 RSpec.describe "Ratalada::Contrib::Router::FileBased::HanamiAdapter", adapter: "ratalada/contrib/router/file_based/hanami_adapter" do
-  it_behaves_like "a file-based router", Ratalada::Frontends::Hanami
+  it_behaves_like "a file-based router", :Hanami
 end

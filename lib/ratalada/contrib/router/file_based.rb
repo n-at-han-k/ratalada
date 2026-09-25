@@ -28,9 +28,19 @@ module Ratalada
             spelling = {}
           end
 
-          build_map(directory, **spelling).each do |prefix, paths|
-            app.route_prefix = prefix
-            paths.each { |path| app.class_eval(File.read(path), path, 1) }
+          map = build_map(directory, **spelling)
+
+          # An adapter that can give each route file its own class does, so a
+          # _layout.rb's `use`, `set`, `before` and `error` reach only the files
+          # below it. Without that the whole tree shares one class and a nested
+          # layout's filter fires for every route in the app.
+          if app.respond_to?(:mount_files)
+            app.mount_files(app, map)
+          else
+            map.each do |prefix, paths|
+              app.route_prefix = prefix
+              paths.each { |path| app.class_eval(File.read(path), path, 1) }
+            end
           end
         end
 

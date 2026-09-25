@@ -6,6 +6,14 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [3.0.1] - 2026-09-25
+
+### Changed
+
+- Released alongside the current `ratalada` core. No adapter changes; the
+  `~> 3.0` dependency already covers the 3.1.x core, so an existing 3.0.0
+  install picks up the new backends without needing this bump.
+
 ## [3.0.0] - 2026-09-16
 
 ### Changed

@@ -1,0 +1,229 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Strips code comments from the app's source: the Ruby of every *.rb under
+# app/ and lib/ (plus server.rb) and every TS/TSX file under frontend/ —
+# including the TSX halves of route files (everything below __END__).
+#
+# Line-based on purpose. The rules that keep it honest:
+#   - Ruby: whole-line # comments go, trailing " #…" goes unless the # follows
+#     a { (string interpolation) or sits inside quotes; heredoc bodies and
+#     =begin/=end blocks pass through untouched.
+#   - TS: whole-line // comments go, trailing " //…" goes unless the // follows
+#     a : (URLs) or sits inside quotes/templates; /* */ blocks go unless they
+#     are JSX comments ({/* … */} is markup, not a code comment); template
+#     literals pass through untouched.
+#   - Kept everywhere: shebang, # frozen_string_literal:, # rubocop:…,
+#     eslint and @ts-* directive comments.
+#
+#   bin/remove-comments --dry-run   list the files that would change
+#   bin/remove-comments             strip in place
+
+DRY = ARGV.delete("--dry-run") || ARGV.delete("-n")
+ROOT = File.expand_path("..", __dir__)
+Dir.chdir(ROOT)
+
+RUBY_FILES = Dir["app/**/*.rb", "lib/**/*.rb"] + ["server.rb"]
+TS_FILES   = Dir["frontend/**/*.ts", "frontend/**/*.tsx"]
+
+RUBY_KEEP = /\A#!|frozen_string_literal|rubocop:/
+TS_KEEP   = /eslint|@ts-(ignore|expect-error|nocheck)|vite-ignore/
+
+# Even counts of each quote character before the cut point: an odd count means
+# the "comment" is inside a string or template literal.
+def quoted?(line, upto)
+  %w[" ' `].any? { |q| line[0...upto].scan(q).length.odd? }
+end
+
+def strip_ruby(src)
+  out = []
+  heredoc = nil
+  in_embdoc = false
+
+  src.each_line do |line|
+    if in_embdoc
+      if line =~ /\A=end/
+        in_embdoc = false
+      end
+      next
+    end
+
+    if heredoc
+      out << line
+      if line.strip == heredoc
+        heredoc = nil
+      end
+      next
+    end
+
+    if line =~ /\A=begin/
+      in_embdoc = true
+      next
+    end
+
+    if (match = line.match(/<<[~\-]([A-Za-z_]\w*)/)) || (match = line.match(/<<["']([A-Za-z_]\w*)["']/))
+      heredoc = match[1]
+      out << line
+      next
+    end
+
+    if line =~ /\A\s*#/
+      if line =~ RUBY_KEEP
+        out << line
+      end
+      next
+    end
+
+    offset = 0
+    while (i = line.index("#", offset))
+      if (i.zero? || line[i - 1] =~ /[ \t]/) && line[i - 1] != "{" &&
+         !quoted?(line, i) && line[i..] !~ RUBY_KEEP
+        line = "#{line[0...i].rstrip}\n"
+        break
+      end
+      offset = i + 1
+    end
+    out << line
+  end
+
+  out.join
+end
+
+def strip_ts(src)
+  out = []
+  state = :code # :code | :block (/* */) | :template (`…`) | :jsx ({/* */})
+
+  src.each_line do |line|
+    case state
+    when :block
+      if (i = line.index("*/"))
+        state = :code
+        rest = line[(i + 2)..]
+        if rest.strip.empty?
+          next
+        end
+        line = rest
+      else
+        next
+      end
+    when :template
+      out << line
+      if line.scan("`").length.odd?
+        state = :code
+      end
+      next
+    when :jsx
+      out << line
+      if line.include?("*/}")
+        state = :code
+      end
+      next
+    end
+
+    if line =~ /\A\s*\/\//
+      if line =~ TS_KEEP
+        out << line
+      end
+      next
+    end
+
+    if (i = line.index("{/*")) && !quoted?(line, i)
+      out << line
+      unless line[i..].include?("*/}")
+        state = :jsx
+      end
+      next
+    end
+
+    if (i = line.index("/*")) && !quoted?(line, i) && line[i..] !~ TS_KEEP
+      if (j = line.index("*/", i + 2))
+        cut = "#{line[0...i]}#{line[(j + 2)..]}"
+        if cut.strip.empty?
+          line = nil
+        else
+          line = cut
+        end
+      else
+        cut = line[0...i].rstrip
+        state = :block
+        if cut.empty?
+          line = nil
+        else
+          line = "#{cut}\n"
+        end
+      end
+      if line.nil?
+        next
+      end
+
+      if line.strip.empty?
+        next
+        # a line that was all comment leaves nothing behind
+      end
+      out << line
+      next
+    end
+
+    offset = 0
+    while (i = line.index("//", offset))
+      if i.zero?
+        preceded = true
+      else
+        preceded = (line[i - 1] =~ /[ \t]/)
+      end
+      if preceded && !quoted?(line, i) && line[i..] !~ TS_KEEP
+        line = "#{line[0...i].rstrip}\n"
+        break
+      end
+      offset = i + 2
+    end
+    if line.strip.empty? && line != "\n"
+      next
+    end
+
+    out << line
+    if line.scan("`").length.odd?
+      state = :template
+    end
+  end
+
+  out.join
+end
+
+changed = []
+
+RUBY_FILES.each do |path|
+  src = File.read(path)
+  head, sep, tail = src.partition(/^__END__\r?\n/)
+  if sep.empty?
+    stripped = strip_ruby(head)
+  elsif path.start_with?("lib/models")
+    stripped = "#{strip_ruby(head)}__END__\n#{strip_ruby(tail)}"
+  else
+    stripped = "#{strip_ruby(head)}__END__\n#{strip_ts(tail)}"
+  end
+  if stripped == src
+    next
+  end
+
+  changed << path
+  unless DRY
+    File.write(path, stripped)
+  end
+end
+
+TS_FILES.each do |path|
+  src = File.read(path)
+  stripped = strip_ts(src)
+  if stripped == src
+    next
+  end
+
+  changed << path
+  unless DRY
+    File.write(path, stripped)
+  end
+end
+
+puts changed.sort
+warn(DRY ? "#{changed.length} files would change" : "#{changed.length} files changed")

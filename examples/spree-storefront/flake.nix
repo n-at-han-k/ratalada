@@ -23,7 +23,7 @@
             version = "0";
             src = ./.;
             fetcherVersion = 4;
-            hash = "sha256-DSoaQRCdb9lr/zGPKvHHKPtS9xa2pM+MDAwXWc5P7qk=";
+            hash = "sha256-R/VWlGRYKo/0VjLBRcw47KaOkcFUXrrEAol+pKdoDr0=";
           };
         };
       }));

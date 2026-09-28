@@ -17,7 +17,7 @@ export default function NotFound() {
       <Head title="Not found" />
       <h1 className="text-2xl font-semibold">Not found</h1>
       <Link href="/" className="underline">
-        Back to the list
+        Back to the store
       </Link>
     </main>
   )

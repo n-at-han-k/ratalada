@@ -10,12 +10,6 @@ enable :sessions
 helpers Ratalada::Contrib::Vite::TagHelpers
 helpers Ratalada::Contrib::Inertia::Helpers
 
-# DB is opened and migrated in server.rb; these are how the routes read it.
-helpers do
-  def tasks = DB.query("select id, title, done from tasks order by id")
-  def task(id) = DB.query_single_hash("select id, title, done from tasks where id = ?", id)
-end
-
 # The page shell. `inertia` renders this once per full page load; every
 # navigation after it is the client's, off the page object below.
 template :layout do
@@ -25,7 +19,7 @@ template :layout do
       <head>
         <meta charset=utf-8>
         <meta name=viewport content="width=device-width,initial-scale=1">
-        <title>todo-mvc</title>
+        <title>Store</title>
         <%= vite_client_tag %>
         <%= vite_react_refresh_tag %>
         <%= vite_javascript_tag "application.tsx" %>

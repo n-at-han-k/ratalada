@@ -33,7 +33,9 @@ RSpec.shared_examples "a file-based router" do |frontend_name|
     # An adapter missing from the bundle never defined its frontend. Run the
     # example so spec_helper's `adapter:` hook can skip it -- an `around` runs
     # before that `before`, so resolving the constant here would raise first.
-    next example.run unless Ratalada::Frontends.const_defined?(frontend_name)
+    unless Ratalada::Frontends.const_defined?(frontend_name)
+      next example.run
+    end
 
     Ratalada.config.frontend = Ratalada::Frontends.const_get(frontend_name)
 
@@ -95,9 +97,9 @@ end
 # an (api) group that sets a JSON content type relabels the HTML pages too.
 RSpec.describe "Ratalada::Contrib::Router::FileBased::SinatraAdapter layout scope", adapter: "ratalada/contrib/router/file_based/sinatra_adapter" do
   tree = {
-    "page.rb"             => %(get("/") { "html page" }),
-    "(api)/_layout.rb"    => %(before { content_type("application/json") }),
-    "(api)/thing.rb"      => %(get("/") { "{}" }),
+    "page.rb"          => %(get("/") { "html page" }),
+    "(api)/_layout.rb" => %(before { content_type("application/json") }),
+    "(api)/thing.rb"   => %(get("/") { "{}" }),
   }
 
   around do |example|

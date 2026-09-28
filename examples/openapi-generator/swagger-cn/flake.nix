@@ -1,39 +1,31 @@
 {
   description = "Swagger UI, as a Ratalada app";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    mine.url = "github:n-at-han-k/flake.nix";
+    # follows: without it mine drags in a second nixpkgs closure.
+    mine.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs.url = "nixpkgs";
     utils.url = "github:numtide/flake-utils";
   };
-  outputs = { self, nixpkgs, utils }:
+  outputs = { self, mine, nixpkgs, utils }:
     (utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-
-        gems = pkgs.bundlerEnv {
-          name = "swagger";
-          ruby = pkgs.ruby_3_4;
-          gemfile = ./Gemfile;
-          lockfile = ./Gemfile.lock;
-          gemset = ./gemset.nix;
-        };
-
+        lib = mine.lib.${system};
+        gems = lib.buildGemset { name = "swagger"; src = ./.; };
       in
       {
-        devShells.default = pkgs.mkShell {
-          nativeBuildInputs = [ pkgs.pkg-config ];
-
-          buildInputs = with pkgs; [
-            bundix
+        # Not lib.mkRubyViteShell: that runs pnpmConfigHook's postPatch, which
+        # needs a pnpmDeps hash this example does not have yet.
+        devShells.default = lib.mkRubyShell {
+          buildInputs = [
             gems
             gems.wrappedRuby
-            libyaml
-            openssl
 
             # The page is a vite build of the fork under frontend/;
-            # `overmind` runs the two processes in Procfile.dev.
-            nodejs
-            pnpm
-            overmind
+            # `overmind` (from mkRubyShell) runs the two Procfile.dev processes.
+            pkgs.nodejs
+            pkgs.pnpm
           ];
 
           shellHook = /* bash */ ''
@@ -50,10 +42,6 @@
               export RUBYLIB="$root/lib''${RUBYLIB:+:$RUBYLIB}"
             fi
 
-            # ponytail: `pnpm install` hits the registry, so this shell is not
-            # offline-reproducible the way the gems are. Pin it like the other
-            # examples -- `pkgs.fetchPnpmDeps` + `pnpmConfigHook` -- once
-            # pnpm-lock.yaml is committed.
             [ -f package.json ] && pnpm install
           '';
         };

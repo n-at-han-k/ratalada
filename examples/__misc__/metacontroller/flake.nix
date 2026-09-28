@@ -1,36 +1,24 @@
 {
   description = "Ruby Project";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    mine.url = "github:n-at-han-k/flake.nix";
+    # follows: without it mine drags in a second nixpkgs closure.
+    mine.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs.url = "nixpkgs";
     utils.url = "github:numtide/flake-utils";
     microvm.url = "github:microvm-nix/microvm.nix";
     microvm.inputs.nixpkgs.follows = "nixpkgs";
   };
-  outputs = { self, nixpkgs, utils, microvm }:
+  outputs = { self, mine, nixpkgs, utils, microvm }:
     utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-
-        gems = pkgs.bundlerEnv {
-          name = "metacontroller-bundler-env";
-          ruby = pkgs.ruby_3_4;
-          gemfile  = ./Gemfile;
-          lockfile = ./Gemfile.lock;
-          gemset   = ./gemset.nix;
-        };
-
+        lib = mine.lib.${system};
+        gems = lib.buildGemset { name = "metacontroller-bundler-env"; src = ./.; };
       in
       {
-        devShells.default = pkgs.mkShell {
-          nativeBuildInputs = [ pkgs.pkg-config ];
-          buildInputs = with pkgs; [
-            bundix
-            gems
-            gems.wrappedRuby
-            libyaml
-            openssl
-            kubectl
-          ];
+        devShells.default = lib.mkRubyShell {
+          buildInputs = [ gems gems.wrappedRuby pkgs.kubectl ];
         };
 
         # nix run .#k3s-vm — a NixOS microVM running k3s, in place of the

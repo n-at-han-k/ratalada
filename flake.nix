@@ -2,14 +2,19 @@
   description = "Ruby gem flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "nixpkgs";
     utils.url = "github:numtide/flake-utils";
+    mine.url = "github:n-at-han-k/flake.nix";
+    mine.inputs.nixpkgs.follows = "nixpkgs";
   };
-  outputs = { self, nixpkgs, utils }:
+  outputs = { self, mine, nixpkgs, utils }:
     utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        lib = mine.lib.${system};
 
+        # Not lib.buildGemset: nokogiri needs a gemConfig override, which
+        # buildGemset does not take.
         gems = pkgs.bundlerEnv {
           name = "ratalada-gems";
           ruby = pkgs.ruby_3_4;
@@ -25,17 +30,10 @@
 
       in
       {
-        devShells.default = pkgs.mkShell {
-          nativeBuildInputs = [
-            pkgs.pkg-config # native extension discovery
-          ];
-
+        devShells.default = lib.mkRubyShell {
           buildInputs = with pkgs; [
-            bundix
             gems
             gems.wrappedRuby
-            libyaml
-            openssl
             trufflehog
           ];
 
@@ -60,4 +58,3 @@
       }
     );
 }
-

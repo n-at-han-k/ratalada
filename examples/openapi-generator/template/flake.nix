@@ -1,21 +1,18 @@
 {
   description = "OpenAPI document -> Ratalada route tree";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    mine.url = "github:n-at-han-k/flake.nix";
+    # follows: without it mine drags in a second nixpkgs closure.
+    mine.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs.url = "nixpkgs";
     utils.url = "github:numtide/flake-utils";
   };
-  outputs = { self, nixpkgs, utils }:
+  outputs = { self, mine, nixpkgs, utils }:
     (utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-
-        gems = pkgs.bundlerEnv {
-          name = "openapi-generator-example";
-          ruby = pkgs.ruby_3_4;
-          gemfile = ./Gemfile;
-          lockfile = ./Gemfile.lock;
-          gemset = ./gemset.nix;
-        };
+        lib = mine.lib.${system};
+        gems = lib.buildGemset { name = "openapi-generator-example"; src = ./.; };
 
         # The two hooks a template cannot reach: which operations share a file,
         # and what that file is called. javac against the CLI's own jar and an
@@ -55,15 +52,10 @@
       {
         packages = { inherit expo-codegen openapi-generator-expo; };
 
-        devShells.default = pkgs.mkShell {
-          nativeBuildInputs = [ pkgs.pkg-config ];
-
-          buildInputs = with pkgs; [
-            bundix
+        devShells.default = lib.mkRubyShell {
+          buildInputs = [
             gems
             gems.wrappedRuby
-            libyaml
-            openssl
 
             # The patched generator (`-g ratalada-expo`), which writes the
             # route half of every page.
@@ -73,7 +65,7 @@
             # (`openapi-generator-cli generate -g ruby`). The npm
             # openapi-generator-cli is the same jar fetched at runtime, which a
             # flake cannot pin, so this is the packaged one instead.
-            openapi-generator-cli
+            pkgs.openapi-generator-cli
           ];
 
           shellHook = /* bash */ ''

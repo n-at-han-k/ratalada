@@ -1,59 +1,30 @@
 {
   description = "Ratalada Project";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    mine.url = "github:n-at-han-k/flake.nix";
+    # follows: without it mine drags in a second nixpkgs closure.
+    mine.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs.url = "nixpkgs";
     utils.url = "github:numtide/flake-utils";
   };
-  outputs = { self, nixpkgs, utils }:
+  outputs = { self, mine, nixpkgs, utils }:
     (utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-
-        gems = pkgs.bundlerEnv {
-          name = "ratalada";
-          ruby = pkgs.ruby_3_4;
-          gemfile  = ./Gemfile;
-          lockfile = ./Gemfile.lock;
-          gemset   = ./gemset.nix;
-        };
-
-        pnpmDeps = pkgs.fetchPnpmDeps {
-          pname = "ratalada";
-          version = "0";
-          src = ./.;
-          fetcherVersion = 4;
-          hash = "sha256-DSoaQRCdb9lr/zGPKvHHKPtS9xa2pM+MDAwXWc5P7qk=";
-        };
-
+        lib = mine.lib.${system};
+        gems = lib.buildGemset { name = "ratalada"; src = ./.; };
       in
       {
-        devShells.default = pkgs.mkShell {
-          nativeBuildInputs = with pkgs; [
-            pkg-config
-            pnpmConfigHook
-          ];
+        devShells.default = lib.mkRubyViteShell {
+          buildInputs = [ gems gems.wrappedRuby ];
 
-          inherit pnpmDeps;
-
-          buildInputs = with pkgs; [
-            overmind
-            tmux
-            bundix
-            gems
-            gems.wrappedRuby
-            libyaml
-            openssl
-            nodejs
-            pnpm
-          ];
-
-          # pnpmConfigHook only runs as a build phase; devShells run none.
-          shellHook = ''
-            bundix -l
-            pnpm install
-            git add -N .
-            runHook postPatch
-          '';
+          pnpmDeps = pkgs.fetchPnpmDeps {
+            pname = "ratalada";
+            version = "0";
+            src = ./.;
+            fetcherVersion = 4;
+            hash = "sha256-DSoaQRCdb9lr/zGPKvHHKPtS9xa2pM+MDAwXWc5P7qk=";
+          };
         };
       }));
 }

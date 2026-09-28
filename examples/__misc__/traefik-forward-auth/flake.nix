@@ -1,33 +1,21 @@
 {
   description = "Ruby Project";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    mine.url = "github:n-at-han-k/flake.nix";
+    # follows: without it mine drags in a second nixpkgs closure.
+    mine.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs.url = "nixpkgs";
     utils.url = "github:numtide/flake-utils";
   };
-  outputs = { self, nixpkgs, utils }:
+  outputs = { self, mine, nixpkgs, utils }:
     utils.lib.eachDefaultSystem (system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
-
-        gems = pkgs.bundlerEnv {
-          name = "traefik-forward-auth-bundler-env";
-          ruby = pkgs.ruby_3_4;
-          gemfile  = ./Gemfile;
-          lockfile = ./Gemfile.lock;
-          gemset   = ./gemset.nix;
-        };
-
+        lib = mine.lib.${system};
+        gems = lib.buildGemset { name = "traefik-forward-auth-bundler-env"; src = ./.; };
       in
       {
-        devShells.default = pkgs.mkShell {
-          nativeBuildInputs = [ pkgs.pkg-config ];
-          buildInputs = with pkgs; [
-            bundix
-            gems
-            gems.wrappedRuby
-            libyaml
-            openssl
-          ];
+        devShells.default = lib.mkRubyShell {
+          buildInputs = [ gems gems.wrappedRuby ];
         };
       }
     );

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+bin/kill-dev
+
+OVERMIND_PROCFILE=Procfile.dev overmind start --daemonize \
+  --any-can-die --auto-restart jobs,web,vite "$@"

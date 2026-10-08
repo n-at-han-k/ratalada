@@ -1,0 +1,35 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+gem "ratalada", "~> 3.0.0"
+gem "ratalada-contrib", "~> 3.1.0"
+gem "ratalada-sinatra"
+
+gem "falcon"
+gem "inertia_rails", "~> 3.22"
+
+# The copilot runtime (copilot.rb). ag-ui is the Ruby server side of the AG-UI
+# protocol CopilotKit's React client speaks, so the runtime is this process --
+# no Node sidecar.
+#
+# OpenRouter is the model, through the house terminal vendored at
+# lib/ag_ui/terminals/open_router.rb -- NOT the ruby_llm one the gem ships.
+# async-http-faraday with it: open_router is Faraday over Net::HTTP by default,
+# and a blocking call parks falcon's reactor thread rather than one fiber.
+gem "ag-ui"
+gem "open_router_enhanced"
+gem "async-http-faraday"
+
+gem "sequel"
+gem "extralite-bundle"
+gem "vite_ruby"
+gem "dotenv"
+
+group :test, :development do
+  gem "rubocop"
+  gem "rspec"
+  gem "capybara"
+  gem "cuprite"
+  gem "rack-test"
+end

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# Re-lock the Gemfile and regenerate gemset.nix, the two files the dev shell's
+# bundlerEnv is built from. Run it after every Gemfile change — and commit the
+# Gemfile first, or the flake builds the version still in git.
+#
+# BUNDLE_FORCE_RUBY_PLATFORM: bundlerEnv carries only ruby-platform gems.
+# Without it the lock re-acquires native platforms and bundler then demands
+# nokogiri-x86_64-linux-gnu, which the env does not have.
+#
+# The lock is a separate step because `bundix -l` runs bundler from inside the
+# dev shell, where BUNDLE_GEMFILE points at the read-only store copy and the
+# lock silently does nothing. Pointing bundler at this Gemfile fixes that.
+set -eu
+
+cd "$(dirname "$0")/.."
+
+export BUNDLE_FORCE_RUBY_PLATFORM=true
+export BUNDLE_GEMFILE="$PWD/Gemfile"
+export BUNDLE_FROZEN=false
+
+nix run nixpkgs#bundler -- lock
+nix run nixpkgs#bundix -- "$@"

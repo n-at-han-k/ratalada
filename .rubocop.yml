@@ -61,6 +61,7 @@ Local/ConstantMatchesPath:
     - models/plugins/**/*
     - ratalada/contrib/inertia.rb
     - ratalada/contrib/inertia/core_ext.rb
+    - ratalada/protocol_http_ext.rb
     - ratalada/contrib/router/file_based/expo.rb
     - ratalada/contrib/router/file_based/grape_adapter.rb
     - ratalada/contrib/router/file_based/sinatra_adapter.rb

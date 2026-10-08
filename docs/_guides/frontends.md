@@ -52,3 +52,11 @@ require "ratalada/sinatra"  # or grape, or nothing for the router
 ```
 
 See the [Sinatra frontend]({% link _guides/sinatra.md %}) and [Grape frontend]({% link _guides/grape.md %}) guides for each DSL.
+
+One backend does reach into this, though. `Async::HTTP::Server` does not speak
+rack, so `require "ratalada/async"` replaces the *default* router with
+`Ratalada::Frontends::ProtocolRoutes` — the same DSL in Protocol::HTTP terms,
+handed to the server with no adapter in between. A frontend you require
+yourself still wins, whichever order the requires are in. See
+[Backends]({% link _guides/backends.md %}) for what that frontend does and does
+not give you.

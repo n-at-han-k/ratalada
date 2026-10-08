@@ -36,6 +36,15 @@ module Ratalada
     end
 
     def frontend = config.frontend
+
+    # A frontend is rack unless it says otherwise (`def self.rack? = false`),
+    # so every existing one counts without declaring anything. The async
+    # backend reads this to decide whether its app needs Protocol::Rack::Adapter.
+    def rack_frontend?
+      frontend = config.frontend
+
+      !(frontend.respond_to?(:rack?) && !frontend.rack?)
+    end
   end
 
   # Rack::Request plus just enough sugar to pattern match on, so everything
@@ -103,19 +112,25 @@ module Ratalada
 
         private
 
+          # Callable is #call, not Proc -- a handler object with a #call is as
+          # callable as a lambda, and was being handed back as the response.
+          # It is tested last, after every shape that is already a response,
+          # because some of those answer #call too for reasons of their own.
           def respond(handler, request)
             case handler
             when nil
               [404, { "content-type" => "text/plain" }, ["not found"]]
-            when Proc, Method
-              respond(handler.call(request), request)
             when String
               [200, { "content-type" => "text/plain" }, [handler]]
             when Array
               status, headers, body = handler
               [status, headers, body.is_a?(String) ? [body] : body]
             else
-              handler
+              if handler.respond_to?(:call)
+                respond(handler.call(request), request)
+              else
+                handler
+              end
             end
           end
       end
@@ -179,6 +194,12 @@ module Ratalada
       end
 
       # First `use` in the chain is the outermost, as in Rack::Builder.
+      #
+      # `klass.new(inner, *args)` is rack's middleware contract and
+      # Protocol::HTTP::Middleware's alike -- `new(delegate)`, then `call`
+      # with whatever that frontend passes -- so one chain serves both: rack
+      # middleware on a rack frontend, Protocol::HTTP middleware on
+      # Frontends::ProtocolRoutes.
       def to_app(block)
         @middleware.reverse.inject(Ratalada.frontend.build(block)) do |inner, (klass, args, blk)|
           klass.new(inner, *args, &blk)

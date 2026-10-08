@@ -6,6 +6,22 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.0.0] - 2026-10-08
+
+### Changed
+
+- **Depends on `ratalada` as `~> 4.0`,** where 3.x depended on `~> 3.0`. The
+  adapters track the core's major; upgrade the two together. Nothing in this
+  gem changed: the Inertia frontend and middleware, the file-based router and
+  its Sinatra, Grape and Hanami adapters, and the Vite integration are all as
+  they were.
+
+- Everything here is rack — Inertia's middleware, the Vite proxy, the
+  file-based router's adapters — so on the 4.0 core's `ratalada/async` backend
+  it keeps working through `Protocol::Rack::Adapter`: requiring a rack
+  frontend overrides that backend's Protocol::HTTP default, whichever order
+  the requires come in.
+
 ## [3.1.3] - 2026-09-25
 
 ### Added

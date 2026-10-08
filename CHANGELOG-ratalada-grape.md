@@ -6,6 +6,21 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.0.0] - 2026-10-08
+
+### Changed
+
+- **Depends on `ratalada` as `~> 4.0`,** where 3.x depended on `~> 3.0`. The
+  adapters track the core's major; upgrade the two together. Nothing in this
+  adapter changed — `require "ratalada/grape"` still sets
+  `Ratalada.config.frontend = Ratalada::Frontends::Grape` and `.build` still
+  class-evals the `Server.run` block into an anonymous `Grape::API` subclass.
+
+- One thing to know about the 4.0 core if you run on `ratalada/async`: that
+  backend now installs a Protocol::HTTP router by default, but a frontend
+  require wins, so `require "ratalada/grape"` keeps Grape and the backend
+  wraps it in `Protocol::Rack::Adapter` as before. Order does not matter.
+
 ## [3.0.1] - 2026-09-25
 
 ### Changed

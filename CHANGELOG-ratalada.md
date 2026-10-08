@@ -6,6 +6,86 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.0.0] - 2026-10-08
+
+### Changed
+
+- **`Ratalada::Backends::Async` is now `Ratalada::Backends::AsyncHTTP`**, named
+  for the server it runs (`Async::HTTP::Server`) rather than the gem. The old
+  name shadowed the async gem for everything else in `Ratalada::Backends` —
+  see the falcon bug under Fixed. `require "ratalada/async"` is unchanged, and
+  so is everything that goes through `Server.run`; this only breaks code that
+  names the constant, such as `Ratalada.config.backend =
+  Ratalada::Backends::Async`.
+
+- **`ratalada/async` routes in Protocol::HTTP, not rack.** Requiring the async
+  backend now also replaces the default `Ratalada::Frontends::Routes` with
+  `Ratalada::Frontends::ProtocolRoutes`, which hands `Async::HTTP::Server` the
+  app directly instead of going through `Protocol::Rack::Adapter` — the server
+  already speaks that protocol, and the adapter only existed to translate for
+  a frontend that does not. The `Server.run` block is unchanged: the same
+  `[verb, path]` and `{verb:, path:, query:}` patterns, the same String /
+  callable / triplet / `nil` handlers. A handler may now also return a
+  `Protocol::HTTP::Body::Readable` — most usefully `request.body`, which makes
+  an echo or a proxy a pass-through with nothing buffered.
+
+  There is no request wrapper. The block is handed the server's own
+  `Protocol::HTTP::Request`, and `ratalada/protocol_http_ext` teaches that
+  class the patterns (`#deconstruct`, `#deconstruct_keys`) plus `#verb`,
+  `#query` and `#params`, so `in ["GET", "/"]` matches the real object.
+  `#path` is left alone and still returns the raw target (`"/users/1?a=b"`) —
+  only the patterns see the path with the query split off, because a route is
+  a path and `"/hi"` should match a request for `"/hi?name=x"`. `#body` is the
+  body as it arrived, a `Protocol::HTTP::Body::Readable`: return it for a
+  pass-through, or `request.body.join` to read it whole.
+
+  `Server.use` works here and takes Protocol::HTTP middleware —
+  `new(delegate)` answering `call(request)`, which is the contract
+  `Server.use` already chains, so nothing sits between the middleware and the
+  server. Rack middleware belongs to a rack frontend, where the backend adapts
+  the whole chain in one go.
+
+  What does go with rack is `Rack::Request` sugar: no cookies, no session, no
+  form-body params, no `Rack::Utils` helpers in block scope. Query params
+  remain, as `request.params`. The rest comes back by putting the rack router
+  back, which the backend then adapts as before:
+
+  ```ruby
+  Ratalada.config.frontend = Ratalada::Frontends::Routes
+  ```
+
+  Only the default is replaced, so `require "ratalada/sinatra"` (or grape,
+  hanami, roda, builder) on either side of `require "ratalada/async"` keeps
+  that frontend and its adapter. `protocol-url` comes with `async-http`, so
+  there is nothing to add to your Gemfile.
+
+### Fixed
+
+- **`Backends::Falcon` broke whenever `ratalada/async` was also required.**
+  `Async::Service::Environment` written inside `Ratalada::Backends::Falcon`
+  resolved lexically to its sibling `Ratalada::Backends::Async`, so the falcon
+  backend raised `uninitialized constant Ratalada::Backends::Async::Service`
+  at boot in any process that had required both — which the docs explicitly
+  invite ("if you require both, the last require wins"). Fixed at the root by
+  the rename below; every `Async::` in that file is also rooted at `::` now,
+  so a future sibling cannot shadow the gem again.
+
+- **A handler object with a `#call` is now called.** Both routers tested
+  `Proc, Method`, so anything else callable — a handler class, a curried
+  service object — fell through and was handed back as the response body,
+  though the README has always promised "a callable — called with the
+  request". The test is now `respond_to?(:call)`, and comes last, after every
+  shape that is already a response: `Protocol::HTTP::Body::Readable#call` is
+  how a body writes itself to a stream, so a body answers `#call` and must be
+  matched as a body first.
+
+### Added
+
+- `Ratalada.rack_frontend?`, true unless the configured frontend declares
+  `def self.rack? = false`. The async backend reads it to decide whether to
+  wrap the app in `Protocol::Rack::Adapter`.
+
+
 ## [3.1.0] - 2026-09-24
 
 ### Added

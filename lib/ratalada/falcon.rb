@@ -9,6 +9,12 @@ require_relative "../ratalada"
 
 module Ratalada
   module Backends
+    # Every Async:: below is rooted at ::. The async backend used to be
+    # Backends::Async, and an unqualified lookup found that sibling first:
+    # `Async::Service` resolved to `Ratalada::Backends::Async::Service` and
+    # took this backend down with it in any process that had required both.
+    # It is Backends::AsyncHTTP now, so nothing shadows the gem -- the `::`
+    # stays so the next sibling cannot do it again.
     module Falcon
       module_function
 
@@ -26,7 +32,7 @@ module Ratalada
       def run(app, host:, port:, count: 1, cache: false)
         middleware = ::Falcon::Server.rack_middleware(app, cache: cache)
 
-        environment = Async::Service::Environment.new(::Falcon::Environment::Server).with(
+        environment = ::Async::Service::Environment.new(::Falcon::Environment::Server).with(
           name:              "ratalada",
           url:               "http://#{host}:#{port}",
           middleware:        -> { middleware },
@@ -37,7 +43,7 @@ module Ratalada
           root:              Dir.pwd,
         )
 
-        configuration = Async::Service::Configuration.new
+        configuration = ::Async::Service::Configuration.new
         configuration.add(environment)
 
         if count > 1
@@ -47,7 +53,10 @@ module Ratalada
         end
 
         warn "ratalada: falcon listening on http://#{host}:#{port}#{workers}"
-        Async::Service::Controller.run(configuration, container_class: Async::Container.best_container_class)
+        ::Async::Service::Controller.run(
+          configuration,
+          container_class: ::Async::Container.best_container_class,
+        )
       rescue Interrupt
         # clean shutdown
       end

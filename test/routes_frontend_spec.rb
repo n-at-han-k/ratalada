@@ -25,6 +25,26 @@ RSpec.describe Ratalada::Frontends::Routes do
       .to eq([200, { "content-type" => "text/plain" }, ["hello"]])
   end
 
+  # The lambda above passes whether `respond` tests Proc or #call, so it never
+  # said anything about what "callable" means. An object with a #call is one.
+  it "calls a callable object handler with the request" do
+    greet = Class.new do
+      def call(req) = "hi #{req.path}"
+    end
+
+    app = build { |_request| greet.new }
+
+    expect(app.call(env_for("GET", "/there")))
+      .to eq([200, { "content-type" => "text/plain" }, ["hi /there"]])
+  end
+
+  it "hands back a handler that is not callable and not a response shape" do
+    handler = Object.new
+    app = build { |_request| handler }
+
+    expect(app.call(env_for("GET", "/"))).to be(handler)
+  end
+
   # #body takes the one-shot stream whole; #read chunks through it instead.
   it "reads the body in chunks" do
     chunks = []

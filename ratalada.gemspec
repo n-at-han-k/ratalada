@@ -31,6 +31,7 @@ Gem::Specification.new do |spec|
     lib/ratalada/version.rb
     lib/ratalada/builder.rb
     lib/ratalada/async.rb
+    lib/ratalada/protocol_http_ext.rb
     lib/ratalada/falcon.rb
     lib/ratalada/puma.rb
     lib/ratalada/webrick.rb

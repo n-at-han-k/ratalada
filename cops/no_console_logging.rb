@@ -1,28 +1,14 @@
 # frozen_string_literal: true
 
-# Bans logging straight at the `Console` singleton (the socketry `console` gem):
+# Bans logging straight at the `Console` singleton.
 #
+# @example
 #   Console.info(self, "started", id: 1)          # NO
 #   Console.logger.warn(self, "slow")             # NO
 #   Console.debug(self) { "expensive" }           # NO
 #
+# @example
 #   Rails.logger.info("started")                  # YES
-#
-# Everything must log through `Rails.logger`, which console-adapter-rails
-# (https://github.com/socketry/console-adapter-rails) replaces with a
-# Console::Adapter::Rails::Logger at boot — a Console::Compatible::Logger wrapped
-# in ActiveSupport::TaggedLogging. So `Rails.logger` IS Console; the output ends
-# up in the same place either way.
-#
-# What the direct call skips is everything the adapter's logger adds on the way
-# through: `Rails.logger.tagged` tags (which the adapter unwraps into structured
-# fields), `silence` / `local_level` — which is fiber-local in the adapter, so it
-# works under falcon — and per-environment logger configuration. Code calling
-# Console directly cannot be silenced or tagged by its caller.
-#
-# The adapter's own log subscribers (ActionController / ActiveRecord) do call
-# `Console.logger.info` — that is the gem's job, on the far side of this
-# boundary, and the gem is not this repo.
 module RuboCop
   module Cop
     module Local
@@ -46,17 +32,14 @@ module RuboCop
 
         private
 
-          # `Console.logger`, but NOT the `Console.logger` inside a
-          # `Console.logger.info(...)` — that whole call is reported once, as a
-          # level offence, rather than twice.
+          # `Console.logger`, but NOT the `Console.logger` inside a `Console.logger.info(...)` — that whole call is reported once, as a level offence, rather than twice.
           def console_logger?(node)
             node.method_name == :logger &&
               const_console?(node.receiver) &&
               !level_call_on?(node)
           end
 
-          # Is `node` the receiver of a level call, i.e. the `Console.logger` in
-          # `Console.logger.info(...)`?
+          # Is `node` the receiver of a level call, i.e. the `Console.logger` in `Console.logger.info(...)`?
           def level_call_on?(node)
             parent = node.parent
 
@@ -69,8 +52,7 @@ module RuboCop
               (receiver&.send_type? && receiver.method_name == :logger && const_console?(receiver.receiver))
           end
 
-          # `Console` or `::Console` — and nothing nested, so a `Foo::Console`
-          # of your own is left alone.
+          # `Console` or `::Console` — and nothing nested, so a `Foo::Console` of your own is left alone.
           def const_console?(node)
             node&.const_type? && node.short_name == :Console && (node.namespace.nil? || node.namespace.cbase_type?)
           end

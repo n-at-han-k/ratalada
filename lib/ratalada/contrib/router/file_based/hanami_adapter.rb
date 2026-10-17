@@ -8,9 +8,7 @@ module Ratalada
   module Contrib
     module Router
       module FileBased
-        # Teaches Hanami::API `route_prefix`. Hanami's router already carries a
-        # path prefix — it is what `scope` sets for the length of its block —
-        # so this is that, set until the next file.
+        # Teaches Hanami::API `route_prefix`, via its router's path prefix.
         module HanamiAdapter
           def route_prefix=(prefix)
             @router.instance_variable_set(:@path_prefix, ::Hanami::Router::Prefix.new("/").join(prefix.to_s))

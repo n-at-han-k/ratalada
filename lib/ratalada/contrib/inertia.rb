@@ -49,8 +49,10 @@ module Ratalada
       def cache(...) = ::InertiaRails::CachedProp.new(...)
       def scroll(metadata = nil, **options, &block) = ::InertiaRails::ScrollProp.new(metadata: metadata, **options, &block)
 
-      # Registers a shared-prop block, run in the request context on every
-      # inertia render and deep-merged under the page props.
+      # Registers a shared-prop block, run in the request context on every inertia render and deep-merged under the page props.
+      #
+      # @parameter block [Proc] produces the shared props.
+      # @returns [Array] the registered share blocks.
       def share(&block)
         unless block
           raise ArgumentError, "share requires a block"
@@ -61,9 +63,9 @@ module Ratalada
 
       def share_props(&block) = share(&block)
 
-      # The asset version sent with every page object. An app-defined
-      # page_version setting wins over inertia_version; either may be
-      # callable, and whatever comes out is stringified.
+      # The asset version sent with every page object. An app-defined page_version setting wins over inertia_version; either may be callable, and whatever comes out is stringified.
+      #
+      # @returns [String] the configured version, stringified.
       def current_version
         config = Ratalada.config
         if config.respond_to?(:page_version)

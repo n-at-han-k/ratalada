@@ -23,9 +23,7 @@ Gem::Specification.new do |spec|
   spec.metadata["documentation_uri"] = spec.homepage
   spec.metadata["rubygems_mfa_required"] = "true"
 
-  # The frontend adapters live in sibling gems (ratalada-sinatra,
-  # ratalada-grape) that share this lib/ tree, so this core gem ships only its
-  # own files: the DSL, the version, and the backends.
+  # The frontend adapters live in sibling gems (ratalada-sinatra, ratalada-grape) that share this lib/ tree, so this core gem ships only its own files: the DSL, the version, and the backends.
   spec.files = %w[
     lib/ratalada.rb
     lib/ratalada/version.rb
@@ -48,6 +46,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.13"
   spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rubocop", "~> 1.60"
+  spec.add_development_dependency "decode"
 
   # Servers the backends wrap; users install whichever they require.
   spec.add_development_dependency "falcon"

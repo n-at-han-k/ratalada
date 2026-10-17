@@ -222,6 +222,17 @@
     };
     version = "3.3.6";
   };
+  decode = {
+    dependencies = ["prism" "rbs"];
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "0id8n5a020kpmdzjs6gvgpm1lj6i3maw1vpshw4vdw86s953crzm";
+      type = "gem";
+    };
+    version = "0.30.0";
+  };
   diff-lcs = {
     groups = ["default"];
     platforms = [];

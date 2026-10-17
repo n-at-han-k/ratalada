@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-# Server.use(A).use(B).run { ... } wraps the app the frontend built, once, at
-# boot. The middleware is plain rack middleware — it sees the env — so any
-# existing rack middleware works, whichever frontend is active.
+# Server.use(A).use(B).run { ... } wraps the app the frontend built, once, at boot. The middleware is plain rack middleware — it sees the env — so any existing rack middleware works, whichever frontend is active.
 RSpec.describe Ratalada::Server::Stack do
   let(:router) { ->(_request) { "ok" } }
 

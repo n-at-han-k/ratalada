@@ -2,10 +2,7 @@
 
 Adapter.load("ratalada/hanami")
 
-# The Hanami frontend class-evals the Server.run block into a Hanami::API
-# subclass and serves an instance of it. Hanami::API exposes `use` (scoped by
-# path, unlike rack's) and a block context with `status`, `headers`, `json` and
-# `halt` — this spec proves those survive the frontend intact.
+# The Hanami frontend class-evals the Server.run block into a Hanami::API subclass and serves an instance of it. Hanami::API exposes `use` (scoped by path, unlike rack's) and a block context with `status`, `headers`, `json` and `halt` — this spec proves those survive the frontend intact.
 RSpec.describe "Hanami frontend", adapter: "ratalada/hanami" do
   def build(&block) = Ratalada::Frontends::Hanami.build(block)
 
@@ -58,8 +55,7 @@ RSpec.describe "Hanami frontend", adapter: "ratalada/hanami" do
     it_behaves_like "a frontend that runs middleware", tag: "hanami-ran"
   end
 
-  # The reason to reach for hanami-api over hanami-router: `use` inside a
-  # `scope` only wraps that prefix. Rack's `use` can't do this.
+  # The reason to reach for hanami-api over hanami-router: `use` inside a `scope` only wraps that prefix. Rack's `use` can't do this.
   it "scopes middleware to the prefix it was declared under" do
     middleware = header_tagging_middleware("hanami-ran")
 

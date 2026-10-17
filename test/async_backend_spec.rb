@@ -2,16 +2,11 @@
 
 Adapter.load("ratalada/async")
 
-# Async::HTTP::Server speaks Protocol::HTTP, so on this backend the rack
-# adapter is only worth paying for when the frontend needs translating. The
-# frontend decides, and every frontend but ProtocolRoutes is rack.
+# Async::HTTP::Server speaks Protocol::HTTP, so on this backend the rack adapter is only worth paying for when the frontend needs translating. The frontend decides, and every frontend but ProtocolRoutes is rack.
 RSpec.describe Ratalada::Backends::AsyncHTTP, adapter: "ratalada/async" do
   let(:app) { ->(_message) { nil } }
 
-  # Reloading the backend file is how the "installs a frontend" examples below
-  # observe the require's side effects — and it sets config.backend too, which
-  # leaks to every later example (streaming_spec forks a server and would get
-  # this one instead of falcon). Put both back.
+  # Reloading the backend file is how the "installs a frontend" examples below observe the require's side effects — and it sets config.backend too, which leaks to every later example (streaming_spec forks a server and would get this one instead of falcon). Put both back.
   around do |example|
     frontend = Ratalada.config.frontend
     backend = Ratalada.config.backend
@@ -34,8 +29,7 @@ RSpec.describe Ratalada::Backends::AsyncHTTP, adapter: "ratalada/async" do
       expect(described_class.adapt(app)).to be_a(Protocol::Rack::Adapter::Generic)
     end
 
-    # Sinatra, Grape, Hanami and Roda never declare anything; rack is what a
-    # frontend is unless it says otherwise.
+    # Sinatra, Grape, Hanami and Roda never declare anything; rack is what a frontend is unless it says otherwise.
     it "wraps a frontend that says nothing about rack" do
       Ratalada.config.frontend = Module.new { def self.build(block) = block }
 
@@ -43,8 +37,7 @@ RSpec.describe Ratalada::Backends::AsyncHTTP, adapter: "ratalada/async" do
     end
   end
 
-  # Requiring the backend is what installs the frontend, so this is the
-  # behaviour `require "ratalada/async"` buys on its own.
+  # Requiring the backend is what installs the frontend, so this is the behaviour `require "ratalada/async"` buys on its own.
   describe "the frontend it installs" do
     it "replaces the default rack router" do
       Ratalada.config.frontend = Ratalada::Frontends::Routes
@@ -62,14 +55,7 @@ RSpec.describe Ratalada::Backends::AsyncHTTP, adapter: "ratalada/async" do
     end
   end
 
-  # Why this backend is not Backends::Async. A sibling of that name shadows
-  # the async gem for the whole namespace: an unqualified `Async::Service`
-  # inside Backends::Falcon resolved to `Ratalada::Backends::Async::Service`
-  # and broke that backend outright in any process that required both --
-  # which the docs invite ("if you require both, the last require wins").
-  # streaming_spec boots falcon for real and is what catches it; these pin the
-  # two things that keep it from coming back, because the lookup is only wrong
-  # at the point of use and nothing notices until a server fails to come up.
+  # Why this backend is not Backends::Async. A sibling of that name shadows the async gem for the whole namespace: an unqualified `Async::Service` inside Backends::Falcon resolved to `Ratalada::Backends::Async::Service` and broke that backend outright in any process that required both -- which the docs invite ("if you require both, the last require wins"). streaming_spec boots falcon for real and is what catches it; these pin the two things that keep it from coming back, because the lookup is only wrong at the point of use and nothing notices until a server fails to come up.
   it "does not take the name the async gem uses" do
     expect(Ratalada::Backends.const_defined?(:Async, false)).to be(false)
     expect(described_class.name).to eq("Ratalada::Backends::AsyncHTTP")
@@ -83,9 +69,7 @@ RSpec.describe Ratalada::Backends::AsyncHTTP, adapter: "ratalada/async" do
       .to be_empty, "lib/ratalada/falcon.rb must write ::Async::, so a sibling named Async cannot shadow it"
   end
 
-  # Server.use on this frontend is Protocol::HTTP middleware: new(delegate),
-  # call(request). That is the same contract Server.use already chains for
-  # rack, so there is nothing between the middleware and the server.
+  # Server.use on this frontend is Protocol::HTTP middleware: new(delegate), call(request). That is the same contract Server.use already chains for rack, so there is nothing between the middleware and the server.
   describe "Server.use" do
     # Native: sees the request, and the response, in Protocol::HTTP terms.
     tagger = Class.new(Protocol::HTTP::Middleware) do
@@ -98,9 +82,7 @@ RSpec.describe Ratalada::Backends::AsyncHTTP, adapter: "ratalada/async" do
 
     before { Ratalada.config.frontend = Ratalada::Frontends::ProtocolRoutes }
 
-    # Headers#[] hands back an Array for a field it has no policy for, which
-    # is every x- header, so these read the one value out rather than
-    # pretending a custom header is a String.
+    # Reads the one value from a header Array.
     def header(response, name) = Array(response.headers[name]).first
 
     def run_stack(stack)
@@ -115,8 +97,7 @@ RSpec.describe Ratalada::Backends::AsyncHTTP, adapter: "ratalada/async" do
       expect(response.body.join).to eq("ok")
     end
 
-    # First use is outermost, as everywhere else in ratalada, so the outer one
-    # sees what the inner one did.
+    # First use is outermost, as everywhere else in ratalada, so the outer one sees what the inner one did.
     it "keeps the first use outermost" do
       order = []
       outer = Class.new(Protocol::HTTP::Middleware) do
@@ -136,8 +117,7 @@ RSpec.describe Ratalada::Backends::AsyncHTTP, adapter: "ratalada/async" do
       expect(order).to eq([:outer_in, :inner_in, :inner_out, :outer_out])
     end
 
-    # Middleware#close walks the chain on shutdown; the bottom of it is the
-    # router, and a chain that raises there takes the server down with it.
+    # Middleware#close walks the chain on shutdown; the bottom of it is the router, and a chain that raises there takes the server down with it.
     it "closes cleanly down the whole chain" do
       app = Ratalada::Server.use(tagger).use(tagger).to_app(proc { "ok" })
 

@@ -2,9 +2,7 @@
 
 Adapter.load("ratalada/builder")
 
-# The Rack::Builder frontend hands the Server.run block straight to
-# Rack::Builder, so `use`, `map` and `run` are rack's own and the app is built
-# once. No Request sugar: `run` gets the raw env, like any rack app.
+# The Rack::Builder frontend hands the Server.run block straight to Rack::Builder, so `use`, `map` and `run` are rack's own and the app is built once. No Request sugar: `run` gets the raw env, like any rack app.
 RSpec.describe "Rack::Builder frontend", adapter: "ratalada/builder" do
   def build(&block) = Ratalada::Frontends::Builder.build(block)
 

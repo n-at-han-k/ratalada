@@ -26,8 +26,7 @@ Gem::Specification.new do |spec|
   spec.metadata["documentation_uri"] = spec.homepage
   spec.metadata["rubygems_mfa_required"] = "true"
 
-  # Shares the lib/ tree with ratalada and the other adapters; ships only the
-  # Hanami adapter file.
+  # Shares the lib/ tree with ratalada and the other adapters; ships only the Hanami adapter file.
   spec.files = %w[
     lib/ratalada/hanami.rb
     lib/ratalada/hanami/version.rb
@@ -35,10 +34,7 @@ Gem::Specification.new do |spec|
   ]
   spec.require_paths = ["lib"]
 
-  # Derived, not written out: this adapter is only ever developed and tested
-  # against the core sitting beside it in this repo, so the major it supports
-  # is that core's major. Writing the number here means every core major bump
-  # silently strands every adapter until someone edits four files.
+  # Derived, not written out: this adapter is only ever developed and tested against the core sitting beside it in this repo, so the major it supports is that core's major. Writing the number here means every core major bump silently strands every adapter until someone edits four files.
   spec.add_dependency "ratalada", "~> #{Ratalada::VERSION.split(".").first}.0"
   spec.add_dependency "hanami-api"
 

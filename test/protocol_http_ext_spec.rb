@@ -2,10 +2,7 @@
 
 Adapter.load("ratalada/async")
 
-# The router matches the request the server built, so the patterns live on
-# Protocol::HTTP::Request itself. Without them every `case request in [...]`
-# raises NoMatchingPatternError and every route 404s, which is a silent
-# failure -- hence a spec per method rather than one that just routes.
+# The router matches the request the server built, so the patterns live on Protocol::HTTP::Request itself. Without them every `case request in [...]` raises NoMatchingPatternError and every route 404s, which is a silent failure -- hence a spec per method rather than one that just routes.
 RSpec.describe "Protocol::HTTP::Request pattern matching", adapter: "ratalada/async" do
   def request(verb, path) = Protocol::HTTP::Request[verb, path]
 
@@ -45,15 +42,12 @@ RSpec.describe "Protocol::HTTP::Request pattern matching", adapter: "ratalada/as
     expect(plain.params).to eq({})
   end
 
-  # #path is the raw target: protocol-http1 writes it, and anything else
-  # reading the request expects it. Only the patterns see the split path.
+  # #path is the raw target: protocol-http1 writes it, and anything else reading the request expects it. Only the patterns see the split path.
   it "leaves #path as the raw target" do
     expect(request("GET", "/users/1?a=b").path).to eq("/users/1?a=b")
   end
 
-  # The class already overrides #method as a zero-arg reader for the HTTP
-  # verb, so Object#method is gone there whatever we do -- #verb is the name
-  # the patterns use, and reads better in `in {verb:}` either way.
+  # The class already overrides #method as a zero-arg reader for the HTTP verb, so Object#method is gone there whatever we do -- #verb is the name the patterns use, and reads better in `in {verb:}` either way.
   it "mirrors the verb under a name that is not #method" do
     message = request("GET", "/")
 

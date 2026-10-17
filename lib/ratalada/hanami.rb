@@ -5,9 +5,7 @@ require "ratalada"
 
 module Ratalada
   module Frontends
-    # Hanami::API is a class-level DSL, so the Server.run block is class-evaled
-    # into an anonymous subclass. Hanami::API.new builds the rack app and
-    # deep-freezes it, so this happens once, at boot.
+    # Hanami::API as the DSL, class-evaled into an anonymous subclass.
     module Hanami
       def self.build(block)
         app = Class.new(::Hanami::API)

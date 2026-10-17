@@ -114,8 +114,11 @@ module Ratalada
           request.env["ratalada.inertia.csrf_token"]
         end
 
-        # The prop factories are the gem's (Ratalada::Contrib::Inertia delegates to
-        # InertiaRails).
+        # The prop factories are the gem's.
+        #
+        # @parameter value [Object] a literal value, if any.
+        # @parameter block [Proc] evaluated lazily, if given.
+        # @returns [Object] the InertiaRails prop.
         def always(value = nil, &block) = Ratalada::Contrib::Inertia.always(value, &block)
         def defer(group: "default", &block) = Ratalada::Contrib::Inertia.defer(group: group, &block)
         def optional(&block) = Ratalada::Contrib::Inertia.optional(&block)

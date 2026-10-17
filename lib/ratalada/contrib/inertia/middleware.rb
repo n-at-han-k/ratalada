@@ -3,11 +3,7 @@
 module Ratalada
   module Contrib
     module Inertia
-      # Rack middleware for the Inertia protocol. Mirrors
-      # InertiaRails::Middleware but built on plain Rack rather than
-      # ActionDispatch — the gem's version also manages its Rails flash and
-      # session keys, which this app does not use (errors live in
-      # session[:_inertia_errors] and are swept by the render helpers).
+      # Rack middleware for the Inertia protocol, on plain Rack.
       class Middleware
         INERTIA_HEADER = "HTTP_X_INERTIA"
         INERTIA_VERSION_HEADER = "HTTP_X_INERTIA_VERSION"
@@ -27,14 +23,12 @@ module Ratalada
             status, headers, body = convert_to_location_response!(headers, body)
           end
 
-          # Only 301/302 are rewritten to 303: a 303 already forces a GET on
-          # follow, and 307/308 preserve the request method by design.
+          # Only 301/302 are rewritten to 303: a 303 already forces a GET on follow, and 307/308 preserve the request method by design.
           if inertia_non_get_redirect?(env, status)
             status = 303
           end
 
-          # A response with X-Inertia-Location is already a full page visit —
-          # nothing to refresh.
+          # A response with X-Inertia-Location is already a full page visit — nothing to refresh.
           if stale_inertia_get?(env) && !headers["X-Inertia-Location"]
             force_refresh(env)
           else
@@ -44,9 +38,12 @@ module Ratalada
 
         private
 
-          # XHR follows redirects transparently, so a cross-origin target is only
-          # reachable through a window.location visit (409 + X-Inertia-Location).
-          # 307/308 are excluded: a full page visit is always a GET.
+          # Whether a redirect points at another origin, which needs a full visit.
+          #
+          # @parameter env [Hash] the rack env.
+          # @parameter status [Integer] the response status.
+          # @parameter headers [Hash] the response headers.
+          # @returns [Boolean] true for a cross-origin redirect.
           def external_redirect?(env, status, headers)
             inertia_request?(env) &&
               REDIRECT_STATUSES.include?(status) &&
@@ -70,8 +67,11 @@ module Ratalada
             false
           end
 
-          # Mutates the headers in place to keep the rest of the response,
-          # notably Set-Cookie (which matters mid-OAuth).
+          # Mutates the headers in place, keeping Set-Cookie.
+          #
+          # @parameter headers [Hash] the response headers.
+          # @parameter body [Object] the response body, closed here.
+          # @returns [Array] a 409 with the Inertia-Location header.
           def convert_to_location_response!(headers, body)
             headers["X-Inertia-Location"] = headers.delete("Location")
             headers.delete("Content-Type")

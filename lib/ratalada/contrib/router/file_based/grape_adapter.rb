@@ -8,8 +8,7 @@ module Ratalada
   module Contrib
     module Router
       module FileBased
-        # Teaches Grape `route_prefix`, the same way as Sinatra: the paths of
-        # every route defined while it is set hang off it.
+        # Teaches Grape `route_prefix`, as Sinatra does.
         module GrapeAdapter
           def route(methods, paths = ["/"], route_options = {}, &block)
             unless route_prefix.to_s.empty?

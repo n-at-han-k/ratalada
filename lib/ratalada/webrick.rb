@@ -5,9 +5,7 @@ require_relative "../ratalada"
 
 module Ratalada
   module Backends
-    # Stdlib WEBrick via rackup's handler, which already does the rack env
-    # translation. Single process, one thread per connection — fine for
-    # development and tests, not what you ship.
+    # Stdlib WEBrick, via rackup's handler; one thread per connection.
     module Webrick
       module_function
 

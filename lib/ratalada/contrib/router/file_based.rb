@@ -12,16 +12,16 @@ module Ratalada
 
         module_function
 
-        # Evaluates every route file in the directory into an app class, under
-        # the prefix its path spells. That class is the frontend's own, so this
-        # is what a Server.run block calls: the block is already being evaluated
-        # into it, and `self` is it. Requiring the frontend's adapter is what
-        # teaches the class `route_prefix`.
+        # Evaluates every route file under the directory into the app class.
         #
+        # @example
         #   Server.run { Ratalada::Contrib::Router::FileBased.mount(self, "app") }
+        #
+        # @parameter app [Object] the frontend app class.
+        # @parameter directory [String] the route file root.
+        # @returns [void]
         def mount(app, directory)
-          # The adapter says how its frontend spells a placeholder; the default
-          # is `:name`, which is what hanami and grape read.
+          # The adapter says how its frontend spells a placeholder; the default is `:name`, which is what hanami and grape read.
           if app.respond_to?(:route_spelling)
             spelling = app.route_spelling
           else
@@ -30,10 +30,7 @@ module Ratalada
 
           map = build_map(directory, **spelling)
 
-          # An adapter that can give each route file its own class does, so a
-          # _layout.rb's `use`, `set`, `before` and `error` reach only the files
-          # below it. Without that the whole tree shares one class and a nested
-          # layout's filter fires for every route in the app.
+          # An adapter that can give each route file its own class does, so a _layout.rb's `use`, `set`, `before` and `error` reach only the files below it. Without that the whole tree shares one class and a nested layout's filter fires for every route in the app.
           if app.respond_to?(:mount_files)
             app.mount_files(app, map)
           else
@@ -44,21 +41,25 @@ module Ratalada
           end
         end
 
-        # The same, as a whole app built by whichever Ratalada frontend is in
-        # use — for mounting a directory somewhere other than the server's own
-        # run block.
+        # Builds a whole app from the directory, for mounting elsewhere.
+        #
+        # @parameter directory [String] the route file root.
+        # @returns [Object] the built app.
         def build(directory)
           Ratalada.frontend.build(proc { FileBased.mount(self, directory) })
         end
 
-        # A hash of route => the files that serve it, ordered most specific
-        # first. Mustermann::Expo does the file path => route translation; all
-        # this adds is which files to evaluate and how the adapter spells a
-        # placeholder.
+        # A hash of route => the files that serve it, most specific first.
         #
-        # {
-        #   "/organisations/:id/edit" => ["./app/organisations/[id]/edit.rb"]
-        # }
+        # @example
+        #   {
+        #     "/organisations/:id/edit" => ["./app/organisations/[id]/edit.rb"]
+        #   }
+        #
+        # @parameter directory [String] the route file root.
+        # @parameter placeholder [String] the adapter's placeholder spelling.
+        # @parameter catch_all [String] the adapter's catch-all spelling.
+        # @returns [Hash] route => files.
         def build_map(directory, placeholder: ":%s", catch_all: "*%s")
           root = File.expand_path(directory)
 
@@ -81,8 +82,12 @@ module Ratalada
             .push(File.join(root, relative))
         end
 
-        # An expo route in the adapter's own spelling: "/teams/[team]" => "/teams/:team".
-        # The root route is "" — a prefix nothing hangs off, not a route of "/".
+        # An expo route in the adapter's own spelling.
+        #
+        # @parameter route [String] the expo route.
+        # @parameter placeholder [String] the adapter's placeholder spelling.
+        # @parameter catch_all [String] the adapter's catch-all spelling.
+        # @returns [String] the adapter's route.
         def spell(route, placeholder, catch_all)
           route.delete_suffix("/").gsub(%r{\[(\.\.\.)?([^\[\]/]+)\]}) do
             format(Regexp.last_match(1) ? catch_all : placeholder, Regexp.last_match(2))
@@ -93,11 +98,10 @@ module Ratalada
           "#{prefix}#{route.delete_suffix("/")}".sub(/\A\z/, "/")
         end
 
-        # Least specific last. A segment that is PARTLY literal beats a bare
-        # capture: `[index].[diffType]` and `[index]` both match "7.diff", and
-        # the one that spells the dot is the one that means it -- so the
-        # patterns are anchored to a single capture rather than to the whole
-        # segment, which `[index].[diffType]` would also satisfy.
+        # How specific a route is, as a list of per-segment weights.
+        #
+        # @parameter route [String] the route path.
+        # @returns [Array(Integer)] the segment weights, least specific last.
         def specificity(route)
           route.split("/").drop(1).map do |segment|
             case segment

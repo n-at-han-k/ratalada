@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-# One rack env builder for the whole suite. SCRIPT_NAME is always present
-# because Rack::URLMap (what Rack::Builder's `map` builds) reads it
-# unconditionally; the frontends that don't need it don't mind it.
+# One rack env builder for the whole suite.
 module RackEnv
   def env_for(verb, path, query: "", body: "")
     {
@@ -14,8 +12,7 @@ module RackEnv
     }
   end
 
-  # Tags the response on the way out, so a spec can prove the middleware ran
-  # around the route rather than instead of it.
+  # Tags the response on the way out, so a spec can prove the middleware ran around the route rather than instead of it.
   def header_tagging_middleware(tag)
     Class.new do
       define_method(:initialize) { |app| @app = app }
@@ -27,8 +24,7 @@ module RackEnv
     end
   end
 
-  # Records its name in the env on the way in, so env["tags"] reads as the
-  # order the stack was entered: outermost first.
+  # Records its name in the env on the way in, so env["tags"] reads as the order the stack was entered: outermost first.
   def env_tagging_middleware(name)
     Class.new do
       define_method(:initialize) { |app| @app = app }
@@ -39,8 +35,7 @@ module RackEnv
     end
   end
 
-  # Counts its own instantiations, to prove middleware is built at boot rather
-  # than per request.
+  # Counts its own instantiations, to prove middleware is built at boot rather than per request.
   def counting_middleware(counter)
     Class.new do
       define_method(:initialize) do |app|

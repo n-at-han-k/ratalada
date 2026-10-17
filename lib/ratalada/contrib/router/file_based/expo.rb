@@ -16,11 +16,10 @@ module Mustermann
     NOT_FOUND = "+not-found"
     NOT_FOUND_CAPTURE = "unmatched"
 
-    # Turns an Expo Router file path into the route it serves: file extensions
-    # and the +api suffix are dropped, a _layout file stands for its directory,
-    # group segments are invisible and a trailing index is its directory.
-    # Mirrors getContextKey/stripInvisibleSegmentsFromPath in expo-router.
-    # @!visibility private
+    # Turns an Expo Router file path into the route it serves.
+    #
+    # @parameter string [String] the file path, relative to the route root.
+    # @returns [String] the route it serves.
     def self.route(string)
       string   = string.sub(%r{\A(?:\.\.?/|/)+}, "")
       string   = string.sub(/(\+api)?\.rb$/, "").sub(%r{/?_layout$}, "")

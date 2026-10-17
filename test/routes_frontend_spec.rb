@@ -25,8 +25,7 @@ RSpec.describe Ratalada::Frontends::Routes do
       .to eq([200, { "content-type" => "text/plain" }, ["hello"]])
   end
 
-  # The lambda above passes whether `respond` tests Proc or #call, so it never
-  # said anything about what "callable" means. An object with a #call is one.
+  # The lambda above passes whether `respond` tests Proc or #call, so it never said anything about what "callable" means. An object with a #call is one.
   it "calls a callable object handler with the request" do
     greet = Class.new do
       def call(req) = "hi #{req.path}"

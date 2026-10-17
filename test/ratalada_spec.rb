@@ -33,8 +33,7 @@ RSpec.describe Ratalada do
         .to eq([200, { "content-type" => "text/plain" }, ["ok"]])
     end
 
-    # The router block is called as a plain block: self and ivars stay whatever
-    # they were at the call site, so `@state ||= ...` inside it keeps working.
+    # The router block is called as a plain block: self and ivars stay whatever they were at the call site, so `@state ||= ...` inside it keeps working.
     it "keeps the caller's self and ivars inside the block" do
       @counter = 0
 
@@ -45,8 +44,7 @@ RSpec.describe Ratalada do
       expect(@counter).to eq(1)
     end
 
-    # Rack::Utils' helpers are callable unqualified inside a Server.run block
-    # with no include at the call site, and without changing self or its ivars.
+    # Rack::Utils' helpers are callable unqualified inside a Server.run block with no include at the call site, and without changing self or its ivars.
     it "exposes Rack::Utils helpers unqualified inside the block" do
       Server.run { |request| escape_html(parse_query(request.query)["name"]) }
 
@@ -56,8 +54,7 @@ RSpec.describe Ratalada do
         .to be(false), "must not leak past the block's own scope"
     end
 
-    # A block written inside an object gets the helpers there too, and the
-    # include is confined to that one object: siblings and Object never see it.
+    # A block written inside an object gets the helpers there too, and the include is confined to that one object: siblings and Object never see it.
     it "confines the Rack::Utils include to the block's own receiver" do
       author = Class.new do
         def router = proc { |request| escape_html(request.query) }
@@ -78,8 +75,7 @@ RSpec.describe Ratalada do
         .to be(false), "leaked to unrelated objects"
     end
 
-    # Proc#binding raises on a C-level proc (Symbol#to_proc, Proc#curry); the
-    # helpers are simply unavailable there rather than Server.run blowing up.
+    # Proc#binding raises on a C-level proc (Symbol#to_proc, Proc#curry); the helpers are simply unavailable there rather than Server.run blowing up.
     it "accepts a block with no binding" do
       expect { :handler_for.to_proc.binding }
         .to raise_error(ArgumentError), "precondition: this proc must have no binding"
@@ -101,8 +97,7 @@ RSpec.describe Ratalada do
         .to eq([200, { "content-type" => "text/plain" }, ["ok"]])
     end
 
-    # Numeric strings are valid: the count setting's constructor coerces before
-    # validation (covered in configuration_spec.rb).
+    # Numeric strings are valid: the count setting's constructor coerces before validation (covered in configuration_spec.rb).
     it "rejects an invalid count" do
       expect { Server.run(count: 0) { |_request| "ok" } }.to raise_error(ArgumentError)
     end

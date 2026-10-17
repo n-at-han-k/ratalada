@@ -9,26 +9,18 @@ require_relative "../ratalada"
 
 module Ratalada
   module Backends
-    # Every Async:: below is rooted at ::. The async backend used to be
-    # Backends::Async, and an unqualified lookup found that sibling first:
-    # `Async::Service` resolved to `Ratalada::Backends::Async::Service` and
-    # took this backend down with it in any process that had required both.
-    # It is Backends::AsyncHTTP now, so nothing shadows the gem -- the `::`
-    # stays so the next sibling cannot do it again.
+    # Falcon's backend; every Async constant is `::`-rooted.
     module Falcon
       module_function
 
-      # Runs the app the way `falcon host` does: declare a server environment,
-      # hand it to Async::Service::Controller. The controller binds the socket
-      # once in the parent, runs `count` supervised workers accepting from it
-      # (restarts, health checks, INT/TERM/HUP handling all come with it).
-      # `falcon host` builds its middleware via Environment::Rackup, which
-      # threads Environment::Server#cache -- false -- into rack_middleware, so
-      # the response cache is off unless `falcon serve --cache` asks for it.
-      # Worth keeping off by default: the store is keyed on
-      # [authority, method, path], entries without max-age never expire, and
-      # lookups skip the Cookie check that insertion applies, so one anonymous
-      # response can be replayed to logged-in requests.
+      # Runs the app under Async::Service::Controller with supervised workers.
+      #
+      # @parameter app [Object] the rack app.
+      # @parameter host [String] the bind host.
+      # @parameter port [Integer] the bind port.
+      # @parameter count [Integer] the number of workers.
+      # @parameter cache [Boolean] enable the response cache (off by default: replay risk).
+      # @returns [void]
       def run(app, host:, port:, count: 1, cache: false)
         middleware = ::Falcon::Server.rack_middleware(app, cache: cache)
 
@@ -37,9 +29,7 @@ module Ratalada
           url:               "http://#{host}:#{port}",
           middleware:        -> { middleware },
           container_options: { count: count, restart: true },
-          # async-service >= 0.25 reads `root` in Managed::Service#preload!
-          # unconditionally (the default `preload` is `[]`, which is truthy),
-          # so an environment without one raises NoMethodError on boot.
+          # async-service >= 0.25 reads `root` in Managed::Service#preload! unconditionally (the default `preload` is `[]`, which is truthy), so an environment without one raises NoMethodError on boot.
           root:              Dir.pwd,
         )
 

@@ -5,11 +5,7 @@ require "json"
 module Ratalada
   module Contrib
     module Inertia
-      # Builds the Inertia page object for a render. Shared data is deep-merged
-      # under the page props and errors are merged on top; prop resolution —
-      # partial reloads, deferred/optional/merge/once/scroll metadata — is the
-      # gem's PropsResolver, evaluating blocks in the request context via the
-      # gem's PropEvaluator.
+      # Builds the Inertia page object for a render.
       class Response
         attr_reader(
           :component,
